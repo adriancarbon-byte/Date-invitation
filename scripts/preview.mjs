@@ -32,7 +32,7 @@ const server = createServer(async (req, res) => {
       'X-Content-Type-Options': 'nosniff',
       'Content-Security-Policy': relative === 'docs/preview.html' ?
         "default-src 'none'; script-src 'unsafe-inline' data:; style-src 'unsafe-inline'; img-src data:; font-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'" :
-        "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; font-src 'self'; media-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'",
+        "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; font-src 'self'; media-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'",
     });
     res.end(req.method === 'HEAD' ? undefined : bytes);
   } catch { res.writeHead(404); res.end('Not found'); }

@@ -44,7 +44,7 @@ test('missing or tampered date/time cannot advance the scheduler', () => {
   store.dispatch({ type: 'next' });
   assert.equal(store.getState().screen, 'scheduler');
   store.dispatch({ type: 'date', value: '2026-11-01' });
-  store.dispatch({ type: 'time', value: '18:30' });
+  store.dispatch({ type: 'time', value: '24:00' });
   assert.equal(store.getState().time, null);
   store.dispatch({ type: 'next' });
   assert.equal(store.getState().screen, 'scheduler');
@@ -313,4 +313,25 @@ test('October 30 and 31 are accepted through state and the final mock gate',asyn
     assert.equal(store.getState().date,date);
     assert.equal(store.getState().submission.sent,false);
   }
+});
+
+test('email confirmation requires a pending send and an affirmative provider receipt', async () => {
+  const store = makeStore(); activity(store);
+  store.dispatch({type:'sendStart'});
+  assert.equal(store.getState().submission.status,'idle');
+  store.dispatch({type:'previewComplete',result:await previewSubmission()});
+  store.dispatch({type:'sendSuccess',result:{accepted:true}});
+  assert.equal(store.getState().submission.sent,false);
+  store.dispatch({type:'sendStart'});
+  assert.equal(store.getState().submission.status,'sending');
+  store.dispatch({type:'sendSuccess',result:{accepted:false}});
+  assert.equal(store.getState().submission.sent,false);
+  store.dispatch({type:'sendError'});
+  assert.equal(store.getState().submission.status,'error');
+  assert.equal(store.getState().date,'2026-10-28');
+  store.dispatch({type:'sendStart'});
+  store.dispatch({type:'sendSuccess',result:{accepted:true}});
+  assert.equal(store.getState().submission.sent,true);
+  store.dispatch({type:'sendStart'});
+  assert.equal(store.getState().submission.status,'sent');
 });

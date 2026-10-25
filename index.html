@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A romantic question, made with a lot of heart. An interactive, private-to-this-tab design preview; nothing is sent.">
+  <meta name="description" content="A romantic question, made with a lot of heart. A letter, a little courage, and a lovely plan together.">
   <meta name="color-scheme" content="light">
   <title>Just for you · A lovely little question</title>
   <link rel="icon" href="./assets/art/flower.svg" type="image/svg+xml">
@@ -53,14 +53,14 @@
             <div class="calendar-stickers" aria-hidden="true"><img class="calendar-sticker sticker-letter" src="./assets/art/envelope.svg" width="110" height="79" alt=""><img class="calendar-sticker sticker-bouquet" src="./assets/art/rose-bouquet.svg" width="100" height="110" alt=""><img class="calendar-sticker sticker-ribbon" src="./assets/art/ribbon-heart.svg" width="84" height="84" alt=""><span class="sticker-sparkle sparkle-one">✧</span><span class="sticker-sparkle sparkle-two">✧</span></div>
           <div class="scheduling-card">
             <div class="card-topline"><img src="./assets/art/calendar.svg" width="80" height="64" alt=""><span>Something to look forward to</span><img src="./assets/art/clock.svg" width="70" height="56" alt=""></div>
-            <div class="field"><label id="date-label" for="date-trigger">Pick a day</label><button id="date-trigger" class="field-control" type="button" aria-expanded="false" aria-controls="calendar-panel" aria-describedby="date-help"><span id="date-display">Choose our day</span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="16" height="15" rx="3"/><path d="M8 3v6m8-6v6M4 12h16"/></svg></button>
+            <div class="field"><label id="date-label" for="date-trigger">Pick a day</label><button id="date-trigger" class="field-control" type="button" aria-expanded="false" aria-controls="calendar-panel"><span id="date-display">Choose our day</span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="16" height="15" rx="3"/><path d="M8 3v6m8-6v6M4 12h16"/></svg></button>
               <div id="calendar-panel" class="calendar" role="group" aria-label="Choose a date" hidden><div class="calendar-heading"><button type="button" data-month="-1" aria-label="Previous month">‹</button><h2 id="calendar-month" tabindex="-1" aria-live="polite"></h2><button type="button" data-month="1" aria-label="Next month">›</button></div><div class="calendar-weekdays" aria-hidden="true"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div><div id="calendar-days" class="calendar-days"></div></div>
-              <p id="date-help" class="field-help">Oct 28–31 &amp; Nov 1–30, 2026 · Asia/Manila</p><p id="availability-note" class="error-message" hidden>These dates have passed. New availability needs to be confirmed.</p>
+              <p id="availability-note" class="error-message" hidden>These dates have passed. New availability needs to be confirmed.</p>
             </div>
-            <div class="field time-field"><label for="time-select">What time works for you?</label><select id="time-select" class="field-control" aria-describedby="time-help"><option value="">A time to look forward to</option></select><p id="time-help" class="field-help">Preview-only sample times · final availability to be confirmed.</p></div>
+            <fieldset class="field time-field time-picker"><legend>What time works for you?</legend><p class="time-instruction">A little scroll to find your perfect time.</p><div class="time-wheels"><div><span class="wheel-label" id="hour-label">Hour</span><div id="hour-wheel" class="time-wheel" role="listbox" tabindex="0" aria-labelledby="hour-label"></div></div><span class="time-colon" aria-hidden="true">:</span><div><span class="wheel-label" id="minute-label">Minute</span><div id="minute-wheel" class="time-wheel" role="listbox" tabindex="0" aria-labelledby="minute-label"></div></div><div><span class="wheel-label" id="period-label">AM / PM</span><div id="period-wheel" class="time-wheel period-wheel" role="listbox" tabindex="0" aria-labelledby="period-label"></div></div></div><button type="button" class="time-confirm" id="time-confirm">Choose this time <span aria-hidden="true">♡</span></button><p id="time-status" class="time-status" role="status">Your time, your choice. All times in Manila.</p></fieldset>
             <p id="scheduler-error" class="error-message" role="alert" hidden></p>
             <button class="button-primary wide" data-action="next" type="button" id="schedule-continue" disabled>Let’s make a plan <span aria-hidden="true">→</span></button>
-            <p class="card-footnote">A little plan. No booking, no pressure.</p>
+            <p class="card-footnote">A little time, just for us.</p>
           </div>
           </div>
           <button class="button-text" data-action="back" type="button">← Back</button>
@@ -69,8 +69,8 @@
           <p class="eyebrow">A little something delicious</p>
           <h1 id="dinner-title" class="compact-title" tabindex="-1">What are we <em>feeling?</em></h1>
           <p class="description">A little of this, a little of that. Pick as many as you like.</p>
-          <fieldset class="choice-fieldset"><legend class="sr-only">Food preferences, optional sample choices</legend><div id="food-grid" class="choice-grid food-grid"></div></fieldset>
-          <p class="provisional-note">Optional preview choices · the final menu is still a little daydream.</p>
+          <fieldset class="choice-fieldset"><legend class="sr-only">Food preferences, optional</legend><div id="food-grid" class="choice-grid food-grid"></div></fieldset>
+          <p class="provisional-note">Pick a favorite, or we can decide together.</p>
           <div class="step-actions"><button class="button-text" data-action="back" type="button">← Back</button><button class="button-primary" data-action="next" type="button">Sounds delicious <span aria-hidden="true">→</span></button></div>
           <button class="button-text skip-food" data-action="skip-food" type="button">Let’s decide later</button>
         </section>
@@ -88,12 +88,11 @@
           <p class="eyebrow">Something lovely to look forward to</p>
           <h1 id="ending-title" tabindex="-1">It’s a <em>date!</em></h1>
           <p class="description">You, me, and a lovely little plan.</p>
-          <p class="ending-preview">Confirmation preview · nothing has been sent or booked.</p>
-          <div class="keepsake-card"><div class="keepsake-heading"><span>OUR LITTLE PLAN</span><span aria-hidden="true">♡</span></div><dl class="summary-list"><div><dt><img src="./assets/art/calendar.svg" width="52" height="42" alt="">The day</dt><dd id="summary-date"></dd></div><div><dt><img src="./assets/art/clock.svg" width="52" height="42" alt="">The time</dt><dd><span id="summary-time"></span><small>Asia/Manila · sample time</small></dd></div><div id="summary-food-row"><dt><img id="summary-food-art" src="./assets/art/pizza.svg" width="52" height="42" alt="">A little bite</dt><dd id="summary-food"></dd></div><div><dt><img id="summary-activity-art" src="./assets/art/city-lights.svg" width="52" height="42" alt="">The adventure</dt><dd id="summary-activity"></dd></div></dl></div>
+          <p class="ending-preview">Take a little look. Then send it with a smile.</p>
+          <div class="keepsake-card"><div class="keepsake-heading"><span>OUR LITTLE PLAN</span><span aria-hidden="true">♡</span></div><dl class="summary-list"><div><dt><img src="./assets/art/calendar.svg" width="52" height="42" alt="">The day</dt><dd id="summary-date"></dd></div><div><dt><img src="./assets/art/clock.svg" width="52" height="42" alt="">The time</dt><dd><span id="summary-time"></span><small>Asia/Manila</small></dd></div><div id="summary-food-row"><dt><img id="summary-food-art" src="./assets/art/pizza.svg" width="52" height="42" alt="">A little bite</dt><dd id="summary-food"></dd></div><div><dt><img id="summary-activity-art" src="./assets/art/city-lights.svg" width="52" height="42" alt="">The adventure</dt><dd id="summary-activity"></dd></div></dl></div>
           <div class="personal-note"><span class="note-heart" aria-hidden="true">♡</span><h2>A little note for you</h2><p id="final-message">See you cutie, wear whatever makes you feel comfortable, okay? You don’t have to dress up or try to impress me, because honestly, I already think you’re beautiful just the way you are.</p><span class="handwritten">just come as you are.</span></div>
-          <div class="ending-actions"><button class="button-primary" data-action="copy" type="button">Copy our little plan <span aria-hidden="true">♡</span></button><button class="button-text" data-action="back" type="button">Edit the plan</button></div>
-          <p id="copy-status" role="status" class="field-help"></p><textarea id="copy-fallback" aria-label="Your plan, select and copy this text" hidden readonly></textarea>
-          <button class="button-text" data-action="restart" type="button">Start again</button>
+          <div class="ending-actions"><button class="button-primary" data-action="send" id="send-plan" type="button">Send our plan <span aria-hidden="true">♡</span></button><button class="button-text" data-action="back" id="edit-plan" type="button">Edit the plan</button></div>
+          <p class="delivery-notice">Sending emails your chosen date, time, food, and activity to the person who invited you.</p><p id="send-status" role="status" class="send-status" aria-live="polite"></p>
           <div class="closing-love-note"><img src="./assets/art/ribbon-heart.svg" width="64" height="64" alt=""><p id="closing-message">One thing is for sure, i like you so much my christine.</p><span aria-hidden="true">♡</span></div>
         </section>
       </div>

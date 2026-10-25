@@ -1631,3 +1631,38 @@ body.hearts-paused .letter-seal {animation-play-state:paused!important}
 
 /* Keep rotating stickers inside the narrowest mobile viewport. */
 @media(max-width:350px){.sticker-bouquet{right:0;width:65px;height:78px;--sticker-tilt:6deg}}
+
+/* A quieter reading surface, with playful motion around it. */
+.description { font-size: 15px; line-height: 1.75; color: #75645e; }
+.field label, .time-picker legend { font-size: 14px; font-weight: 600; color: #5b4c46; }
+.button-primary, .button-secondary { font-size: 14px; letter-spacing: .01em; }
+.personal-note { background: #fffdf9f5; border: 1px solid #eadbd1; border-radius: 22px; padding: 26px 30px; margin: 22px auto 20px; }
+.personal-note h2 { font-family: var(--font-serif); font-size: 28px; line-height: 1.2; font-weight: 500; color: #92506a; }
+.personal-note #final-message { font-family: var(--font-sans); font-size: 16px; line-height: 1.85; font-weight: 400; color: #65554e; max-width: 39ch; margin: 15px auto; }
+.personal-note .handwritten { font-size: 24px; color: #9f6278; }
+.ending-preview { font-size: 13px; line-height: 1.6; color: #78665f; }
+.ending-actions { margin: 20px auto 0; gap: 12px; }
+.delivery-notice { font-size: 12px; line-height: 1.7; color: #7b6962; max-width: 40ch; margin: 12px auto 0; }
+.send-status { font-size: 14px; line-height: 1.7; color: #7c4f62; max-width: 40ch; margin: 12px auto 0; }
+.send-status:empty { display: none; }
+.send-status.is-error { color: #963f56; background: #fff7f2; padding: 12px 16px; border-radius: 12px; }
+.closing-love-note { margin: 24px auto 30px; padding: 22px 26px; gap: 8px; max-width: 440px; min-height: 0; background: #fffaf5f5; border: 1px solid #ead6cd; border-radius: 22px; box-shadow: 0 8px 32px #9b6b5710; }
+.closing-love-note img { width: 44px; height: 44px; margin: 0 auto 4px; }
+.closing-love-note #closing-message { font-family: var(--font-serif); font-size: 28px; line-height: 1.4; font-weight: 500; font-style: normal; color: #914b66; letter-spacing: 0; text-shadow: none; max-width: 25ch; margin: 0 auto; }
+.closing-love-note > span { font-size: 20px; }
+.time-picker { min-width: 0; border: 0; padding: 0; text-align: left; }
+.time-picker legend { padding: 0; }
+.time-instruction { color: #89736b; font-size: 12px; line-height: 1.6; margin: 6px 0 14px; }
+.time-wheels { display: grid; grid-template-columns: 1fr 10px 1fr 1fr; gap: 8px; align-items: end; border: 1px solid #e4cec3; border-radius: 18px; background: #fcf6f1; padding: 12px 10px; }
+.time-wheels > div { min-width: 0; }
+.wheel-label { display: block; text-align: center; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: #94756d; margin: 0 0 6px; }
+.time-colon { align-self: center; margin-top: 16px; font-family: var(--font-serif); font-size: 28px; color: #ad6c84; }
+.time-wheel { height: 132px; overflow-y: auto; overscroll-behavior: contain; scroll-snap-type: y mandatory; scrollbar-width: none; padding: 44px 0; position: relative; border-radius: 12px; background: linear-gradient(#fbf2ed 0 33.333%,#f1dce2 33.333% 66.666%,#fbf2ed 66.666%); }
+.time-wheel::-webkit-scrollbar { display: none; }
+.wheel-option { display: flex; align-items: center; justify-content: center; flex: none; height: 44px; scroll-snap-align: center; font-family: var(--font-sans); font-variant-numeric: tabular-nums; font-size: 19px; font-weight: 400; color: #a38a80; cursor: pointer; transition: color .22s, transform .22s; user-select: none; }
+.wheel-option[aria-selected="true"] { color: #914460; font-weight: 600; transform: scale(1.08); }
+.time-confirm { display: block; width: 100%; border: 1px solid #d5a9b8; border-radius: 12px; color: #924762; background: #fffaf7; padding: 12px; margin: 12px 0 0; font-size: 13px; font-weight: 600; transition: background .2s, box-shadow .2s; }
+.time-confirm:hover:not(:disabled) { background: #f7e9ec; box-shadow: 0 3px 12px #ad60741a; }
+.time-confirm:disabled { color: #a9968f; border-color: #e5d7d0; }
+.time-status { font-size: 11px; line-height: 1.65; color: #877269; margin: 8px 0 0; min-height: 18px; text-align: center; }
+@media(max-width: 600px) { .description { font-size: 14px; } .personal-note { padding: 24px 20px; } .personal-note #final-message { font-size: 15px; line-height: 1.85; } .closing-love-note { padding: 20px; margin-top: 20px; } .closing-love-note #closing-message { font-size: 26px; } }

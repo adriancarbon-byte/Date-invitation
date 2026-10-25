@@ -47,11 +47,11 @@ test('additional October days, last November day, and same-day sample times vali
   assert.equal(isAllowedTime('18:00', '2026-10-28', config, now), false);
   assert.equal(isAllowedTime('19:00', '2026-10-28', config, now), true);
   assert.equal(isAllowedTime('17:00', '2026-10-29', config, now), true);
-  for (const time of ['18:30', '24:00', '6:00 PM', '', null]) assert.equal(isAllowedTime(time, '2026-10-29', config, before), false);
+  for (const time of ['23:60', '24:00', '6:00 PM', '', null]) assert.equal(isAllowedTime(time, '2026-10-29', config, before), false);
 });
 
-test('same-day elapsed policy and sample slots can be configured centrally', () => {
-  const settings = { ...config, rejectElapsedSampleTimes: false, allowedTimes: [{ value: '16:30', label: '4:30 PM' }] };
+test('same-day policy and an optional restricted schedule can be configured centrally', () => {
+  const settings = { ...config, freeTime: false, rejectElapsedSampleTimes: false, allowedTimes: [{ value: '16:30', label: '4:30 PM' }] };
   const now = new Date('2026-10-28T11:00:00Z');
   assert.equal(isAllowedTime('16:30', '2026-10-28', settings, now), true);
   assert.equal(isAllowedTime('18:00', '2026-10-28', settings, now), false);
@@ -61,7 +61,7 @@ test('plan validation rejects tampering and handles optional/omitted food correc
   assert.equal(validatePlan(plan, config, before).valid, true);
   assert.equal(validatePlan({ ...plan, invitationAnswer: null }, config, before).valid, false);
   assert.equal(validatePlan({ ...plan, date: '2026-10-27' }, config, before).valid, false);
-  assert.equal(validatePlan({ ...plan, time: '16:00' }, config, before).valid, false);
+  assert.equal(validatePlan({ ...plan, time: '24:00' }, config, before).valid, false);
   assert.equal(validatePlan({ ...plan, activityId: 'unknown' }, config, before).valid, false);
   for (const foodIds of [['unknown'], ['pizza', 'pizza'], null]) assert.equal(validatePlan({ ...plan, foodIds }, config, before).valid, false);
   assert.equal(validatePlan({ ...plan, foodIds: ['pizza', 'ramen'] }, config, before).valid, true);
@@ -78,4 +78,9 @@ test('Manila validation is identical in UTC and America/Los_Angeles device timez
     assert.equal(result.status, 0, result.stderr);
     assert.deepEqual(JSON.parse(result.stdout), ['2026-10-29', false, true, true]);
   }
+});
+
+test('free time accepts every valid minute and the AM/PM boundaries', () => {
+  for (const time of ['00:00','00:01','12:00','12:59','18:30','23:59']) assert.equal(isAllowedTime(time,plan.date,config,before),true,time);
+  for (const time of ['1:00','01:1','-1:00','12:60','24:00','00:00:00']) assert.equal(isAllowedTime(time,plan.date,config,before),false,time);
 });

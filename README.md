@@ -1,6 +1,6 @@
 # Just for you
 
-**Phase 2A romantic redesign, ready for review.** A centered, off-white invitation with original pastel SVG artwork, a coordinated serif/sans/handwritten font palette, floating hearts, a sealed-letter entrance, a playful dodging No, a heart-shaped Yes celebration, a sticker-decorated calendar, illustrated preference cards, and a personal keepsake ending. Everything is mock-only: nothing is sent or booked.
+**Live invitation update.** A centered, off-white invitation with original pastel SVG artwork, a coordinated serif/sans/handwritten font palette, floating hearts, a sealed-letter entrance, a playful dodging No, a heart-shaped Yes celebration, a sticker-decorated calendar, illustrated preference cards, and a personal keepsake ending. The hosted version includes an explicit email submission through a private server relay. See [LIVE_DELIVERY.md](LIVE_DELIVERY.md) for the current deployment and delivery behavior; earlier phase documents are historical.
 
 ## Open the preview — no installation
 
@@ -8,7 +8,7 @@ Download [invitation-preview.zip](docs/invitation-preview.zip), extract it, and 
 
 Open the floating letter, then choose **Yes** to continue. **No** is a playful joke: selecting it gives it a small nearby dodge with a cute caption; it never records acceptance. Yes stays in place. Escape returns No to its starting position. The normal browser controls are unchanged.
 
-Continue through the celebration, date/sample time, optional foods and one activity. The final view shows your actual mock choices, the original exact note, and the new bottom message for Christine. **Copy our little plan** copies locally, with a selectable text fallback if clipboard permission is unavailable.
+Continue through the celebration, date, scrolling hour/minute/AM–PM wheels, optional foods and one activity. Review the final plan, then choose **Send our plan** to email the choices to the inviter. Nothing is sent before that button is selected. The downloaded HTML works offline for review and asks you to use the live link to send.
 
 Dates are exactly October 28–31 and November 1–30, 2026, using Asia/Manila. Past dates and elapsed sample times are unavailable. After November 30, new availability must be confirmed; the app never extends the year. Refresh or **Start again** clears the in-memory draft and returns to the closed letter. Browser Back/Forward and app Back preserve selections during the session. No choices are stored in the URL, cookies, or browser storage.
 
@@ -38,10 +38,10 @@ npm run dev
 
 The dev server prints `http://127.0.0.1:4173/Date-invitation/`, a loopback address inside the development environment. It is not a public link. The server exposes site assets and `/Date-invitation/review.html`, while blocking repository metadata and private development files. Stop with Ctrl+C. Browser tests own and stop separate test servers.
 
-The static app retains HTML5, vanilla JavaScript modules, centralized state, and Tailwind/CLI 4.3.3 compiled locally. The ZIP packaging command uses Python 3, already used by the browser checks. No runtime framework, remote font service, tracker, live form endpoint, API key, or deployment workflow is included. Fonts and artwork notices are in [ASSET_LICENSES.md](ASSET_LICENSES.md).
+The static app retains HTML5, vanilla JavaScript modules, centralized state, and Tailwind/CLI 4.3.3 compiled locally. The ZIP packaging command uses Python 3, already used by the browser checks. There is no browser runtime framework, remote font service or tracker. A small Cloudflare Worker serves the embedded page and validates email submissions. Runtime delivery credentials are kept in the hosting secret store. Fonts and artwork notices are in [ASSET_LICENSES.md](ASSET_LICENSES.md).
 
 ## Source and scope
 
-Review branch: `codex/romantic-redesign`, based directly on Phase 1 commit `df96a2bdcaef6f863dd656989d788fc5c0a78caa`. The draft pull request targets `codex/phase1-foundation`, preserving PR #2 and main. No merge, deployment, Pages configuration, email, or live Web3Forms integration is part of this work.
+Review branch: `codex/romantic-redesign`, based directly on Phase 1 commit `df96a2bdcaef6f863dd656989d788fc5c0a78caa`. The draft pull request targets `codex/phase1-foundation`, preserving PR #2 and main. The latest request authorizes a separate Sites deployment and Web3Forms email integration. The GitHub branch remains unmerged; main and Pages configuration are unchanged.
 
 [PROJECT_REQUIREMENTS.md](PROJECT_REQUIREMENTS.md), [ARCHITECTURE.md](ARCHITECTURE.md), [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md), and [DECISIONS_AND_OPEN_QUESTIONS.md](DECISIONS_AND_OPEN_QUESTIONS.md) distinguish the current Phase 2A authorization from historical planning. [PHASE1_REVIEW.md](PHASE1_REVIEW.md) preserves the previous checkpoint. [REFERENCE_REVIEW.md](REFERENCE_REVIEW.md) records historical reference evidence and the current text-only reference. [VERIFICATION.md](VERIFICATION.md) links verification evidence by phase.

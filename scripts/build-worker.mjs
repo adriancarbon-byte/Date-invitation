@@ -1,0 +1,14 @@
+import { readFile, writeFile, mkdir, rm } from 'node:fs/promises';
+import { resolve } from 'node:path';
+const root = resolve(new URL('..',import.meta.url).pathname);
+const target = resolve(process.argv[2] || `${root}/work/worker-build`);
+const read = path => readFile(`${root}/${path}`,'utf8');
+const html = (await read('docs/preview.html')).replace("connect-src 'none'", "connect-src 'self'");
+const config = (await read('assets/js/config.js')).replaceAll('export ','');
+const validation = (await read('assets/js/validation.js')).replace(/^import .*;\n/gm,'').replaceAll('export ','');
+const handler = (await read('server/invitations.js')).replace(/^import .*;\n/gm,'').replaceAll('export ','');
+const worker = `${config}\n${validation}\n${handler}\nconst page = ${JSON.stringify(html)};\nexport default { async fetch(request, env) {\n const path = new URL(request.url).pathname;\n if (path === '/api/invitations') return handleInvitation(request,env);\n if (!['/', '/index.html'].includes(path)) return new Response('Not found',{status:404});\n if (!['GET','HEAD'].includes(request.method)) return new Response('Method not allowed',{status:405});\n return new Response(request.method === 'HEAD' ? null : page,{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','Permissions-Policy':'camera=(), microphone=(), geolocation=()','Content-Security-Policy':"frame-ancestors 'none'"}});\n}};\n`;
+await mkdir(`${target}/server`,{recursive:true});
+await mkdir(`${target}/.openai`,{recursive:true});
+await writeFile(`${target}/server/index.js`,worker);
+console.log('Worker built without runtime credentials.');

@@ -29,7 +29,7 @@ export function createStore(settings = config, now = () => new Date()) {
     if (!scheduleValid()) return false;
     if (screen === 'dinner') return settings.dinner.enabled;
     if (screen === 'activity') return foodValid();
-    return screen === 'ending' && state.submission.status === 'previewed' && validatePlan(state, settings, now()).valid;
+    return screen === 'ending' && ['previewed', 'sending', 'sent', 'error'].includes(state.submission.status) && validatePlan(state, settings, now()).valid;
   };
   const enter = screen => ({
     ...state, screen,
@@ -40,6 +40,7 @@ export function createStore(settings = config, now = () => new Date()) {
   });
 
   function dispatch(action) {
+    if (state.submission.sent && action.type !== 'reset') return snapshot();
     const index = stages.findIndex(stage => stage.id === state.screen);
     let next = state;
     switch (action.type) {
@@ -90,6 +91,15 @@ export function createStore(settings = config, now = () => new Date()) {
         if (state.screen === 'activity' && action.result?.mode === 'mock' && action.result.sent === false && validatePlan(state, settings, now()).valid) {
           next = { ...enter('ending'), submission: { mode: 'mock', status: 'previewed', sent: false } };
         }
+        break;
+      case 'sendStart':
+        if (state.screen === 'ending' && ['previewed', 'error'].includes(state.submission.status) && validatePlan(state, settings, now()).valid) next = { ...state, submission: { mode: 'email', status: 'sending', sent: false } };
+        break;
+      case 'sendSuccess':
+        if (state.screen === 'ending' && state.submission.status === 'sending' && action.result?.accepted === true) next = { ...state, submission: { mode: 'email', status: 'sent', sent: true } };
+        break;
+      case 'sendError':
+        if (state.submission.status === 'sending') next = { ...state, submission: { mode: 'email', status: 'error', sent: false } };
         break;
       case 'reset': next = initial(); break;
     }

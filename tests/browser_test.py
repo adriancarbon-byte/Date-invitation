@@ -115,7 +115,19 @@ class RomanticBrowserTests(unittest.TestCase):
         if day.startswith('2026-11'):
             page.locator('[data-month="1"]').click()
         page.locator(f'[data-date="{day}"]').click()
-        page.locator('#time-select').select_option(time_value)
+        self.choose_time(time_value,page)
+
+    def choose_time(self, value='18:00', page=None):
+        page = page or self.page
+        h,m = map(int,value.split(':'))
+        for key, selected in [('hour',h%12 or 12),('minute',m),('period','PM' if h>=12 else 'AM')]:
+            page.locator(f'#{key}-wheel').focus()
+            page.keyboard.press('Home')
+            count = (selected-1 if key=='hour' else selected if key=='minute' else 1 if selected=='PM' else 0)
+            for _ in range(count): page.keyboard.press('ArrowDown')
+            page.wait_for_timeout(550)
+        page.locator('#time-confirm').click()
+        expect(page.locator('#time-status')).to_contain_text('A lovely choice.')
 
     def choose_food(self, page=None):
         page = page or self.page
@@ -215,7 +227,7 @@ class RomanticBrowserTests(unittest.TestCase):
         expect(self.page.locator('input[name="food"][value="ramen"]')).to_be_checked()
         self.page.go_back()
         self.assert_stage('scheduler')
-        expect(self.page.locator('#time-select')).to_have_value('18:00')
+        expect(self.page.locator('#time-status')).to_contain_text('6:00 PM')
         self.page.go_forward()
         self.assert_stage('dinner')
         self.next()
@@ -228,7 +240,7 @@ class RomanticBrowserTests(unittest.TestCase):
         expect(ending).to_contain_text('Ramen')
         expect(ending).to_contain_text('Arcade')
         expect(ending).to_contain_text(EXACT_NOTE)
-        expect(ending).to_contain_text('nothing has been sent or booked')
+        expect(ending).to_contain_text('Sending emails your chosen date')
         self.assertEqual(self.page.locator('#journey-steps [aria-current="step"]').count(), 1)
         self.assertEqual(self.page.evaluate('localStorage.length + sessionStorage.length'), 0)
         self.assertNotIn('pizza', self.page.url)
@@ -265,7 +277,7 @@ class RomanticBrowserTests(unittest.TestCase):
             self.page.keyboard.press('Escape')
         self.page.locator('#date-trigger').click()
         self.page.locator('[data-date="2026-10-28"]').click()
-        self.page.locator('#time-select').evaluate("(el) => { const o = new Option('midnight', '00:00'); el.add(o); el.value = '00:00'; el.dispatchEvent(new Event('change', {bubbles:true})); }")
+        # A date alone never commits the suggested wheel time.
         continue_button.evaluate('(el) => { el.disabled = false; el.click(); }')
         self.assert_stage('scheduler')
 
@@ -277,7 +289,7 @@ class RomanticBrowserTests(unittest.TestCase):
         expect(self.page.locator('[data-date="2026-10-28"]')).to_be_disabled()
         expect(self.page.locator('[data-date="2026-10-29"]')).to_be_enabled()
         self.page.locator('[data-date="2026-10-29"]').click()
-        self.page.locator('#time-select').select_option('19:00')
+        self.choose_time('19:00')
         self.page.clock.set_fixed_time(datetime(2026, 11, 30, 16, 1, tzinfo=timezone.utc))
         self.page.locator('[data-stage="scheduler"] [data-action="next"]').evaluate('(el) => { el.disabled = false; el.click(); }')
         self.assert_stage('scheduler')
@@ -327,7 +339,7 @@ class RomanticBrowserTests(unittest.TestCase):
         self.page.reload()
         self.assert_stage('letter')
         self.accept()
-        expect(self.page.locator('#time-select')).to_have_value('')
+        expect(self.page.locator('#time-status')).to_contain_text('Pick your day')
         self.choose_schedule()
         self.next()
         self.choose_food()
@@ -335,7 +347,8 @@ class RomanticBrowserTests(unittest.TestCase):
         self.choose_activity()
         self.page.locator('[data-stage="activity"] [data-action="preview"]').evaluate('(button) => { button.click(); button.click(); }')
         self.assert_stage('ending')
-        self.page.get_by_role('button', name='Start again', exact=True).click()
+        self.assertEqual(self.page.locator('[data-action=restart]').count(),0)
+        self.page.reload()
         self.assert_stage('letter')
         self.page.go_back()
         self.assert_stage('letter')
@@ -389,35 +402,57 @@ class RomanticBrowserTests(unittest.TestCase):
         self.full_journey()
         self.assertTrue(self.page.evaluate('document.documentElement.scrollWidth <= innerWidth'))
 
-    def test_copy_plan_is_local_and_uses_selected_values(self):
-        self.context.grant_permissions(['clipboard-read', 'clipboard-write'])
+    def test_send_is_explicit_and_uses_selected_values(self):
+        requests = []
+        def accept(route):
+            requests.append(route.request.post_data_json)
+            route.fulfill(status=200,content_type='application/json',body='{"accepted":true}')
+        self.page.route('**/api/invitations',accept)
         self.full_journey()
-        self.page.locator('[data-action="copy"]').click()
-        copied = self.page.evaluate('navigator.clipboard.readText()')
-        self.assertIn('Pizza', copied)
-        self.assertIn('Ramen', copied)
-        self.assertIn('City Lights', copied)
-        self.assertIn('Asia/Manila', copied)
-        self.assertIn('6:00 PM', copied)
-        self.assertIn(EXACT_NOTE, copied)
-        self.assertIn(CLOSING_NOTE,copied)
+        self.assertEqual(requests,[])
+        self.assertEqual(self.page.locator('[data-action="copy"], [data-action="restart"]').count(),0)
+        self.page.locator('#send-plan').evaluate('(button)=>{button.click();button.click()}')
+        expect(self.page.locator('#send-status')).to_contain_text('accepted by the email service')
+        expect(self.page.locator('#send-plan')).to_be_disabled()
+        self.assertEqual(len(requests),1)
+        self.assertEqual(requests[0],{'invitationAnswer':'yes','date':'2026-10-28','time':'18:00','foodIds':['pizza','ramen'],'activityId':'city-lights'})
 
-    def test_expired_ending_is_guarded_on_focus_and_copy(self):
-        self.context.grant_permissions(['clipboard-read', 'clipboard-write'])
+    def test_send_failure_preserves_choices_and_can_retry(self):
+        self.page.route('**/api/invitations',lambda route: route.fulfill(status=200,content_type='application/json',body='{"accepted":false}'))
         self.full_journey()
-        self.page.evaluate("navigator.clipboard.writeText('prior clipboard')")
-        self.page.clock.set_fixed_time(datetime(2026, 12, 1, 12, tzinfo=timezone.utc))
-        self.page.locator('[data-action="copy"]').click()
-        self.assert_stage('scheduler')
-        self.assertEqual(self.page.evaluate('navigator.clipboard.readText()'), 'prior clipboard')
-        expect(self.page.locator('#schedule-continue')).to_be_disabled()
-        self.page.clock.set_fixed_time(FIXTURE_NOW)
-        self.page.reload()
+        self.page.locator('#send-plan').click()
+        expect(self.page.locator('#send-status')).to_contain_text('couldn’t confirm')
+        expect(self.page.locator('#summary-date')).to_contain_text('October 28')
+        expect(self.page.locator('#summary-food')).to_contain_text('Pizza')
+        expect(self.page.locator('#send-plan')).to_be_enabled()
+        self.page.unroute('**/api/invitations')
+        self.page.route('**/api/invitations',lambda route: route.fulfill(status=200,content_type='application/json',body='{"accepted":true}'))
+        self.page.locator('#send-plan').click()
+        expect(self.page.locator('#send-status')).to_contain_text('accepted by the email service')
+
+    def test_expired_ending_is_guarded_on_focus_and_send(self):
+        requests=[]
+        self.page.route('**/api/invitations',lambda route: requests.append(route.request))
         self.full_journey()
-        self.page.clock.set_fixed_time(datetime(2026, 12, 1, 12, tzinfo=timezone.utc))
-        self.page.evaluate("window.dispatchEvent(new Event('focus'))")
+        self.page.clock.set_fixed_time(datetime(2026,12,1,12,tzinfo=timezone.utc))
+        self.page.locator('#send-plan').click()
         self.assert_stage('scheduler')
+        self.assertEqual(requests,[])
         expect(self.page.locator('#schedule-continue')).to_be_disabled()
+
+    def test_time_wheels_scroll_and_cover_midnight_noon_and_any_minute(self):
+        self.accept()
+        self.page.locator('#date-trigger').click()
+        self.page.locator('[data-date="2026-10-30"]').click()
+        for value,label in [('00:01','12:01 AM'),('12:37','12:37 PM'),('23:59','11:59 PM')]:
+            self.choose_time(value)
+            expect(self.page.locator('#time-status')).to_contain_text(label)
+        self.page.locator('#minute-wheel').evaluate('(el)=>el.scrollTo({top:22*44,behavior:"instant"})')
+        self.page.wait_for_timeout(400)
+        expect(self.page.locator('#minute-option-22')).to_have_attribute('aria-selected','true')
+        expect(self.page.locator('#time-confirm')).to_contain_text('11:22 PM')
+        self.assertNotIn('Preview-only sample times',self.page.locator('body').inner_text())
+        self.assertEqual(self.page.locator('#date-help,#time-help').count(),0)
 
     def test_single_food_mode_skip_clears_choice(self):
         def override(route):
@@ -626,7 +661,7 @@ class RomanticBrowserTests(unittest.TestCase):
             self.page.locator('#date-trigger').click()
             self.page.locator(f'[data-date="{day}"]').click()
             expect(self.page.locator('#date-display')).to_contain_text('October '+day[-2:])
-        self.page.locator('#time-select').select_option('19:00')
+        self.choose_time('19:00')
         self.next()
         self.next()
         self.choose_activity(value='arcade')
@@ -676,7 +711,7 @@ class RomanticBrowserTests(unittest.TestCase):
         self.assertEqual(self.page.evaluate('localStorage.length+sessionStorage.length'),0)
 
     def test_actual_screenshots_desktop_and_mobile(self):
-        output = ROOT / 'docs' / 'previews' / 'automatic-hearts'
+        output = ROOT / 'docs' / 'previews' / 'live-delivery'
         output.mkdir(parents=True, exist_ok=True)
         for name, options in (
             ('desktop', {'viewport': {'width': 1440, 'height': 1000}}),
@@ -703,7 +738,7 @@ class RomanticBrowserTests(unittest.TestCase):
                 page.locator('#date-trigger').click()
                 capture('calendar')
                 page.locator('[data-date="2026-10-31"]').click()
-                page.locator('#time-select').select_option('18:00')
+                self.choose_time('18:00',page)
                 capture('time')
                 self.next(page)
                 self.choose_food(page)
@@ -739,7 +774,7 @@ class PreviewServerTests(unittest.TestCase):
                     urlopen('http://127.0.0.1:4175/Date-invitation/' + path)
                 self.assertEqual(result.exception.code, 404)
             with urlopen('http://127.0.0.1:4175/Date-invitation/') as response:
-                self.assertIn("connect-src 'none'", response.headers['Content-Security-Policy'])
+                self.assertIn("connect-src 'self'", response.headers['Content-Security-Policy'])
         finally:
             server.terminate()
             server.wait(timeout=5)

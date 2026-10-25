@@ -1,7 +1,7 @@
 import { config } from './config.js';
 import { createStore } from './state.js';
 import { allowedDates, isAllowedDate, isAllowedTime, validatePlan } from './validation.js';
-import { previewSubmission } from './submission.js';
+import { previewSubmission, sendPlan } from './submission.js';
 
 const artPath = name => `./assets/art/${name}.svg`;
 const store = createStore();
@@ -9,7 +9,10 @@ const $ = selector => document.querySelector(selector);
 const sections = [...document.querySelectorAll('[data-stage]')];
 const dateTrigger = $('#date-trigger');
 const calendar = $('#calendar-panel');
-const timeSelect = $('#time-select');
+const wheels = {};
+let pendingTime = { hour: 6, minute: 0, period: 'PM' };
+const timeLabel = value => { if (!value) return ''; const [h,m] = value.split(':').map(Number); return `${h % 12 || 12}:${String(m).padStart(2,'0')} ${h >= 12 ? 'PM' : 'AM'}`; };
+const chosenTime = () => `${String(pendingTime.hour % 12 + (pendingTime.period === 'PM' ? 12 : 0)).padStart(2,'0')}:${String(pendingTime.minute).padStart(2,'0')}`;
 let session = crypto.randomUUID();
 let lastScreen = store.getState().screen;
 let month = 10;
@@ -77,12 +80,50 @@ function createChoices(parent, options, type, name) {
 }
 createChoices($('#food-grid'), config.dinner.options, config.dinner.multiple ? 'checkbox' : 'radio', 'food');
 createChoices($('#activity-grid'), config.activities, 'radio', 'activity');
-for (const slot of config.allowedTimes) {
-  const option = document.createElement('option');
-  option.value = slot.value;
-  option.textContent = slot.label;
-  timeSelect.append(option);
+function updateTimeControls() {
+  const state = store.getState();
+  const value = chosenTime();
+  $('#time-confirm').disabled = !isAllowedTime(value, state.date);
+  $('#time-confirm').textContent = state.time === value ? `Chosen · ${timeLabel(value)} ♡` : `Choose ${timeLabel(value)} ♡`;
+  $('#time-status').textContent = state.time ? `${timeLabel(state.time)} · Manila time. A lovely choice.` : !state.date ? 'Pick your day, then choose your time.' : !isAllowedTime(value,state.date) ? 'That time has passed. Scroll to a later time.' : 'Your time, your choice. All times in Manila.';
 }
+function setupWheel(key, values) {
+  const wheel = $(`#${key}-wheel`);
+  let timer;
+  for (const value of values) {
+    const option = document.createElement('div');
+    option.className = 'wheel-option';
+    option.id = `${key}-option-${value}`;
+    option.setAttribute('role','option');
+    option.dataset.value = String(value);
+    option.textContent = typeof value === 'number' ? String(value).padStart(2,'0') : value;
+    wheel.append(option);
+  }
+  function select(value, scroll = true, smooth = true) {
+    const changed = pendingTime[key] !== value;
+    pendingTime[key] = value;
+    for (const item of wheel.children) item.setAttribute('aria-selected', String(item.dataset.value === String(value)));
+    wheel.setAttribute('aria-activedescendant',`${key}-option-${value}`);
+    if (scroll) wheel.scrollTo({top:values.indexOf(value)*44,behavior:smooth ? 'smooth' : 'instant'});
+    if (changed && store.getState().time && store.getState().time !== chosenTime()) store.dispatch({type:'time',value:null});
+    updateTimeControls();
+  }
+  wheel.addEventListener('click',event => { const option = event.target.closest('[role="option"]'); if (option) select(values.find(value => String(value) === option.dataset.value)); });
+  wheel.addEventListener('scroll',() => { clearTimeout(timer); timer = setTimeout(() => select(values[Math.max(0,Math.min(values.length-1,Math.round(wheel.scrollTop/44)))],false),130); },{passive:true});
+  wheel.addEventListener('keydown',event => {
+    if (!['ArrowUp','ArrowDown','Home','End','PageUp','PageDown'].includes(event.key)) return;
+    event.preventDefault();
+    const index = values.indexOf(pendingTime[key]);
+    const target = event.key === 'Home' ? 0 : event.key === 'End' ? values.length-1 : index + ({ArrowUp:-1,ArrowDown:1,PageUp:-5,PageDown:5}[event.key]);
+    select(values[Math.max(0,Math.min(values.length-1,target))]);
+  });
+  wheels[key] = { select, sync:() => select(pendingTime[key],true,false) };
+  select(pendingTime[key],false);
+}
+setupWheel('hour',Array.from({length:12},(_,i)=>i+1));
+setupWheel('minute',Array.from({length:60},(_,i)=>i));
+setupWheel('period',['AM','PM']);
+$('#time-confirm').addEventListener('click',() => { if (!busy) { store.dispatch({type:'time',value:chosenTime()}); if (store.getState().time) selectionBloom($('#time-confirm')); } });
 $('#final-message').textContent = config.finalMessage;
 $('#closing-message').textContent = config.closingMessage;
 
@@ -344,8 +385,8 @@ function render(state) {
     else button.removeAttribute('aria-current');
   });
   $('#date-display').textContent = state.date ? dateLabel(state.date) : 'Choose our day';
-  timeSelect.querySelectorAll('option[value]:not([value=""])').forEach(option => { option.disabled = !isAllowedTime(option.value, state.date); });
-  timeSelect.value = state.time || '';
+  updateTimeControls();
+  if (changed && state.screen === 'scheduler') requestAnimationFrame(() => Object.values(wheels).forEach(wheel => wheel.sync()));
   $('#availability-note').hidden = allowedDates.some(date => isAllowedDate(date));
   $('#schedule-continue').disabled = !isAllowedDate(state.date) || !isAllowedTime(state.time, state.date);
   document.querySelectorAll('input[name="food"]').forEach(input => { input.checked = state.foodIds.includes(input.value); });
@@ -355,7 +396,7 @@ function render(state) {
   $('#preview-button').disabled = !activity || busy;
   const food = config.dinner.options.filter(option => state.foodIds.includes(option.id));
   $('#summary-date').textContent = state.date ? dateLabel(state.date) : '';
-  $('#summary-time').textContent = config.allowedTimes.find(slot => slot.value === state.time)?.label || '';
+  $('#summary-time').textContent = timeLabel(state.time);
   $('#summary-food-row').hidden = !config.dinner.enabled;
   $('#summary-food').textContent = food.length ? food.map(option => option.label).join(' & ') : 'We’ll decide together';
   if (food.length && $('#summary-food-art').getAttribute('src') !== artPath(food[0].art)) $('#summary-food-art').src = artPath(food[0].art);
@@ -363,6 +404,16 @@ function render(state) {
   if (activity && $('#summary-activity-art').getAttribute('src') !== artPath(activity.art)) $('#summary-activity-art').src = artPath(activity.art);
   $('.skip-food').hidden = config.dinner.required;
   $('[data-stage="dinner"] .description').textContent = config.dinner.multiple ? 'A little of this, a little of that. Pick as many as you like.' : 'What sounds good? Pick one little favorite.';
+  const status = state.submission.status;
+  $('#send-plan').disabled = status === 'sending' || status === 'sent';
+  $('#send-plan').textContent = status === 'sending' ? 'Sending a little happiness…' : status === 'sent' ? 'Our plan is on its way ♡' : status === 'error' ? 'Try sending again ♡' : 'Send our plan ♡';
+  $('#send-status').textContent = status === 'sending' ? 'Sending your choices. One little moment…' : status === 'sent' ? 'Your plan was accepted by the email service. You’ve just made someone smile.' : status === 'error' ? 'We couldn’t confirm that your plan was sent. Your choices are safe here; check your connection and try again. If it keeps happening, share the plan directly.' : '';
+  $('#send-status').classList.toggle('is-error',status === 'error');
+  $('#edit-plan').hidden = status === 'sent';
+  $('#edit-plan').disabled = status === 'sending';
+  stepButtons.forEach(button => { if (status === 'sending' || status === 'sent') button.disabled = true; });
+  $('.delivery-notice').hidden = status === 'sent';
+  $('.ending-preview').textContent = status === 'sent' ? 'A little plan, a very happy heart.' : 'Take a little look. Then send it with a smile.';
   scheduleAvailabilityCheck(state);
   document.title = `${active?.label || 'Just for you'} · Just for you`;
   if (changed) {
@@ -377,12 +428,11 @@ function render(state) {
     closeCalendar();
     $('#preview-error').hidden = true;
     $('#scheduler-error').hidden = true;
-    $('#copy-status').textContent = '';
-    $('#copy-fallback').hidden = true;
+
     const heading = $(`[data-stage="${state.screen}"] h1`);
     heading.focus({preventScroll:true});
     window.scrollTo({top:0, behavior:'instant'});
-    $('#stage-announcement').textContent = index < 0 ? 'Invitation paused. Nothing was sent.' : `Step ${index + 1} of ${store.stages.length}: ${active.label}. Preview only; nothing is sent.`;
+    $('#stage-announcement').textContent = index < 0 ? 'Invitation paused. Nothing was sent.' : `Step ${index + 1} of ${store.stages.length}: ${active.label}. Review your choices before sending.`;
     clearSelectionSparkles();
     if (['celebration', 'ending'].includes(state.screen)) celebrate();
     else clearParticles();
@@ -397,30 +447,9 @@ function navigate(action, replace = false) {
     navigationUntil = performance.now() + 320;
   }
 }
-function planText() {
-  const state = store.getState();
-  const food = config.dinner.options.filter(option => state.foodIds.includes(option.id)).map(option => option.label).join(', ') || 'Decide together';
-  return `Our little plan — confirmation preview\n${dateLabel(state.date)}\n${config.allowedTimes.find(slot => slot.value === state.time)?.label} · Asia/Manila (sample time)\n${config.activities.find(option => option.id === state.activityId)?.label}${config.dinner.enabled ? `\nFood (provisional): ${food}` : ''}\n\n${config.finalMessage}\n\n${config.closingMessage}\n\nNothing has been sent or booked.`;
-}
-async function copyPlan() {
-  if (!validatePlan(store.getState()).valid) { recheckSchedule(); return; }
-  const value = planText();
-  try {
-    await navigator.clipboard.writeText(value);
-    $('#copy-status').textContent = 'Copied. Your little plan is ready to keep.';
-  } catch {
-    const fallback = $('#copy-fallback');
-    fallback.value = value;
-    fallback.hidden = false;
-    fallback.focus();
-    fallback.select();
-    $('#copy-status').textContent = 'Select and copy your plan below.';
-  }
-}
 document.addEventListener('change', event => {
   if (event.target.matches('input[name="food"]')) { store.dispatch({type:'food', value:event.target.value}); if (event.target.checked) selectionBloom(event.target.closest('label')); }
   if (event.target.matches('input[name="activity"]')) { store.dispatch({type:'activity', value:event.target.value}); selectionBloom(event.target.closest('label')); }
-  if (event.target === timeSelect) { store.dispatch({type:'time', value:timeSelect.value}); if (store.getState().time) selectionBloom(timeSelect); }
 });
 dateTrigger.addEventListener('click', () => { if (calendar.hidden) openCalendar(); else closeCalendar(); });
 calendar.addEventListener('click', event => {
@@ -465,7 +494,7 @@ document.addEventListener('click', async event => {
   const owner = button.closest('[data-stage]');
   if (owner && owner.dataset.stage !== store.getState().screen) return;
   event.preventDefault();
-  if (performance.now() < navigationUntil && !['copy'].includes(button.dataset.action)) return;
+  if (performance.now() < navigationUntil) return;
   if (button.dataset.step) { navigate({type:'restore', screen:button.dataset.step}); return; }
   switch (button.dataset.action) {
     case 'open-letter': openLetter(button); break;
@@ -481,7 +510,7 @@ document.addEventListener('click', async event => {
       if (store.getState().screen !== from) return;
       navigate({type:'next', from});
       if (from === 'scheduler' && store.getState().screen === from) {
-        $('#scheduler-error').textContent = 'Please choose an available day and sample time.';
+        $('#scheduler-error').textContent = 'Please choose an available day and time.';
         $('#scheduler-error').hidden = false;
       }
       break;
@@ -492,12 +521,30 @@ document.addEventListener('click', async event => {
       break;
     case 'home': navigate({type:'restore', screen:'invitation'}); break;
     case 'back': history.back(); break;
-    case 'restart':
-      session = crypto.randomUUID();
-      store.dispatch({type:'reset'});
-      writeHistory(true);
+    case 'send': {
+      const plan = store.getState();
+      if (plan.submission.sent || !validatePlan(plan).valid) { recheckSchedule(); return; }
+      if (!['http:', 'https:'].includes(location.protocol)) {
+        $('#send-status').textContent = 'Open the live invitation link to send your plan. This downloaded copy stays offline.';
+        return;
+      }
+      store.dispatch({type:'sendStart'});
+      if (store.getState().submission.status !== 'sending') return;
+      busy = true;
+      $('#main').setAttribute('aria-busy','true');
+      const startedSession = session;
+      try {
+        const result = await sendPlan(plan);
+        if (session === startedSession) { store.dispatch({type:'sendSuccess',result}); celebrate(); }
+      } catch {
+        if (session === startedSession) store.dispatch({type:'sendError'});
+      } finally {
+        busy = false;
+        $('#main').removeAttribute('aria-busy');
+        render(store.getState());
+      }
       break;
-    case 'copy': await copyPlan(); break;
+    }
     case 'preview': {
       const validation = validatePlan(store.getState());
       if (!validation.valid) {
@@ -530,13 +577,14 @@ document.addEventListener('click', async event => {
 });
 $('.skip-link').addEventListener('click', event => {event.preventDefault(); $(`[data-stage="${store.getState().screen}"] h1`).focus();});
 window.addEventListener('popstate', event => {
+  if (busy || store.getState().submission.sent) { writeHistory(true); return; }
   if (event.state?.invitationSession === session) store.dispatch({type:'restore', screen:event.state.screen});
   else store.dispatch({type:'reset'});
   writeHistory(true);
 });
 function scheduleAvailabilityCheck(state) {
   clearTimeout(availabilityTimer);
-  if (!state.date || ['letter','invitation','celebration'].includes(state.screen)) return;
+  if (state.submission.sent || !state.date || ['letter','invitation','celebration'].includes(state.screen)) return;
   const midnight = new Date(`${state.date}T00:00:00+08:00`).getTime() + 86400000;
   const slot = state.time && config.rejectElapsedSampleTimes ? new Date(`${state.date}T${state.time}:00+08:00`).getTime() : midnight;
   const remaining = Math.min(midnight,slot) - Date.now() + 10;
@@ -545,12 +593,13 @@ function scheduleAvailabilityCheck(state) {
 }
 function recheckSchedule() {
   const state = store.getState();
+  if (state.submission.sent) { render(state); return; }
   const staleDate = state.date && !isAllowedDate(state.date);
   const staleTime = state.time && !isAllowedTime(state.time,state.date);
   if ((staleDate || staleTime) && !['letter','invitation','celebration'].includes(state.screen)) {
     if (state.screen !== 'scheduler') navigate({type:'restore',screen:'scheduler'});
     store.dispatch(staleDate ? {type:'date',value:null} : {type:'time',value:null});
-    $('#scheduler-error').textContent = 'That day or sample time has passed. Please choose an available one.';
+    $('#scheduler-error').textContent = 'That day or time has passed. Please choose an available one.';
     $('#scheduler-error').hidden = false;
   } else render(store.getState());
   if (!calendar.hidden) renderCalendar();

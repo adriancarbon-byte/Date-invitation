@@ -19,8 +19,8 @@
   --color-paper: #f8f5ef;
   --color-ink: #514840;
   --color-rose: #994460;
-  --font-sans: "Segoe UI", Arial, sans-serif;
-  --font-serif: Invitation, Georgia, serif;
+  --font-sans: "Segoe UI",Arial,sans-serif;
+  --font-serif: Invitation,Georgia,serif;
 }
 @layer base {
   [hidden] {
@@ -981,7 +981,7 @@
   }
   100% {
     opacity: 0;
-    transform: translate(var(--x), var(--y)) rotate(var(--r));
+    transform: translate(var(--x),var(--y)) rotate(var(--r));
   }
 }
 @media (min-width: 1000px) and (min-height: 850px) {

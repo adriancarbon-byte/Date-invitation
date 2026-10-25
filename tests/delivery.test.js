@@ -59,3 +59,26 @@ test('failed preparation never submits or falls back to another delivery', async
  await assert.rejects(sendPlan(plan,async()=>{calls++;return Response.json({accepted:false},{status:503});}));
  assert.equal(calls,1);
 });
+
+test('malformed server/provider JSON, offline rejection and lost response never confirm success', async () => {
+ for (const result of [null,[],true,0,{prepared:true},{accepted:'true'},{prepared:true,payload:{}}]) {
+  await assert.rejects(sendPlan(plan,async()=>Response.json(result)));
+ }
+ for (const fail of [async()=>{throw new TypeError('offline');},async()=>new Response('<!doctype html>')]) {
+  await assert.rejects(sendPlan(plan,fail));
+ }
+});
+
+test('timeouts cover hung fetches and response bodies without newer AbortSignal APIs', async () => {
+ const { requestJson } = await import('../assets/js/submission.js');
+ for (const bodyHangs of [false,true]) {
+  let signal;
+  const request = async (url,options) => {
+   signal=options.signal;
+   if (bodyHangs) return {json:()=>new Promise(()=>{})};
+   return new Promise(()=>{});
+  };
+  await assert.rejects(requestJson(request,'https://fixture.invalid',{},15));
+  assert.equal(signal.aborted,true);
+ }
+});

@@ -84,3 +84,8 @@ test('free time accepts every valid minute and the AM/PM boundaries', () => {
   for (const time of ['00:00','00:01','12:00','12:59','18:30','23:59']) assert.equal(isAllowedTime(time,plan.date,config,before),true,time);
   for (const time of ['1:00','01:1','-1:00','12:60','24:00','00:00:00']) assert.equal(isAllowedTime(time,plan.date,config,before),false,time);
 });
+
+test('invalid plan shapes and excessive selections fail validation without exceptions',()=>{
+ for (const value of [null,undefined,[],true,'yes',12]) assert.equal(validatePlan(value,config,before).valid,false);
+ for (const foodIds of [Array(10000).fill('pizza'),[{}],[['pizza']]]) assert.equal(validatePlan({...plan,foodIds},config,before).valid,false);
+});

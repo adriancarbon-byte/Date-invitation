@@ -335,3 +335,20 @@ test('email confirmation requires a pending send and an affirmative provider rec
   store.dispatch({type:'sendStart'});
   assert.equal(store.getState().submission.status,'sent');
 });
+
+test('pending delivery freezes choices and navigation even after the schedule expires', async () => {
+ let current = clock();
+ const store=createStore(config,()=>current);
+ activity(store);
+ store.dispatch({type:'previewComplete',result:await previewSubmission()});
+ store.dispatch({type:'sendStart'});
+ const pending=store.getState();
+ current=new Date('2026-12-01T00:00:00Z');
+ for (const action of [{type:'restore',screen:'scheduler'},{type:'date',value:null},{type:'time',value:null},{type:'reset'}]) {
+  store.dispatch(action);
+  assert.deepEqual(store.getState(),pending);
+ }
+ store.dispatch({type:'sendSuccess',result:{accepted:true}});
+ assert.equal(store.getState().submission.sent,true);
+ assert.equal(store.getState().date,pending.date);
+});

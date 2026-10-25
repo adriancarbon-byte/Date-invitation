@@ -32,12 +32,13 @@ export function isAllowedTime(time, date, settings = config, now = new Date()) {
 
 export function validatePlan(state, settings = config, now = new Date()) {
   const errors = {};
+  if (!state || typeof state !== 'object' || Array.isArray(state)) return Object.freeze({ valid: false, errors: Object.freeze({ plan: 'Please check your plan.' }) });
   if (state.invitationAnswer !== 'yes') errors.invitation = 'Please choose an invitation response first.';
   if (!isAllowedDate(state.date, now)) errors.date = 'Please choose an available day.';
-  if (!isAllowedTime(state.time, state.date, settings, now)) errors.time = 'Please choose an future time.';
+  if (!isAllowedTime(state.time, state.date, settings, now)) errors.time = 'Please choose a future time.';
   if (!settings.activities.some(option => option.id === state.activityId)) errors.activity = 'Please choose an activity.';
   if (settings.dinner.enabled) {
-    if (!Array.isArray(state.foodIds) || state.foodIds.some(id => !settings.dinner.options.some(option => option.id === id)) ||
+    if (!Array.isArray(state.foodIds) || state.foodIds.length > settings.dinner.options.length || state.foodIds.some(id => !settings.dinner.options.some(option => option.id === id)) ||
         new Set(state.foodIds).size !== state.foodIds.length || (!settings.dinner.multiple && state.foodIds.length > 1)) {
       errors.food = 'Please choose from the food options.';
     } else if (settings.dinner.required && state.foodIds.length === 0) {

@@ -40,6 +40,8 @@ export function createStore(settings = config, now = () => new Date()) {
   });
 
   function dispatch(action) {
+    // Freeze the submitted choices until its outcome is known.
+    if (state.submission.status === 'sending' && !['sendSuccess', 'sendError'].includes(action.type)) return snapshot();
     if (state.submission.sent && action.type !== 'reset') return snapshot();
     const index = stages.findIndex(stage => stage.id === state.screen);
     let next = state;

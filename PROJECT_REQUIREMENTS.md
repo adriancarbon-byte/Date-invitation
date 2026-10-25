@@ -1,5 +1,15 @@
 # Project requirements
 
+## Current preventive reliability and security audit
+
+The user authorizes finding/fixing likely failures, security hardening, verification
+and saving the release to both GitHub source copies. Current findings and boundaries:
+[HARDENING_REVIEW.md](HARDENING_REVIEW.md). Operations and recovery:
+[OPERATIONS.md](OPERATIONS.md). This audit preserves the public-link audience,
+existing content/date rules and no-persistent-answer-storage policy. No private
+login/dashboard, real synthetic email or paid service is added.
+
+
 ## Current Netlify delivery repair
 
 The urgent sending repair replaces Netlify's server-side Web3Forms relay with

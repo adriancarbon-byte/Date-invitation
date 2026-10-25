@@ -1,5 +1,11 @@
 # Live invitation and email delivery
 
+Current Netlify verification: the user confirmed actual inbox receipt after the
+browser-delivery repair. The subsequent preventive audit is documented in
+[HARDENING_REVIEW.md](HARDENING_REVIEW.md) and [VERIFICATION.md](VERIFICATION.md).
+Historical no-real-receipt/private-relay statements below concern earlier releases.
+
+
 This update supersedes the earlier mock-only Phase 2A restrictions under the latest explicit publishing request. The existing GitHub branch remains separate from main; production is hosted as a Sites Worker.
 
 - Live address: https://a-letter-for-christine.genialcorgi512.chatgpt.site

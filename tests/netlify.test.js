@@ -17,7 +17,8 @@ test('Netlify routes the unchanged email API and guards invalid requests without
   } finally { globalThis.fetch=originalFetch; }
 });
 
-test('Netlify prepares a validated browser payload without a server-side provider request', async () => {
+test('Netlify prepares a validated browser payload without a server-side provider request', async t => {
+  t.mock.timers.enable({apis:['Date'],now:new Date('2026-10-25T12:00:00Z')});
   const originalFetch = globalThis.fetch;
   const originalKey = process.env.WEB3FORMS_ACCESS_KEY;
   process.env.WEB3FORMS_ACCESS_KEY = '  fixture-public-form-key  ';

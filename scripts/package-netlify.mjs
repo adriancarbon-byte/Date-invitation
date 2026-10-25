@@ -8,11 +8,14 @@ if (!html.includes("connect-src 'self' https://api.web3forms.com") || html.inclu
 await rm(dist,{recursive:true,force:true});
 await mkdir(dist,{recursive:true});
 await writeFile(new URL('index.html',dist),html);
+const policy = html.match(/http-equiv="Content-Security-Policy" content="([^"]+)"/)[1];
 await writeFile(new URL('_headers',dist),`/*
   X-Content-Type-Options: nosniff
   Referrer-Policy: no-referrer
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: frame-ancestors 'none'
+  Content-Security-Policy: ${policy}; frame-ancestors 'none'
+  X-Frame-Options: DENY
+  X-Robots-Tag: noindex, nofollow, noarchive
 /
   Cache-Control: no-cache
 /index.html

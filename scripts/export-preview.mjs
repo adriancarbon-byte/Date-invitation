@@ -1,5 +1,6 @@
 // Deterministic single-file review copy of the current source, with no network dependency.
 import { readFile, writeFile, mkdir, readdir } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { posix } from 'node:path';
 const root = new URL('../', import.meta.url);
 const read = path => readFile(new URL(path, root), 'utf8');
@@ -32,7 +33,8 @@ html = html.replace('</head>', `<!-- Bundled font licenses: Cormorant Garamond, 
 html = html.replace('<link rel="stylesheet" href="./assets/css/app.css">', `<style>${css.replace(/<\/style/gi,'<\\/style')}</style>`);
 html = html.replace('<script type="module" src="./assets/js/app.js"></script>', `<script type="module">${(await moduleSource('assets/js/app.js')).replace(/<\/script/gi,'<\\/script')}</script>`);
 for (const [name, uri] of Object.entries(art)) html = html.replaceAll(`./assets/art/${name}.svg`, uri);
-html = html.replace('<meta charset="UTF-8">', `<meta charset="UTF-8">\n<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' data:; style-src 'unsafe-inline'; img-src data:; font-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">`);
+const scriptHash = createHash('sha256').update(html.match(/<script type="module">([\s\S]*?)<\/script>/)[1]).digest('base64');
+html = html.replace('<meta charset="UTF-8">', `<meta charset="UTF-8">\n<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-${scriptHash}' data:; style-src 'unsafe-inline'; img-src data:; font-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">`);
 if (/\b(?:src|href)="\.\/assets\//.test(html) || /url\(["']?\.\.\/art\//.test(html)) throw new Error('Offline preview still references external assets');
 await mkdir(new URL('docs/',root),{recursive:true});
 await writeFile(new URL('docs/preview.html',root),html);

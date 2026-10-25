@@ -449,6 +449,38 @@ class RomanticBrowserTests(unittest.TestCase):
         self.assertEqual(self.external, ['https://api.web3forms.com/submit'] * 2)
         self.external.clear()
 
+    def test_pending_send_survives_slot_expiry_and_focus_change(self):
+        waiting = []
+        self.page.route('**/api/invitations', lambda route: waiting.append(route))
+        self.full_journey()
+        self.page.locator('#send-plan').click()
+        expect(self.page.locator('#send-status')).to_contain_text('Sending your choices')
+        self.page.clock.set_system_time(datetime(2026, 10, 28, 10, 0, 1, tzinfo=timezone.utc))
+        self.page.evaluate("window.dispatchEvent(new Event('focus'))")
+        self.assert_stage('ending')
+        expect(self.page.locator('#summary-time')).to_have_text('6:00 PM')
+        expect(self.page.locator('#send-plan')).to_be_disabled()
+        self.page.wait_for_timeout(100)
+        self.assertEqual(len(waiting), 1)
+        waiting[0].fulfill(status=200, content_type='application/json', body='{"accepted":true}')
+        expect(self.page.locator('#send-status')).to_contain_text('accepted by the email service')
+        self.assert_stage('ending')
+
+    def test_restricted_browser_navigation_and_older_apis_still_work(self):
+        self.page.add_init_script("""
+            crypto.randomUUID = undefined;
+            AbortSignal.timeout = undefined;
+            history.pushState = history.replaceState = () => { throw new DOMException('History disabled', 'SecurityError'); };
+        """)
+        self.page.reload()
+        self.full_journey()
+        self.page.locator('#edit-plan').click()
+        self.assert_stage('activity')
+        self.finish()
+        self.page.route('**/api/invitations', lambda route: route.fulfill(status=200, content_type='application/json', body='{"accepted":true}'))
+        self.page.locator('#send-plan').click()
+        expect(self.page.locator('#send-status')).to_contain_text('accepted by the email service')
+
     def test_send_failure_preserves_choices_and_can_retry(self):
         self.page.route('**/api/invitations',lambda route: route.fulfill(status=200,content_type='application/json',body='{"accepted":false}'))
         self.full_journey()
@@ -536,7 +568,7 @@ class RomanticBrowserTests(unittest.TestCase):
         try:
             page = context.new_page()
             page.goto(BASE)
-            expect(page.get_by_text('This interactive preview needs JavaScript.', exact=False)).to_be_visible()
+            expect(page.get_by_text('This invitation needs JavaScript in a current browser.', exact=False)).to_be_visible()
         finally:
             context.close()
 
@@ -743,7 +775,7 @@ class RomanticBrowserTests(unittest.TestCase):
         self.assertEqual(self.page.evaluate('localStorage.length+sessionStorage.length'),0)
 
     def test_actual_screenshots_desktop_and_mobile(self):
-        output = ROOT / 'docs' / 'previews' / 'live-delivery'
+        output = ROOT / 'test-results' / 'browser-audit'
         output.mkdir(parents=True, exist_ok=True)
         for name, options in (
             ('desktop', {'viewport': {'width': 1440, 'height': 1000}}),

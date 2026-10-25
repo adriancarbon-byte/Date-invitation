@@ -13,11 +13,13 @@ const wheels = {};
 let pendingTime = { hour: 6, minute: 0, period: 'PM' };
 const timeLabel = value => { if (!value) return ''; const [h,m] = value.split(':').map(Number); return `${h % 12 || 12}:${String(m).padStart(2,'0')} ${h >= 12 ? 'PM' : 'AM'}`; };
 const chosenTime = () => `${String(pendingTime.hour % 12 + (pendingTime.period === 'PM' ? 12 : 0)).padStart(2,'0')}:${String(pendingTime.minute).padStart(2,'0')}`;
-let session = crypto.randomUUID();
+// History identity only, never an authentication token. Works without randomUUID.
+const session = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 let lastScreen = store.getState().screen;
 let month = 10;
 let busy = false;
 let navigationUntil = 0;
+let historyAvailable = true;
 let particleTimer;
 let selectionTimer;
 let celebrationOrigin = null;
@@ -369,7 +371,9 @@ function openLetter(button) {
 createAmbientHearts();
 resetIdleMotion();
 function writeHistory(replace = false) {
-  history[replace ? 'replaceState' : 'pushState']({invitationSession: session, screen: store.getState().screen}, '', `#${store.getState().screen}`);
+  try {
+    history[replace ? 'replaceState' : 'pushState']({invitationSession: session, screen: store.getState().screen}, '', `#${store.getState().screen}`);
+  } catch { historyAvailable = false; }
 }
 function render(state) {
   const changed = state.screen !== lastScreen;
@@ -520,7 +524,14 @@ document.addEventListener('click', async event => {
       navigate({type:'next', from:'dinner'});
       break;
     case 'home': navigate({type:'restore', screen:'invitation'}); break;
-    case 'back': history.back(); break;
+    case 'back': {
+      if (historyAvailable) history.back();
+      else {
+        const index = store.stages.findIndex(stage => stage.id === store.getState().screen);
+        if (index > 0) navigate({type:'restore',screen:store.stages[index - 1].id});
+      }
+      break;
+    }
     case 'send': {
       const plan = store.getState();
       if (plan.submission.sent || !validatePlan(plan).valid) { recheckSchedule(); return; }
@@ -570,6 +581,7 @@ document.addEventListener('click', async event => {
         busy = false;
         button.disabled = !store.getState().activityId;
         $('#main').removeAttribute('aria-busy');
+        render(store.getState());
       }
       break;
     }
@@ -584,7 +596,7 @@ window.addEventListener('popstate', event => {
 });
 function scheduleAvailabilityCheck(state) {
   clearTimeout(availabilityTimer);
-  if (state.submission.sent || !state.date || ['letter','invitation','celebration'].includes(state.screen)) return;
+  if (busy || state.submission.status === 'sending' || state.submission.sent || !state.date || ['letter','invitation','celebration'].includes(state.screen)) return;
   const midnight = new Date(`${state.date}T00:00:00+08:00`).getTime() + 86400000;
   const slot = state.time && config.rejectElapsedSampleTimes ? new Date(`${state.date}T${state.time}:00+08:00`).getTime() : midnight;
   const remaining = Math.min(midnight,slot) - Date.now() + 10;
@@ -593,6 +605,7 @@ function scheduleAvailabilityCheck(state) {
 }
 function recheckSchedule() {
   const state = store.getState();
+  if (busy || state.submission.status === 'sending') return;
   if (state.submission.sent) { render(state); return; }
   const staleDate = state.date && !isAllowedDate(state.date);
   const staleTime = state.time && !isAllowedTime(state.time,state.date);
@@ -609,6 +622,9 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden) { clearParticles(); clearSelectionSparkles(); stopIdleMotion(); } else { recheckSchedule(); resetIdleMotion(); }
 });
 window.addEventListener('focus', recheckSchedule);
+window.addEventListener('beforeunload', event => {
+  if (store.getState().submission.status === 'sending') { event.preventDefault(); event.returnValue = ''; }
+});
 store.subscribe(render);
 writeHistory(true);
 render(store.getState());

@@ -12,9 +12,10 @@
     "dev": "node scripts/preview.mjs",
     "preview:export": "node scripts/export-preview.mjs",
     "test": "node --test tests/*.test.js",
-    "test:browser": "python3 tests/browser_test.py",
+    "test:browser": "python3 -m unittest discover -s tests -p '*_test.py' -v",
     "preview:download": "python3 scripts/package-preview.py",
-    "build:netlify": "npm run build && npm run preview:export && node scripts/package-netlify.mjs"
+    "build:netlify": "npm run build && npm run preview:export && node scripts/package-netlify.mjs && node scripts/check-release.mjs",
+    "pretest:browser": "npm run build:netlify"
   },
   "devDependencies": {
     "@tailwindcss/cli": "4.3.3",

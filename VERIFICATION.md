@@ -162,3 +162,53 @@ access are denied by the runtime proxy; GitHub plugin reads work. The repository
 copy has no commit statuses exposing a deployment URL. Production branch updates
 are intended to trigger the user's existing Netlify GitHub deployment under the
 urgent live-repair request. Deployment success and inbox receipt remain unverified.
+
+## Preventive reliability and security audit — 2026-10-26
+
+The user authorized preventive fixes, security hardening and preserving the release
+outside the café session. The user separately confirmed that a real email arrived
+following the previous Netlify delivery repair. That is user-reported inbox receipt
+for the prior release, not an automated live email test of this hardened revision.
+
+Findings and code repairs: [HARDENING_REVIEW.md](HARDENING_REVIEW.md). Account/recovery
+and access limits: [OPERATIONS.md](OPERATIONS.md). Full-motion presentation, approved
+calendar dates and exact personal messages are retained. No runtime credentials or
+actual submitted answers were added to Git. No private login is claimed.
+
+Executed evidence:
+
+- `npm test`: **48 passed** on the workspace's Node 24 runtime.
+- `npx --yes node@22 --test tests/*.test.js`: **48 passed** on Netlify's major runtime.
+- `npm run build:netlify`: PASS, including the new release integrity/security checks.
+- `npm audit --json`: **0 known vulnerabilities** reported for the locked dependencies;
+  this is an advisory snapshot, not proof that dependencies can never have flaws.
+- Full Chromium suite: **32 scenarios executed in 425.661 seconds**. Initial run had
+  31 passes and one stale no-JavaScript copy assertion after improving the fallback
+  wording. Updated that expectation; the affected scenario then passed in a focused
+  rerun. No application failure remained from the full run.
+- Additional Chromium security scenario: PASS with the generated response headers;
+  legitimate hash-authorized script initialized, an injected inline script was
+  blocked, and framing was refused. The fallback rerun plus this scenario passed
+  together (2 tests, 6.367 seconds), yielding **33 distinct verified browser scenarios**.
+- New targeted pending-send expiry, restricted-history/older-API and packaged Netlify
+  delivery checks also passed in a focused run before the full suite (3 tests,
+  31.610 seconds). These scenarios are included in the full suite's count.
+- Browser scope: Chromium desktop, touch-phone/tablet and zoom/device-timezone
+  emulation, offline export and JavaScript-disabled fallback. Not a real-device
+  Safari/Firefox certification. Provider calls were mocked; no automated real email.
+- `npm run preview:download`: regenerated the offline HTML/ZIP with current code.
+- `git diff --check`: PASS. Generated screenshot evidence is in ignored test-results/.
+
+Netlify now runs unit tests before building and checks its generated script digest,
+CSP, provider connection, security headers, output file allowlist and embedded assets
+before release. `npm run test:browser` builds the packaged site before discovering
+browser and response-header tests, avoiding a stale/missing dist artifact.
+
+Public-link access is preserved. Framing/indexing directives are not authentication.
+Answers remain ephemeral in the tab and are sent only on the explicit Send action.
+There is no persistent dashboard, cross-session deduplication or hidden password.
+External outages/quotas, spam filtering and account-security configuration remain
+outside this code audit. Deployment/account management is unavailable in this
+workspace. Both GitHub source copies are the intended release destinations;
+Git commit/remote refs record the actual saved revision. Live production publication
+of this hardened revision must be confirmed in Netlify; no success is invented.

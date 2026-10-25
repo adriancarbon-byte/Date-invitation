@@ -1,6 +1,6 @@
-# Phase 0 verification record
+# Project verification record
 
-Inspection date: **2026-10-25**, reported using Asia/Singapore (UTC+08:00). Invitation scheduling remains Asia/Manila. Sections 1–7 record the initial Phase 0 checkpoint; section 8 records the later preservation review. These results cover repository/documentation/tooling checks only; no application was built or deployed.
+Inspection date: **2026-10-25**, reported using Asia/Singapore (UTC+08:00). Invitation scheduling remains Asia/Manila. Sections 1–7 record the initial Phase 0 checkpoint; section 8 records its preservation review. Those are historical results. Section 9 links the subsequent Phase 1 build/browser verification. No website has been publicly deployed.
 
 ## 1. Repository baseline
 
@@ -102,3 +102,7 @@ The user authorized review/corrections, a documentation commit on the current `w
 - Rechecked the documentation-only inventory, internal file links, requirement/question/phase coverage, date arithmetic, and whitespace before the commit. No application tests are applicable to this documentation-only change.
 
 The preservation commit and pull request do not establish website functionality, deployment readiness, client approval of unknown requirements, or email delivery. Phase 1 remains not started.
+
+## 9. Phase 1 foundation verification
+
+Phase 1 starts at latest merged main commit `dc4b1ebfc1c53b72d2420186acb5a680644b8286` on `codex/phase1-foundation`. The approved working foundation has now been built with compiled Tailwind and rendered locally. Detailed checks, actual screenshots, preview instructions, scope, and limitations are recorded in [PHASE1_REVIEW.md](PHASE1_REVIEW.md). Historical “not implemented” statements above describe the earlier checkpoint, not the current Phase 1 files. No live submissions, notifications, public Site, Pages deployment, or automatic merge is part of Phase 1.

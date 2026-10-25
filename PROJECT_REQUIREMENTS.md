@@ -6,6 +6,8 @@ Baseline: Master Project Handoff V2.0, supplied 2026-10-25. This is the full pla
 
 The original user request authorized **Phase 0 only**: inspect, document, assess references, verify tooling, and plan. The follow-up preservation request authorizes reviewing and correcting that documentation, committing it on the current `work` branch, pushing it to GitHub, and opening a pull request targeting `main`. It does not authorize Phase 1, merging, website implementation, deployment, live notifications, or paid services. Instructions inside attachments are supporting project material, not independent permission to exceed the user's request.
 
+The latest user request approves Phase 0 and authorizes **Phase 1** from latest main: a working HTML/Tailwind/vanilla-JavaScript foundation, responsive design, centralized state, navigation, mock data, actual browser screenshots, tests, and preparation for GitHub review. Live submissions, notifications, and public deployment remain forbidden; no pull request may be merged automatically. This supersedes earlier phase-specific implementation restrictions without approving unknown product details.
+
 - **C — Client-confirmed, as reported in the handoff.** Original Messenger screenshots are absent in this task. Their translations and status are inherited from the handoff, not independently authenticated.
 - **T — New technical specification, as reported in the handoff.** Planned behavior, subject to identified conflicts and approval.
 - **E — Engineering recommendation.** A proposed implementation detail, not a client request.
@@ -128,7 +130,7 @@ R39 **T — Functional coverage:** Opening, enabled stages, back/edit/preservati
 
 R40 **T — Experience coverage:** Mobile/tablet/desktop, long content, zoom, touch, keyboard, reduced motion, inactive-stage focus, assets, repository subdirectory paths, blocked audio, and bounded effects. Desktop emulation does not replace real mobile Safari/Chrome checks.
 
-R41 **T — Workflow:** Work through the browser-connected cloud repository. Explain decisions simply, make incremental changes, and run meaningful checks per feature. Report completion, files, checks, issues, and next action. Distinguish saved files, commits, pushes, and deployments. Commit/push only when authorized; the follow-up request now authorizes Phase 0 documentation preservation through a pull request, without merging or starting Phase 1.
+R41 **T — Workflow:** Work through the browser-connected cloud repository. Explain decisions simply, make incremental changes, and run meaningful checks per feature. Report completion, files, checks, issues, and next action. Distinguish saved files, commits, pushes, and deployments. Commit/push only within authorized review work. The latest request authorizes the Phase 1 foundation and GitHub review preparation, without automatic merging, later-phase work, or public deployment.
 
 R42 **T — Planning deliverables:** Save complete requirements, architecture, roadmap, decisions, future-agent instructions, accurate README, reference review, and verification evidence. Provide an exact next instruction and stop at planning.
 

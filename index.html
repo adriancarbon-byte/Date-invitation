@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A little invitation, and something lovely to look forward to. Local design preview; nothing is sent.">
+    <meta name="color-scheme" content="light">
+    <title>A little invitation</title>
+    <link rel="icon" href="./assets/art/flower.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="./assets/css/app.css">
+    <script type="module" src="./assets/js/app.js"></script>
+  </head>
+  <body class="min-h-svh bg-paper font-sans text-ink antialiased">
+    <a class="skip-link" href="#main">Skip to the invitation</a>
+    <div class="site-shell mx-auto flex min-h-svh max-w-[1360px] flex-col px-6 sm:px-10 lg:px-16">
+      <header class="site-header flex items-center justify-between gap-4 border-b border-line py-6 sm:py-8">
+        <a href="#invitation" class="brand inline-flex items-center gap-3" data-action="home" aria-label="A little invitation, return to the beginning">
+          <img src="./assets/art/flower.svg" width="30" height="30" alt="">
+          <span>a little invitation<span class="brand-dot">.</span></span>
+        </a>
+        <span class="preview-badge"><span class="status-dot" aria-hidden="true"></span>Preview<span class="hidden sm:inline"> · Nothing is sent</span></span>
+      </header>
+
+      <main id="main" class="flex flex-1 flex-col" tabindex="-1">
+        <div class="journey-intro flex items-center justify-between gap-4">
+          <p id="step-label" class="eyebrow">01 / 05 <span class="step-divider" aria-hidden="true"></span> The invitation</p>
+          <span class="journey-note hidden sm:block">Good things start with a little question.</span>
+        </div>
+
+        <div class="invitation-layout grid items-center gap-5 lg:grid-cols-[1.15fr_1fr] lg:gap-12">
+          <div class="stage-container min-w-0">
+            <section data-stage="invitation" aria-labelledby="invitation-title">
+              <p class="stage-kicker">A moment together</p>
+              <h1 id="invitation-title" class="stage-title" tabindex="-1">Will you go out on a <em>date with me?</em></h1>
+              <p class="stage-description">Nothing too fancy. Just a little time together, and something lovely to look forward to.</p>
+              <div class="stage-actions flex flex-wrap items-center gap-x-7 gap-y-3">
+                <button class="button-primary" type="button" data-action="next">Let’s take a look <svg class="action-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5M5 5h10v10"/></svg></button>
+                <button class="button-text" type="button" data-action="decline">Not now</button>
+              </div>
+              <p class="quiet-note">A little question. A lovely possibility.</p>
+            </section>
+
+            <section data-stage="dinner" aria-labelledby="dinner-title" hidden>
+              <p class="stage-kicker">A little taste</p>
+              <h1 id="dinner-title" class="stage-title stage-title-small" tabindex="-1">Something good.<br><em>Even better together.</em></h1>
+              <p class="stage-description">A place for choosing what you’re in the mood for. For now, try a sample preference and explore the journey.</p>
+              <div class="sample-field">
+                <label for="preview-preference">Sample preference <span>optional</span></label>
+                <select id="preview-preference" aria-describedby="sample-help"><option value="">Choose a sample</option></select>
+                <p id="sample-help">Illustrative choices only. The final dinner options are still to be decided.</p>
+              </div>
+              <div class="stage-actions flex flex-wrap items-center gap-x-7 gap-y-3">
+                <button class="button-text back-button" type="button" data-action="back"><svg class="action-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M17 10H4m5-5-5 5 5 5"/></svg> Back</button>
+                <button class="button-primary" type="button" data-action="next">Keep exploring <svg class="action-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h13m-5-5 5 5-5 5"/></svg></button>
+              </div>
+            </section>
+
+            <section data-stage="activity" aria-labelledby="activity-title" hidden>
+              <p class="stage-kicker">A little adventure</p>
+              <h1 id="activity-title" class="stage-title stage-title-small" tabindex="-1">Out of the ordinary.<br><em>Into a memory.</em></h1>
+              <p class="stage-description">Some city lights, a movie, or a little friendly competition. There’s a lovely possibility in each of them.</p>
+              <div class="placeholder-detail">
+                <p class="detail-label">The four planned possibilities</p>
+                <p class="activity-copy">City Lights <span>·</span> Around the City<br>Movie Date <span>·</span> Arcade</p>
+                <p class="detail-note">Activity selection will be added in the next phase.</p>
+              </div>
+              <div class="stage-actions flex flex-wrap items-center gap-x-7 gap-y-3">
+                <button class="button-text back-button" type="button" data-action="back"><svg class="action-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M17 10H4m5-5-5 5 5 5"/></svg> Back</button>
+                <button class="button-primary" type="button" data-action="next">A little more <svg class="action-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h13m-5-5 5 5-5 5"/></svg></button>
+              </div>
+            </section>
+
+            <section data-stage="scheduler" aria-labelledby="scheduler-title" hidden>
+              <p class="stage-kicker">A little time</p>
+              <h1 id="scheduler-title" class="stage-title stage-title-small" tabindex="-1">Let’s leave a little<br><em>room for us.</em></h1>
+              <p class="stage-description">This is where the date and time will come together. For now, here’s a little glimpse of the calendar ahead.</p>
+              <div class="calendar-placeholder flex items-center gap-5">
+                <div class="calendar-mark" aria-hidden="true"><span>OCT</span><strong>28</strong></div>
+                <div><p class="calendar-copy">28–29 October &amp;<br>all of November, 2026</p><p class="detail-note">Asia/Manila · Time options to be confirmed</p></div>
+              </div>
+              <p class="detail-note mt-4">Calendar preview only. No date or time has been selected.</p>
+              <p id="preview-error" class="error-message" role="alert" hidden></p>
+              <div class="stage-actions flex flex-wrap items-center gap-x-7 gap-y-3">
+                <button class="button-text back-button" type="button" data-action="back"><svg class="action-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M17 10H4m5-5-5 5 5 5"/></svg> Back</button>
+                <button class="button-primary" type="button" data-action="preview">Preview the ending <svg class="action-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h13m-5-5 5 5-5 5"/></svg></button>
+              </div>
+            </section>
+
+            <section data-stage="ending" aria-labelledby="ending-title" hidden>
+              <p class="stage-kicker">Preview complete</p>
+              <h1 id="ending-title" class="stage-title stage-title-small" tabindex="-1">A little invitation.<br><em>A lovely beginning.</em></h1>
+              <p class="stage-description">This is where your plans will come together. For now, you’ve reached the end of this little preview.</p>
+              <div class="placeholder-detail"><p class="detail-label">Your sample preference</p><p class="activity-copy" data-preview-choice>No sample chosen</p><p class="detail-note">Nothing was submitted or sent. Your preview stays in this tab.</p></div>
+              <div class="stage-actions flex flex-wrap items-center gap-x-7 gap-y-3">
+                <button class="button-text back-button" type="button" data-action="back"><svg class="action-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M17 10H4m5-5-5 5 5 5"/></svg> Back</button>
+                <button class="button-primary" type="button" data-action="restart">Start again <svg class="action-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5M5 5h10v10"/></svg></button>
+              </div>
+            </section>
+
+            <section data-stage="declined" aria-labelledby="declined-title" hidden>
+              <p class="stage-kicker">At your own pace</p>
+              <h1 id="declined-title" class="stage-title stage-title-small" tabindex="-1">Another time,<br><em>perhaps.</em></h1>
+              <p class="stage-description">No pressure. You can close this tab, or come back to this little invitation whenever you like.</p>
+              <div class="stage-actions"><button class="button-primary" type="button" data-action="back">Back to the invitation <svg class="action-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5M5 5h10v10"/></svg></button></div>
+              <p class="quiet-note">Nothing has been sent.</p>
+            </section>
+          </div>
+
+          <aside class="illustration-panel" aria-label="A decorative letter, just for you">
+            <span class="art-corner art-corner-top" aria-hidden="true">✧</span>
+            <p class="art-eyebrow">Sealed with a little courage</p>
+            <img class="envelope-art" src="./assets/art/envelope.svg" width="480" height="420" alt="An ivory envelope with a rose-colored heart seal and a delicate botanical sprig">
+            <p class="art-caption">just for <em>you.</em></p>
+            <span class="art-corner art-corner-bottom" aria-hidden="true">✧</span>
+          </aside>
+        </div>
+
+        <nav class="journey-nav" aria-label="Invitation progress">
+          <ol id="journey-steps" class="journey-steps"></ol>
+          <p class="privacy-note"><span aria-hidden="true">♡</span> Just a preview. Your choices stay in this tab.</p>
+        </nav>
+      </main>
+      <footer class="site-footer flex flex-wrap items-center justify-between gap-3 border-t border-line">
+        <p>A little less ordinary. A little more us.</p><p class="footer-signoff">With a little thought &amp; a lot of heart.</p>
+      </footer>
+    </div>
+    <p id="stage-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+    <div id="script-fallback" class="noscript-message" role="note">This interactive preview needs JavaScript. Nothing is submitted; please enable JavaScript to explore the stages.</div>
+  </body>
+</html>

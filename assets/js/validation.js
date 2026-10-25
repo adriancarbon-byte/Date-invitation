@@ -2,7 +2,7 @@ import { config } from './config.js';
 
 // The only approved calendar dates. Never extend this set when it expires.
 export const allowedDates = Object.freeze([
-  '2026-10-28', '2026-10-29',
+  '2026-10-28', '2026-10-29', '2026-10-30', '2026-10-31',
   ...Array.from({ length: 30 }, (_, index) => `2026-11-${String(index + 1).padStart(2, '0')}`),
 ]);
 const dateSet = new Set(allowedDates);

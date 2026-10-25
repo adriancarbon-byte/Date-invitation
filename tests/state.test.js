@@ -5,8 +5,9 @@ import { createStore } from '../assets/js/state.js';
 import { previewSubmission } from '../assets/js/submission.js';
 
 const clock = () => new Date('2026-10-25T12:00:00Z');
-const makeStore = settings => createStore(settings || config, clock);
+const makeStore = settings => { const store = createStore(settings || config, clock); store.dispatch({type:'openLetter'}); return store; };
 function schedule(store) {
+  store.dispatch({type:'openLetter'});
   store.dispatch({ type: 'accept' });
   store.dispatch({ type: 'next' });
   store.dispatch({ type: 'date', value: '2026-10-28' });
@@ -35,7 +36,7 @@ test('missing or tampered date/time cannot advance the scheduler', () => {
   const store = makeStore();
   store.dispatch({ type: 'accept' });
   store.dispatch({ type: 'next' });
-  for (const value of ['2026-10-30', '2026-10-31', '2026-11-31', '2027-11-01', '<script>']) {
+  for (const value of ['2026-10-26', '2026-10-27', '2026-11-31', '2027-11-01', '<script>']) {
     store.dispatch({ type: 'date', value });
     assert.equal(store.getState().date, null);
   }
@@ -87,7 +88,7 @@ test('unknown choices, wrong-stage actions and unreached stages are rejected', (
 
 test('dinner can be disabled without breaking stage count or the mock journey', async () => {
   const store = makeStore({ ...config, dinner: { ...config.dinner, enabled: false, required: true } });
-  assert.equal(store.stages.length, 5);
+  assert.equal(store.stages.length, 6);
   assert.equal(store.stages.some(stage => stage.id === 'dinner'), false);
   activity(store);
   store.dispatch({ type: 'previewComplete', result: await previewSubmission() });
@@ -215,6 +216,7 @@ test('clearing the date clears time and guards previously reached downstream sta
 
 test('elapsed same-day time is cleared when changing to an earlier date', () => {
   const store = createStore(config, () => new Date('2026-10-28T11:00:00Z'));
+  store.dispatch({type:'openLetter'});
   store.dispatch({ type: 'accept' });
   store.dispatch({ type: 'next' });
   store.dispatch({ type: 'date', value: '2026-10-29' });
@@ -247,7 +249,7 @@ test('reset clears draft and prevents restoring its previous ending', async () =
   store.dispatch({ type: 'previewComplete', result: await previewSubmission() });
   store.dispatch({ type: 'reset' });
   store.dispatch({ type: 'restore', screen: 'ending' });
-  assert.equal(store.getState().screen, 'invitation');
+  assert.equal(store.getState().screen, 'letter');
   assert.deepEqual(store.getState().foodIds, []);
   assert.equal(store.getState().activityId, null);
   assert.equal(store.getState().date, null);
@@ -277,4 +279,38 @@ test('mock boundary does not call the network', async () => {
   globalThis.fetch = () => { throw new Error('Network is forbidden in this preview'); };
   try { assert.deepEqual(await previewSubmission(), { mode: 'mock', sent: false }); }
   finally { globalThis.fetch = previousFetch; }
+});
+
+test('sealed letter opens before the question and cannot imply acceptance', () => {
+  const store = createStore(config,clock);
+  assert.equal(store.getState().screen,'letter');
+  store.dispatch({type:'accept'});
+  store.dispatch({type:'next'});
+  store.dispatch({type:'restore',screen:'invitation'});
+  assert.equal(store.getState().screen,'letter');
+  store.dispatch({type:'openLetter'});
+  assert.equal(store.getState().screen,'invitation');
+  assert.equal(store.getState().invitationAnswer,null);
+  store.dispatch({type:'no'});
+  assert.equal(store.getState().screen,'invitation');
+  assert.equal(store.getState().invitationAnswer,null);
+  store.dispatch({type:'accept'});
+  assert.equal(store.getState().screen,'celebration');
+});
+
+test('October 30 and 31 are accepted through state and the final mock gate',async () => {
+  for (const date of ['2026-10-30','2026-10-31']) {
+    const store = makeStore();
+    store.dispatch({type:'accept'});
+    store.dispatch({type:'next'});
+    store.dispatch({type:'date',value:date});
+    store.dispatch({type:'time',value:'19:00'});
+    store.dispatch({type:'next'});
+    store.dispatch({type:'next'});
+    store.dispatch({type:'activity',value:'city-lights'});
+    store.dispatch({type:'previewComplete',result:await previewSubmission()});
+    assert.equal(store.getState().screen,'ending');
+    assert.equal(store.getState().date,date);
+    assert.equal(store.getState().submission.sent,false);
+  }
 });

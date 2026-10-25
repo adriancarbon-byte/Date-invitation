@@ -4,9 +4,11 @@ const choices = values => Object.freeze(values.map(([id, label, art = id]) => Ob
 export const config = Object.freeze({
   timezone: 'Asia/Manila',
   submissionMode: 'mock',
-  invitationVariant: 'yes-or-yes',
+  invitationVariant: 'playful-yes-no',
   invitationQuestion: 'Will you go out on a date with me?',
   finalMessage: 'See you cutie, wear whatever makes you feel comfortable, okay? You don’t have to dress up or try to impress me, because honestly, I already think you’re beautiful just the way you are.',
+  letterCaption: 'Hey, I want you to open this for me.',
+  closingMessage: 'One thing is for sure, i like you so much my christine.',
   dinner: Object.freeze({
     enabled: true,
     required: false,
@@ -30,6 +32,7 @@ export const config = Object.freeze({
   ].map(([value, label]) => Object.freeze({ value, label }))),
   audioEnabled: false,
   stages: Object.freeze([
+    { id: 'letter', label: 'A letter for you' },
     { id: 'invitation', label: 'Invitation' },
     { id: 'celebration', label: 'A happy little yes' },
     { id: 'scheduler', label: 'A little time' },

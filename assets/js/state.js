@@ -23,7 +23,7 @@ export function createStore(settings = config, now = () => new Date()) {
   const scheduleValid = () => isAllowedDate(state.date, now()) && isAllowedTime(state.time, state.date, settings, now());
   const foodValid = () => !settings.dinner.enabled || !settings.dinner.required || state.foodIds.length > 0;
   const canVisit = screen => {
-    if (screen === 'invitation') return true;
+    if (['letter','invitation'].includes(screen)) return true;
     if (state.invitationAnswer !== 'yes') return false;
     if (['celebration', 'scheduler'].includes(screen)) return true;
     if (!scheduleValid()) return false;
@@ -43,6 +43,9 @@ export function createStore(settings = config, now = () => new Date()) {
     const index = stages.findIndex(stage => stage.id === state.screen);
     let next = state;
     switch (action.type) {
+      case 'openLetter':
+        if (state.screen === 'letter') next = enter('invitation');
+        break;
       case 'accept':
         if (state.screen === 'invitation') next = { ...enter('celebration'), invitationAnswer: 'yes' };
         break;

@@ -1,5 +1,15 @@
 # Recommended architecture
 
+## Current sealed-letter and calendar revision
+
+`letter` is now the first of seven configurable stages. The explicit `openLetter` action reveals the question without accepting it; reset/refresh begins at the sealed letter. The inline original SVG separates paper, flap and wax seal so they animate when opened. A bounded timeout guarantees navigation, including when animation events are unavailable; reduced motion opens immediately.
+
+Only the Yes button dispatches acceptance. No has a separate UI-only movement handler and never changes answer state. It uses viewport candidates excluding Yes and essential text, moves into the body to avoid transformed ancestor containing blocks, retains focus, and returns to its original slot on Escape or stage change. Native activation covers keyboard and touch; pointer activation is debounced. Resize recomputes a bounded position.
+
+The allowlist now explicitly includes Oct 30/31, bringing it to 34 permitted 2026 dates before past filtering. Central validation remains authoritative. Idle decoration is enabled after 4.5 seconds without interaction, canceled on pointer/keyboard/scroll activity, and disabled by pause/reduced motion/hidden-tab state. Three original illustrations were added: sealed letter, rose bouquet and ribbon heart. The exact additional bottom message is centralized in config and included in the local copied plan.
+
+Current evidence: [CLIENT_REVISION.md](CLIENT_REVISION.md). Existing sections below preserve older architecture checkpoints.
+
 ## Heart motion and type revision
 
 `app.js` now builds a fixed pool of 22 background SVG hearts animated by CSS. A 64-piece parametric heart outline blooms from the chosen Yes button and disperses; smaller 10-piece selection accents are replaced/cleaned instead of accumulating. A global pause control and `prefers-reduced-motion` disable motion without delaying navigation. Hidden-tab handling clears transient effects and pauses decoration. The opening no longer has a decline state or visible branding/header, per the latest user request.

@@ -1,5 +1,7 @@
 # Floating hearts and typography revision
 
+Latest revision: [CLIENT_REVISION.md](CLIENT_REVISION.md) supersedes the earlier dates, two-Yes buttons and initial screen described below.
+
 This follow-up updates the same `codex/romantic-redesign` branch and draft PR #3, targeting `codex/phase1-foundation`. It does not merge, deploy, enable Pages or send anything.
 
 ## Requested changes

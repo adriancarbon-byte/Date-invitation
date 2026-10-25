@@ -1,5 +1,13 @@
 # Project requirements
 
+## Current client revision: sealed letter, calendar and playful No
+
+The latest user instruction supersedes earlier date/button restrictions: start with a floating closed letter and the exact caption **“Hey, I want you to open this for me.”** Opening it reveals **Yes** and **No**. No is an explicitly requested joke: activating it moves it to another bounded viewport position with a cute caption; only Yes records acceptance and advances. Preserve keyboard focus, Escape reset, normal browser exit and reduced-motion handling.
+
+**October 30 and 31, 2026 are now approved**, alongside October 28/29 and all November dates: **34 dates before Manila past filtering**. The calendar legend is removed and original romantic sticker artwork surrounds the scheduling card. The original exact final note remains, followed at the bottom by **“One thing is for sure, i like you so much my christine.”** Floating idle choices and small background flowers/stars are also requested. These remain nonessential, pausable decorations with cleanup. Delivery stays mock-only; no deployment or live submission is authorized.
+
+See [CLIENT_REVISION.md](CLIENT_REVISION.md) for implementation, current screenshots, tests and download instructions. Earlier checkpoints below are historical where they conflict with this revision.
+
 ## Latest heart and typography revision
 
 The user's follow-up explicitly removes the opening's **Not now** action, the visible “a little invitation.” brand, the top divider, and the “Just a preview. Your choices stay in this tab.” footer notice. These changes supersede earlier requests for that exit/branding. Only **Yes!** and **Yes, of course!** remain on the opening. The six-stage flow and exact question/message/date/activity requirements are retained.

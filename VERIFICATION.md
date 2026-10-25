@@ -1,5 +1,7 @@
 # Project verification record
 
+Latest revision: [CLIENT_REVISION.md](CLIENT_REVISION.md) supersedes the earlier dates, two-Yes buttons and initial screen described below.
+
 Current follow-up revision: [HEART_REFRESH.md](HEART_REFRESH.md). It supersedes the opening exit/branding and motion/type details described at the historical Phase 2A checkpoint below.
 
 ## Current Phase 2A evidence

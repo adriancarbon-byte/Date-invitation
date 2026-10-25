@@ -12,8 +12,9 @@ Keep client-confirmed requirements, newer-spec proposals, engineering recommenda
 
 ## Product guardrails
 
-- Preserve invitation wording, four activities (City Lights, Around the City, Movie Date, Arcade), and exact 2026 date set: Oct 28/29 and Nov 1–30. Exclude Oct 30/31. Product scheduling timezone is Asia/Manila.
-- The latest user revision requires only **Yes!** and **Yes, of course!** on the opening and explicitly removes **Not now**. Do not restore the superseded decline UI. Preserve normal browser exit, keyboard/touch operation, and Back/reset behavior. Never add an escaping button.
+- Preserve invitation wording, four activities (City Lights, Around the City, Movie Date, Arcade), and latest approved 2026 date set: Oct 28–31 and Nov 1–30 (34 dates before past filtering). The user explicitly added Oct 30/31 in the current revision. Product scheduling timezone is Asia/Manila.
+- The latest user revision starts with an animated closed letter and exact caption “Hey, I want you to open this for me.” Opening reveals **Yes** and a playful **No** that moves when activated; only Yes advances. This explicitly supersedes the earlier two-Yes/no-prank instructions. Keep No inside the viewport, preserve keyboard focus and normal browser exit, respect reduced motion, and do not make it overlap Yes or essential text. Preserve Back/reset behavior.
+- The user explicitly supplied the additional bottom message “One thing is for sure, i like you so much my christine.” Preserve its case and punctuation, along with the original final note. Do not invent further personal details.
 - Dinner and exact time availability are unconfirmed; keep them configurable and label development fixtures.
 - Off-white, classy, restrained design has priority over literal reference copying. Uploaded recording observations are documented; direct TikTok was inaccessible. Do not claim exact fonts, colors, timing, audio behavior, or delivery from it.
 - Email delivery does not fulfill private on-site retrieval automatically. Never claim Web3Forms supplies a private dashboard.

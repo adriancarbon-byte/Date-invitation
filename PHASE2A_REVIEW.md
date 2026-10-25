@@ -1,5 +1,7 @@
 # Phase 2A romantic redesign review
 
+Latest revision: [CLIENT_REVISION.md](CLIENT_REVISION.md) supersedes the earlier dates, two-Yes buttons and initial screen described below.
+
 Current follow-up revision: [HEART_REFRESH.md](HEART_REFRESH.md). It supersedes the opening exit/branding and motion/type details described at the historical Phase 2A checkpoint below.
 
 Prepared for review on 2026-10-25 (Asia/Singapore). Scheduling uses Asia/Manila. Source: `codex/phase1-foundation`, verified commit `df96a2bdcaef6f863dd656989d788fc5c0a78caa`. Review branch: `codex/romantic-redesign`; draft PR base: `codex/phase1-foundation`. PR #2 and main remain untouched. No merge or deployment is part of this task.

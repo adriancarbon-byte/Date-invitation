@@ -1452,3 +1452,123 @@ main {
 .opening .desktop-break {display:initial}
 .opening .question-lead {font-size:inherit}
 @media(max-width:479px){.opening .question-lead{font-size:clamp(36px,11vw,49px)}}
+
+/* A sealed first chapter, with paper, flap and wax seal animated independently. */
+@layer components {
+  body[data-screen="letter"] .progress-nav {display:none}
+  .letter-stage {max-width:760px;padding:9px 0 24px}
+  .letter-stage>.eyebrow {margin-bottom:13px;color:#9a6879;letter-spacing:.24em}
+  .letter-trigger {position:relative;display:block;isolation:isolate;width:400px;height:300px;max-width:100%;margin:0 auto 20px;padding:0;border-radius:40%;background:transparent;perspective:800px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .letter-trigger:focus-visible {outline:2px dashed #b37089;outline-offset:9px}
+  .letter-trigger:disabled {cursor:default}
+  .sealed-letter-svg {width:100%;height:100%;overflow:visible;animation:sealed-float 6s ease-in-out infinite;filter:drop-shadow(0 8px 18px #a6647820);transition:filter .3s}
+  .letter-trigger:hover .sealed-letter-svg {filter:drop-shadow(0 10px 24px #b3668a40)}
+  .letter-halo {position:absolute;inset:10px 4px -8px;border-radius:50%;pointer-events:none;z-index:-1}
+  .halo-one {background:radial-gradient(ellipse,#f0ccd689 0%,#f2dbcf55 38%,transparent 70%);animation:sealed-glow 5s ease-in-out infinite alternate;filter:blur(8px)}
+  .halo-two {inset:28px 22px 4px;border:1px solid #d7a8b438;box-shadow:0 0 42px 15px #d894a41f,inset 0 0 45px #e7c4c855;animation:halo-ripple 7s ease-in-out infinite}
+  .letter-orbit {position:absolute;top:24px;right:40px;color:#b87591;font-family:var(--font-serif);font-size:32px;animation:letter-orbit 8s ease-in-out infinite;pointer-events:none}
+  .letter-caption {font-size:clamp(42px,4.5vw,60px);line-height:1.12;letter-spacing:-1.1px;margin:0 auto;color:#934b65}
+  .letter-caption em {color:#a35474}
+  .letter-hint {font-size:11px;line-height:1.7;color:#786a64;margin:22px auto 0;max-width:300px}
+  .letter-whisper {font-size:28px;margin:15px auto 0}
+  .letter-flap {transform-box:fill-box;transform-origin:50% 0;transition:transform .65s cubic-bezier(.3,.7,.3,1)}
+  .letter-insert {opacity:0;transform:translateY(0);transition:transform .65s .16s ease,opacity .25s .17s}
+  .letter-seal {transform-box:fill-box;transform-origin:center;transition:opacity .2s,transform .45s}
+  .letter-opening .letter-flap {transform:scaleY(-.82)}
+  .letter-opening .letter-insert {transform:translateY(-65px);opacity:1}
+  .letter-opening .letter-seal {opacity:0;transform:scale(1.4)}
+  .letter-opening .sealed-letter-svg {animation-play-state:paused;filter:drop-shadow(0 0 30px #b8689250)}
+  .letter-opening .halo-one {opacity:1;background:radial-gradient(ellipse,#ebbdcebd,transparent 68%)}
+  .no-slot {display:inline-flex;justify-content:center;align-items:center;width:150px;height:54px;flex-shrink:0}
+  .affirmative-actions #no-button {min-width:140px;width:140px;justify-content:center;gap:0}
+  #no-button.is-dodging {position:fixed;z-index:8;margin:0;transition:left .22s cubic-bezier(.2,.8,.3,1),top .22s cubic-bezier(.2,.8,.3,1),box-shadow .2s;box-shadow:0 8px 20px #a56b7623;background:#f9e9eb;border-color:#d5acb8}
+  #no-button.is-dodging:active {transform:rotate(-3deg)}
+  .no-tease {font-size:11px;color:#946276;min-height:24px;line-height:1.7;margin:13px auto 0;max-width:340px}
+  .opening-signoff {margin-top:14px}
+  .scheduler-scene {position:relative;max-width:600px;margin:29px auto 8px;isolation:isolate}
+  .scheduler-scene .scheduling-card {margin:0 auto;position:relative;z-index:1}
+  .calendar-stickers {position:absolute;inset:0;pointer-events:none;z-index:2}
+  .calendar-sticker {position:absolute;object-fit:contain;filter:drop-shadow(0 5px 5px #9b725512);animation:sticker-sway 7s ease-in-out infinite}
+  .sticker-letter {left:-1px;top:41px;width:105px;height:80px;--sticker-tilt:-14deg;animation-delay:-1s}
+  .sticker-bouquet {right:-3px;top:120px;width:100px;height:125px;--sticker-tilt:12deg;animation-delay:-3s}
+  .sticker-ribbon {left:6px;bottom:36px;width:82px;height:82px;--sticker-tilt:-11deg;animation-delay:-4s}
+  .sticker-sparkle {position:absolute;font-family:var(--font-serif);font-size:31px;color:#b89b77;animation:sparkle-wink 5s ease-in-out infinite}
+  .sparkle-one {right:35px;top:24px}
+  .sparkle-two {left:25px;top:42%;font-size:23px;animation-delay:-2s}
+  .closing-love-note {position:relative;max-width:490px;margin:34px auto 8px;padding:27px 28px 30px;background:radial-gradient(ellipse,#f3dce36b,transparent 72%);text-align:center}
+  .closing-love-note img {width:68px;height:68px;object-fit:contain;margin:0 auto 7px;display:block;animation:sticker-sway 8s ease-in-out infinite;--sticker-tilt:0deg}
+  .closing-love-note p {font-family:var(--font-script);font-size:38px;color:#9d4b69;line-height:1.25;max-width:440px;margin:0 auto}
+  .closing-love-note>span {font-family:var(--font-serif);font-size:23px;display:block;margin-top:17px;color:#bb8094}
+  body[data-screen="ending"] .site-footer {display:none}
+  .ambient-charm {position:absolute;display:block;width:18px;height:18px;color:#c4a07c;opacity:.23;animation:ambient-float var(--float-time) var(--float-delay) ease-in-out infinite alternate}
+  .ambient-charm svg {width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:1.1}
+  .ambient-charm:nth-child(2n) {width:22px;height:22px;color:#bd8395;opacity:.15}
+  body.is-idle .choice-card {animation:idle-option-float 4.5s ease-in-out infinite}
+  body.is-idle .choice-card:nth-child(2n) {animation-delay:-1.8s}
+  body.is-idle .choice-card:nth-child(3n) {animation-delay:-3s}
+  body.is-idle .affirmative-actions>.button-primary,body.is-idle .no-slot #no-button:not(.is-dodging) {animation:idle-option-float 4.5s ease-in-out infinite}
+  body.is-idle .no-slot #no-button {animation-delay:-2s}
+  body.hearts-paused .sealed-letter-svg,body.hearts-paused .letter-halo,body.hearts-paused .letter-orbit,body.hearts-paused .ambient-charm,body.hearts-paused .calendar-sticker,body.hearts-paused .sticker-sparkle,body.hearts-paused .closing-love-note img {animation-play-state:paused!important}
+}
+@keyframes sealed-float {0%,100%{transform:translateY(0) rotate(-5deg)}45%{transform:translateY(-15px) rotate(1deg)}75%{transform:translateY(-5px) rotate(-2deg)}}
+@keyframes sealed-glow {from{opacity:.45;transform:scale(.9)}to{opacity:1;transform:scale(1.13)}}
+@keyframes halo-ripple {0%,100%{opacity:.25;transform:scale(.94) rotate(-8deg)}50%{opacity:.65;transform:scale(1.10) rotate(8deg)}}
+@keyframes letter-orbit {0%,100%{transform:translate(0,0) rotate(8deg);opacity:.4}50%{transform:translate(9px,-23px) rotate(-15deg);opacity:.8}}
+@keyframes sticker-sway {0%,100%{transform:translateY(0) rotate(var(--sticker-tilt))}50%{transform:translateY(-5px) rotate(calc(var(--sticker-tilt) + 3deg))}}
+@keyframes sparkle-wink {0%,100%{opacity:.35;transform:scale(.85)}50%{opacity:.8;transform:scale(1.1)}}
+@keyframes idle-option-float {0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-4px) rotate(.6deg)}}
+@media(max-width:767px){
+  .scheduler-scene {max-width:510px;margin-top:42px}
+  .sticker-letter {left:-4px;top:-25px;width:80px;height:65px}
+  .sticker-bouquet {right:-10px;top:-28px;width:76px;height:88px}
+  .sticker-ribbon {left:-5px;bottom:-18px;width:65px;height:65px}
+  .sparkle-one {right:63px;top:-19px;font-size:24px}
+  .sparkle-two {left:auto;right:-1px;top:auto;bottom:55px;font-size:21px}
+}
+@media(max-width:479px){
+  .letter-stage {padding:5px 0 15px}
+  .letter-trigger {width:320px;height:245px;margin-bottom:22px}
+  .letter-stage>.eyebrow {font-size:9px;margin-bottom:16px}
+  .letter-caption {font-size:42px;letter-spacing:-.8px;line-height:1.13}
+  .letter-hint {font-size:11px;margin-top:23px;max-width:265px}
+  .letter-whisper {font-size:27px;margin-top:14px}
+  .letter-orbit {right:28px;top:14px;font-size:28px}
+  .affirmative-actions .button-primary {min-width:127px}
+  .no-slot {width:133px;height:54px}
+  .affirmative-actions #no-button {min-width:127px;width:127px}
+  .no-tease {font-size:10px;max-width:290px;margin-top:12px}
+  .opening-signoff {margin-top:11px}
+  .scheduler-scene {margin-top:45px}
+  .scheduler-scene .card-topline {padding-top:6px}
+  .sticker-letter {left:-8px;top:-33px;width:78px;height:65px}
+  .sticker-bouquet {right:-8px;top:-31px;width:70px;height:83px}
+  .sticker-ribbon {left:-5px;bottom:-14px;width:60px;height:60px}
+  .closing-love-note {padding:24px 16px 23px;margin-top:26px}
+  .closing-love-note p {font-size:34px;max-width:320px}
+}
+@media(max-width:350px){
+  .letter-trigger {width:285px;height:220px}
+  .letter-caption {font-size:37px}
+  .letter-hint {font-size:10px}
+  .no-slot {width:121px}
+  .affirmative-actions #no-button {min-width:116px;width:116px}
+  .affirmative-actions .button-primary {min-width:116px}
+  .closing-love-note p {font-size:31px}
+}
+@media(prefers-reduced-motion:reduce){
+  #no-button.is-dodging {transition:none!important}
+}
+
+.letter-stage {display:flex;flex-direction:column;align-items:center}
+.letter-stage>.eyebrow {order:0}
+.letter-trigger {order:1;flex-shrink:0}
+.letter-caption {order:2}
+.letter-hint {order:3}
+.letter-whisper {order:4}
+
+/* The wax heart breathes gently; opening and pause remain fully controlled. */
+.letter-seal {animation:seal-heartbeat 3s ease-in-out infinite}
+.letter-opening .letter-seal {animation:none}
+body.hearts-paused .letter-seal {animation-play-state:paused!important}
+.halo-two {box-shadow:0 0 62px 22px #d894a42b,inset 0 0 45px #e7c4c855}
+@keyframes seal-heartbeat{0%,100%{transform:scale(1);filter:drop-shadow(0 0 2px #c46d8620)}50%{transform:scale(1.055);filter:drop-shadow(0 0 7px #c46d8660)}}

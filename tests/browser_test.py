@@ -18,6 +18,7 @@ from playwright.sync_api import sync_playwright, expect
 ROOT = Path(__file__).resolve().parent.parent
 BASE = 'http://127.0.0.1:4174/Date-invitation/'
 FIXTURE_NOW = datetime(2026, 10, 25, 12, tzinfo=timezone.utc)
+CLOSING_NOTE = 'One thing is for sure, i like you so much my christine.'
 EXACT_NOTE = ('See you cutie, wear whatever makes you feel comfortable, okay? '
               'You don’t have to dress up or try to impress me, because honestly, '
               'I already think you’re beautiful just the way you are.')
@@ -94,9 +95,16 @@ class RomanticBrowserTests(unittest.TestCase):
         page.locator('[data-stage]:visible [data-action="next"]').click()
         page.wait_for_timeout(340)
 
-    def accept(self, page=None, secondary=False):
+    def open_letter(self, page=None):
         page = page or self.page
-        page.get_by_role('button', name='Yes, of course!' if secondary else 'Yes!', exact=True).click()
+        if page.locator('[data-stage="letter"]').is_visible():
+            page.get_by_role('button',name='Open the letter',exact=True).click()
+            self.assert_stage('invitation',page)
+
+    def accept(self, page=None):
+        page = page or self.page
+        self.open_letter(page)
+        page.get_by_role('button', name='Yes', exact=True).click()
         self.assert_stage('celebration', page)
         page.get_by_role('button', name='Okay, okay!', exact=True).click()
         self.assert_stage('scheduler', page)
@@ -139,18 +147,20 @@ class RomanticBrowserTests(unittest.TestCase):
         self.choose_activity(page)
         self.finish(page)
 
-    def test_both_affirmative_controls_and_clean_opening(self):
+    def test_yes_no_controls_and_clean_opening(self):
+        self.open_letter()
         expect(self.page.locator('#invitation-title')).to_have_text('Will you go out on a date with me?')
-        self.assertEqual(self.page.locator('[data-stage="invitation"] button').count(), 2)
-        self.assertEqual(self.page.locator('[data-action="decline"], .brand, .site-header, .privacy-note').count(), 0)
-        self.assertNotIn('Just a preview. Your choices stay in this tab.', self.page.locator('body').inner_text())
-        self.assertNotIn('a little invitation.', self.page.locator('body').inner_text())
-        for secondary in (False, True):
-            self.page.reload()
-            self.accept(secondary=secondary)
-            expect(self.page.locator('#scheduler-title')).to_be_focused()
+        self.assertEqual(self.page.locator('[data-stage="invitation"] button').count(),2)
+        expect(self.page.get_by_role('button',name='Yes',exact=True)).to_be_visible()
+        expect(self.page.get_by_role('button',name='No',exact=True)).to_be_visible()
+        self.assertEqual(self.page.locator('[data-action="decline"], .brand, .site-header, .privacy-note').count(),0)
+        self.assertNotIn('Just a preview. Your choices stay in this tab.',self.page.locator('body').inner_text())
+        self.assertNotIn('a little invitation.',self.page.locator('body').inner_text())
+        self.accept()
+        expect(self.page.locator('#scheduler-title')).to_be_focused()
 
     def test_font_palette_and_heart_effect_lifecycle(self):
+        self.open_letter()
         self.page.evaluate('document.fonts.ready')
         families = self.page.evaluate("""() => ({
             body:getComputedStyle(document.body).fontFamily,
@@ -167,11 +177,12 @@ class RomanticBrowserTests(unittest.TestCase):
         self.page.get_by_role('button',name='Pause floating hearts',exact=True).click()
         expect(self.page.locator('#motion-toggle')).to_have_attribute('aria-pressed','true')
         self.assertEqual(self.page.locator('.ambient-heart').first.evaluate('(el)=>getComputedStyle(el).animationPlayState'),'paused')
-        self.page.get_by_role('button',name='Yes!',exact=True).click()
+        self.page.get_by_role('button',name='Yes',exact=True).click()
         self.assert_stage('celebration')
         self.assertEqual(self.page.locator('.heart-burst-piece').count(),0)
         self.page.reload()
-        self.page.get_by_role('button',name='Yes!',exact=True).click()
+        self.open_letter()
+        self.page.get_by_role('button',name='Yes',exact=True).click()
         self.assert_stage('celebration')
         self.assertEqual(self.page.locator('.heart-burst-piece').count(),64)
         self.assertEqual(self.page.locator('.ambient-heart').count(),22)
@@ -186,9 +197,10 @@ class RomanticBrowserTests(unittest.TestCase):
 
     def test_reduced_motion_disables_bursts_and_ambient_animation(self):
         self.page.emulate_media(reduced_motion='reduce')
+        self.open_letter()
         self.assertEqual(self.page.locator('.ambient-heart').first.evaluate('(el)=>getComputedStyle(el).animationName'),'none')
         expect(self.page.locator('#motion-toggle')).to_be_disabled()
-        self.page.get_by_role('button',name='Yes!',exact=True).click()
+        self.page.get_by_role('button',name='Yes',exact=True).click()
         self.assert_stage('celebration')
         self.assertEqual(self.page.locator('.heart-burst-piece').count(),0)
         self.page.get_by_role('button',name='Okay, okay!',exact=True).click()
@@ -235,9 +247,9 @@ class RomanticBrowserTests(unittest.TestCase):
         days = self.page.locator('[data-date]')
         self.assertEqual(days.count(), 31)
         enabled = self.page.locator('[data-date]:enabled').evaluate_all('(els) => els.map(el => el.dataset.date)')
-        self.assertEqual(enabled, ['2026-10-28', '2026-10-29'])
+        self.assertEqual(enabled, ['2026-10-28', '2026-10-29', '2026-10-30', '2026-10-31'])
         for day in ('2026-10-30', '2026-10-31'):
-            expect(self.page.locator(f'[data-date="{day}"]')).to_be_disabled()
+            expect(self.page.locator(f'[data-date="{day}"]')).to_be_enabled()
         self.page.locator('[data-date="2026-10-28"]').focus()
         self.page.keyboard.press('ArrowRight')
         expect(self.page.locator('[data-date="2026-10-29"]')).to_be_focused()
@@ -254,7 +266,7 @@ class RomanticBrowserTests(unittest.TestCase):
         self.accept()
         continue_button = self.page.locator('[data-stage="scheduler"] [data-action="next"]')
         self.page.locator('#date-trigger').click()
-        self.page.locator('[data-date="2026-10-31"]').evaluate('(el) => { el.disabled = false; el.click(); }')
+        self.page.locator('[data-date="2026-10-27"]').evaluate('(el) => { el.disabled = false; el.click(); }')
         continue_button.evaluate('(el) => { el.disabled = false; el.click(); }')
         self.assert_stage('scheduler')
         if self.page.locator('#calendar-panel').is_visible():
@@ -291,7 +303,7 @@ class RomanticBrowserTests(unittest.TestCase):
             route.fulfill(response=response, body=response.text().replace('enabled: true', 'enabled: false', 1))
         self.page.route('**/config.js', override)
         self.page.reload()
-        self.assertEqual(self.page.locator('#journey-steps button').count(), 5)
+        self.assertEqual(self.page.locator('#journey-steps button').count(), 6)
         self.accept()
         self.choose_schedule()
         self.next()
@@ -314,13 +326,14 @@ class RomanticBrowserTests(unittest.TestCase):
 
     def test_refresh_direct_hash_reset_and_repeated_old_events(self):
         self.page.goto(BASE + '#ending')
-        self.assert_stage('invitation')
-        self.page.get_by_role('button', name='Yes!', exact=True).evaluate('(button) => { button.click(); button.click(); }')
+        self.assert_stage('letter')
+        self.open_letter()
+        self.page.get_by_role('button', name='Yes', exact=True).evaluate('(button) => { button.click(); button.click(); }')
         self.assert_stage('celebration')
         self.next()
         self.choose_schedule()
         self.page.reload()
-        self.assert_stage('invitation')
+        self.assert_stage('letter')
         self.accept()
         expect(self.page.locator('#time-select')).to_have_value('')
         self.choose_schedule()
@@ -331,18 +344,23 @@ class RomanticBrowserTests(unittest.TestCase):
         self.page.locator('[data-stage="activity"] [data-action="preview"]').evaluate('(button) => { button.click(); button.click(); }')
         self.assert_stage('ending')
         self.page.get_by_role('button', name='Start again', exact=True).click()
-        self.assert_stage('invitation')
+        self.assert_stage('letter')
         self.page.go_back()
-        self.assert_stage('invitation')
+        self.assert_stage('letter')
 
     def test_keyboard_skip_focus_hidden_controls_and_visible_focus(self):
         self.page.keyboard.press('Tab')
-        expect(self.page.get_by_role('link', name='Skip to the invitation')).to_be_focused()
+        expect(self.page.get_by_role('link',name='Skip to the invitation')).to_be_focused()
         self.page.keyboard.press('Enter')
+        expect(self.page.locator('#letter-title')).to_be_focused()
+        self.page.keyboard.press('Tab')
+        expect(self.page.get_by_role('button',name='Open the letter',exact=True)).to_be_focused()
+        self.page.keyboard.press('Enter')
+        self.assert_stage('invitation')
         expect(self.page.locator('#invitation-title')).to_be_focused()
         self.page.keyboard.press('Tab')
-        expect(self.page.get_by_role('button', name='Yes!', exact=True)).to_be_focused()
-        self.assertNotEqual(self.page.locator(':focus').evaluate('(el) => getComputedStyle(el).outlineStyle'), 'none')
+        expect(self.page.get_by_role('button',name='Yes',exact=True)).to_be_focused()
+        self.assertNotEqual(self.page.locator(':focus').evaluate('(el)=>getComputedStyle(el).outlineStyle'),'none')
         self.page.keyboard.press('Enter')
         self.assert_stage('celebration')
         self.page.keyboard.press('Tab')
@@ -353,12 +371,14 @@ class RomanticBrowserTests(unittest.TestCase):
         for width in (320, 390, 430, 768, 1024, 1440):
             self.page.set_viewport_size({'width': width, 'height': 900})
             self.page.goto(BASE)
-            for stage in ('invitation', 'celebration', 'scheduler', 'dinner', 'activity', 'ending'):
+            for stage in ('letter', 'invitation', 'celebration', 'scheduler', 'dinner', 'activity', 'ending'):
                 self.assert_stage(stage)
                 self.assertTrue(self.page.evaluate('document.documentElement.scrollWidth <= innerWidth'), (width, stage))
                 self.assertEqual(self.page.locator(f'[data-stage="{stage}"]').evaluate('(el) => getComputedStyle(el).animationName'), 'none')
-                if stage == 'invitation':
-                    self.page.get_by_role('button', name='Yes!', exact=True).click()
+                if stage == 'letter':
+                    self.open_letter()
+                elif stage == 'invitation':
+                    self.page.get_by_role('button', name='Yes', exact=True).click()
                 elif stage == 'scheduler':
                     self.choose_schedule()
                     self.assertTrue(self.page.evaluate('document.documentElement.scrollWidth <= innerWidth'), (width, 'calendar'))
@@ -388,6 +408,7 @@ class RomanticBrowserTests(unittest.TestCase):
         self.assertIn('Asia/Manila', copied)
         self.assertIn('6:00 PM', copied)
         self.assertIn(EXACT_NOTE, copied)
+        self.assertIn(CLOSING_NOTE,copied)
 
     def test_expired_ending_is_guarded_on_focus_and_copy(self):
         self.context.grant_permissions(['clipboard-read', 'clipboard-write'])
@@ -479,8 +500,145 @@ class RomanticBrowserTests(unittest.TestCase):
         finally:
             context.close()
 
+    def test_sealed_letter_caption_opening_and_refresh(self):
+        expect(self.page.locator('#letter-title')).to_have_text('Hey, I want you to open this for me.')
+        self.assert_stage('letter')
+        self.assertEqual(self.page.locator('.letter-insert').evaluate('(el)=>getComputedStyle(el).opacity'),'0')
+        self.assertNotEqual(self.page.locator('.sealed-letter-svg').evaluate('(el)=>getComputedStyle(el).animationName'),'none')
+        expect(self.page.locator('.progress-nav')).not_to_be_visible()
+        trigger=self.page.get_by_role('button',name='Open the letter',exact=True)
+        trigger.click()
+        expect(trigger).to_be_disabled()
+        self.assert_stage('invitation')
+        self.page.reload()
+        self.assert_stage('letter')
+        self.page.emulate_media(reduced_motion='reduce')
+        self.open_letter()
+        self.assert_stage('invitation')
+
+    def test_no_dodges_mouse_keyboard_touch_without_accepting(self):
+        self.open_letter()
+        no=self.page.get_by_role('button',name='No',exact=True)
+        previous=no.bounding_box()
+        for _ in range(4):
+            no.click()
+            self.page.wait_for_timeout(280)
+            current=no.bounding_box()
+            self.assertGreater(abs(current['x']-previous['x'])+abs(current['y']-previous['y']),50)
+            self.assertGreaterEqual(current['x'],0)
+            self.assertGreaterEqual(current['y'],0)
+            self.assertLessEqual(current['x']+current['width'],1440)
+            self.assertLessEqual(current['y']+current['height'],1000)
+            self.assert_stage('invitation')
+            yes=self.page.get_by_role('button',name='Yes',exact=True).bounding_box()
+            self.assertFalse(current['x']<yes['x']+yes['width'] and current['x']+current['width']>yes['x'] and current['y']<yes['y']+yes['height'] and current['y']+current['height']>yes['y'])
+            previous=current
+        no.focus()
+        self.page.keyboard.press('Enter')
+        self.page.wait_for_timeout(280)
+        expect(no).to_be_focused()
+        self.assert_stage('invitation')
+        self.page.keyboard.press('Escape')
+        self.assertFalse(no.evaluate('(el)=>el.classList.contains("is-dodging")'))
+        context=self.browser.new_context(viewport={'width':390,'height':844},is_mobile=True,has_touch=True)
+        try:
+            page=context.new_page()
+            self.observe_page(page)
+            page.clock.install(time=FIXTURE_NOW)
+            page.goto(BASE)
+            self.open_letter(page)
+            for _ in range(3):
+                page.get_by_role('button',name='No',exact=True).tap()
+                page.wait_for_timeout(300)
+                bounds=page.locator('#no-button').bounding_box()
+                self.assertGreaterEqual(bounds['x'],0)
+                self.assertLessEqual(bounds['x']+bounds['width'],390)
+                self.assertGreaterEqual(bounds['y'],0)
+                self.assertLessEqual(bounds['y']+bounds['height'],844)
+                self.assert_stage('invitation',page)
+            self.accept(page)
+            self.assert_stage('scheduler',page)
+        finally:
+            context.close()
+
+    def test_no_reduced_motion_bounds_and_zoom(self):
+        self.page.emulate_media(reduced_motion='reduce')
+        for width in (320,390,430,768,1024,1440):
+            self.page.set_viewport_size({'width':width,'height':900})
+            self.page.goto(BASE)
+            self.open_letter()
+            no=self.page.get_by_role('button',name='No',exact=True)
+            for key in ('Enter','Space'):
+                no.focus()
+                self.page.keyboard.press(key)
+                self.page.wait_for_timeout(240)
+                bounds=no.bounding_box()
+                self.assertGreaterEqual(bounds['x'],0)
+                self.assertLessEqual(bounds['x']+bounds['width'],width)
+                self.assertGreaterEqual(bounds['y'],0)
+                self.assertLessEqual(bounds['y']+bounds['height'],900)
+                self.assertEqual(no.evaluate('(el)=>getComputedStyle(el).transitionDuration'),'0s')
+                self.assert_stage('invitation')
+        self.page.set_viewport_size({'width':768,'height':1000})
+        self.page.goto(BASE)
+        self.page.evaluate('document.body.style.zoom="2"')
+        self.open_letter()
+        no=self.page.get_by_role('button',name='No',exact=True)
+        no.focus()
+        self.page.keyboard.press('Enter')
+        bounds=no.bounding_box()
+        self.assertGreaterEqual(bounds['x'],0)
+        self.assertLessEqual(bounds['x']+bounds['width'],768)
+        self.assertGreaterEqual(bounds['y'],0)
+        self.assertLessEqual(bounds['y']+bounds['height'],1000)
+        self.page.get_by_role('button',name='Yes',exact=True).click()
+        self.assert_stage('celebration')
+
+    def test_idle_choices_float_then_stop_on_interaction_and_pause(self):
+        self.open_letter()
+        self.page.mouse.move(1,1)
+        self.page.wait_for_timeout(4700)
+        self.assertTrue(self.page.locator('body').evaluate('(el)=>el.classList.contains("is-idle")'))
+        yes=self.page.get_by_role('button',name='Yes',exact=True)
+        self.assertEqual(yes.evaluate('(el)=>getComputedStyle(el).animationName'),'idle-option-float')
+        self.page.mouse.move(22,22)
+        self.assertFalse(self.page.locator('body').evaluate('(el)=>el.classList.contains("is-idle")'))
+        self.page.get_by_role('button',name='Pause floating hearts',exact=True).click()
+        self.page.wait_for_timeout(4700)
+        self.assertFalse(self.page.locator('body').evaluate('(el)=>el.classList.contains("is-idle")'))
+        self.page.get_by_role('button',name='Play floating hearts',exact=True).click()
+        self.accept()
+        self.choose_schedule()
+        self.next()
+        self.choose_food()
+        self.page.mouse.move(1,1)
+        self.page.wait_for_timeout(4700)
+        self.assertEqual(self.page.locator('.food-grid .choice-card').first.evaluate('(el)=>getComputedStyle(el).animationName'),'idle-option-float')
+        expect(self.page.locator('input[value="pizza"]')).to_be_checked()
+        self.page.mouse.move(22,22)
+        self.assertFalse(self.page.locator('body').evaluate('(el)=>el.classList.contains("is-idle")'))
+
+    def test_calendar_stickers_new_dates_and_bottom_message(self):
+        self.accept()
+        self.assertEqual(self.page.locator('.calendar-sticker').count(),3)
+        self.assertNotIn('A little day for us · highlighted dates only',self.page.locator('body').inner_text())
+        for day in ['2026-10-30','2026-10-31']:
+            self.page.locator('#date-trigger').click()
+            self.page.locator(f'[data-date="{day}"]').click()
+            expect(self.page.locator('#date-display')).to_contain_text('October '+day[-2:])
+        self.page.locator('#time-select').select_option('19:00')
+        self.next()
+        self.next()
+        self.choose_activity(value='arcade')
+        self.finish()
+        expect(self.page.locator('#summary-date')).to_contain_text('October 31, 2026')
+        expect(self.page.locator('#closing-message')).to_have_text(CLOSING_NOTE)
+        self.assertTrue(self.page.locator('.closing-love-note').evaluate('(el)=>el===el.parentElement.lastElementChild'))
+        expect(self.page.locator('.site-footer')).not_to_be_visible()
+        expect(self.page.locator('#final-message')).to_have_text(EXACT_NOTE)
+
     def test_actual_screenshots_desktop_and_mobile(self):
-        output = ROOT / 'docs' / 'previews' / 'heart-refresh'
+        output = ROOT / 'docs' / 'previews' / 'client-revision'
         output.mkdir(parents=True, exist_ok=True)
         for name, options in (
             ('desktop', {'viewport': {'width': 1440, 'height': 1000}}),
@@ -495,14 +653,18 @@ class RomanticBrowserTests(unittest.TestCase):
                 def capture(stage):
                     page.wait_for_timeout(1250 if stage == 'celebration' else 700)
                     page.screenshot(path=str(output / f'{name}-{stage}.png'), full_page=True)
+                capture('letter')
+                self.open_letter(page)
                 capture('invitation')
-                page.get_by_role('button', name='Yes!', exact=True).tap() if name == 'mobile' else page.get_by_role('button', name='Yes!', exact=True).click()
+                page.get_by_role('button',name='No',exact=True).tap() if name == 'mobile' else page.get_by_role('button',name='No',exact=True).click()
+                capture('no-dodge')
+                page.get_by_role('button', name='Yes', exact=True).tap() if name == 'mobile' else page.get_by_role('button', name='Yes', exact=True).click()
                 self.assert_stage('celebration', page)
                 capture('celebration')
                 self.next(page)
                 page.locator('#date-trigger').click()
                 capture('calendar')
-                page.locator('[data-date="2026-10-28"]').click()
+                page.locator('[data-date="2026-10-31"]').click()
                 page.locator('#time-select').select_option('18:00')
                 capture('time')
                 self.next(page)

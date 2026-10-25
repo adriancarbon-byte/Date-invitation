@@ -20,6 +20,12 @@ let particleTimer;
 let selectionTimer;
 let celebrationOrigin = null;
 let heartsPaused = false;
+let letterOpening = false;
+let letterTimer;
+let idleTimer;
+let lastIdleReset = 0;
+let dodgeCount = 0;
+let lastDodgeAt = -Infinity;
 let availabilityTimer;
 const dateLabel = value => new Intl.DateTimeFormat('en-US', {
   timeZone: config.timezone, month: 'long', day: 'numeric', year: 'numeric',
@@ -80,6 +86,7 @@ for (const slot of config.allowedTimes) {
   timeSelect.append(option);
 }
 $('#final-message').textContent = config.finalMessage;
+$('#closing-message').textContent = config.closingMessage;
 
 function renderCalendar() {
   const state = store.getState();
@@ -141,6 +148,17 @@ function createAmbientHearts() {
     item.style.setProperty('--drift',`${index % 2 ? 16 : -16}px`);
     item.style.setProperty('--heart-opacity',`${index % 4 === 0 ? .23 : .13}`);
     $('#ambient-hearts').append(item);
+  });
+  [[12,19],[88,13],[6,72],[93,42],[31,88],[73,82],[37,8],[64,64]].forEach(([x,y],index) => {
+    const charm = document.createElement('span');
+    charm.className = 'ambient-charm';
+    charm.style.left = `${x}%`;
+    charm.style.top = `${y}%`;
+    charm.style.setProperty('--float-time',`${12 + index % 4}s`);
+    charm.style.setProperty('--float-delay',`${-index * 1.7}s`);
+    charm.style.setProperty('--drift',`${index % 2 ? 12 : -12}px`);
+    charm.innerHTML = index % 2 ? '<svg viewBox="0 0 24 24"><path d="m12 2 2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5Z"/></svg>' : '<svg viewBox="0 0 24 24"><path d="M12 9C1-4-4 12 9 12-4 24 12 28 12 15c12 13 17-3 3-3C28 0 12-4 12 9Z"/><circle cx="12" cy="12" r="2"/></svg>';
+    $('#ambient-hearts').append(charm);
   });
 }
 function clearParticles() {
@@ -205,6 +223,96 @@ function selectionBloom(element) {
   $('#selection-sparkles').append(group);
   selectionTimer = setTimeout(clearSelectionSparkles,1100);
 }
+function stopIdleMotion() {
+  clearTimeout(idleTimer);
+  document.body.classList.remove('is-idle');
+}
+function resetIdleMotion(event) {
+  if (document.body.classList.contains('is-idle')) document.body.classList.remove('is-idle');
+  if (event?.type === 'pointermove' && performance.now() - lastIdleReset < 600) return;
+  lastIdleReset = performance.now();
+  clearTimeout(idleTimer);
+  if (!motionAllowed()) return;
+  idleTimer = setTimeout(() => {
+    if (motionAllowed()) document.body.classList.add('is-idle');
+  },4500);
+}
+for (const type of ['pointermove','pointerdown','keydown','scroll']) document.addEventListener(type,resetIdleMotion,{passive:true});
+function resetNoDodge() {
+  const no = $('#no-button');
+  no.classList.remove('is-dodging');
+  $('.no-slot').append(no);
+  no.style.removeProperty('left');
+  no.style.removeProperty('top');
+  no.style.removeProperty('width');
+  dodgeCount = 0;
+  lastDodgeAt = -Infinity;
+  $('#no-tease').textContent = 'p.s. one of these buttons is a little shy.';
+}
+function dodgeNo(event, repositionOnly = false) {
+  if (store.getState().screen !== 'invitation') return;
+  resetIdleMotion();
+  event?.preventDefault();
+  event?.stopPropagation();
+  if (!repositionOnly && performance.now() - lastDodgeAt < 220) return;
+  const no = $('#no-button');
+  const current = no.getBoundingClientRect();
+  const width = Math.min(current.width,innerWidth - 32);
+  const height = current.height;
+  const maxX = Math.max(16,innerWidth - width - 16);
+  const maxY = Math.max(16,innerHeight - height - 16);
+  const protectedRects = [
+    $('[data-action="accept"]'),$('#motion-toggle'),$('#invitation-title'),$('.opening>.eyebrow'),$('.opening-signoff'),$('#no-tease'),
+  ].map(element => element.getBoundingClientRect());
+  const candidates = [];
+  for (const x of [16,maxX,Math.max(16,(innerWidth - width) / 2)]) {
+    for (const y of [96,innerHeight * .24,innerHeight * .42,innerHeight * .68,maxY - 18]) {
+      const point = {x:Math.max(16,Math.min(x,maxX)),y:Math.max(16,Math.min(y,maxY))};
+      if (!protectedRects.some(rect => point.x < rect.right + 16 && point.x + width > rect.left - 16 && point.y < rect.bottom + 12 && point.y + height > rect.top - 12) && Math.hypot(point.x - current.left,point.y - current.top) > 80) candidates.push(point);
+    }
+  }
+  const point = candidates.length ? candidates[(dodgeCount * 7) % candidates.length] : {x:Math.max(16,Math.min(current.left,maxX)),y:Math.max(16,Math.min(current.top,maxY))};
+  const bodyZoom = Number.parseFloat(getComputedStyle(document.body).zoom) || 1;
+  no.style.width = `${width / bodyZoom}px`;
+  no.style.left = `${point.x / bodyZoom}px`;
+  no.style.top = `${point.y / bodyZoom}px`;
+  no.classList.add('is-dodging');
+  document.body.append(no);
+  if (!repositionOnly) {
+    const captions = ['Oops. That button has butterflies.','A little shy. A little dramatic.','BRB, pretending to play hard to get.','The No button has left the chat.','Plot twist: it’s very bad at sitting still.','Okay, who gave this button tiny legs?'];
+    $('#no-tease').textContent = captions[dodgeCount % captions.length];
+    dodgeCount++;
+    lastDodgeAt = performance.now();
+    no.focus({preventScroll:true});
+    selectionBloom(no);
+  }
+}
+$('#no-button').addEventListener('pointerdown',event => dodgeNo(event));
+$('#no-button').addEventListener('click',event => dodgeNo(event));
+document.addEventListener('keydown',event => {
+  if (event.key === 'Escape' && $('#no-button').classList.contains('is-dodging')) {
+    resetNoDodge();
+    $('#no-tease').textContent = 'Phew. Back where we started.';
+  }
+});
+window.addEventListener('resize',() => { if ($('#no-button').classList.contains('is-dodging')) dodgeNo(null,true); });
+function openLetter(button) {
+  if (letterOpening || store.getState().screen !== 'letter') return;
+  letterOpening = true;
+  button.disabled = true;
+  document.body.classList.add('letter-opening');
+  $('#letter-hint').textContent = 'Opening a little something lovely…';
+  const startedSession = session;
+  const reveal = () => {
+    letterOpening = false;
+    button.disabled = false;
+    document.body.classList.remove('letter-opening');
+    if (session === startedSession && store.getState().screen === 'letter') navigate({type:'openLetter'});
+  };
+  // Navigation does not depend on an animation event; reduced motion opens immediately.
+  if (motionAllowed()) letterTimer = setTimeout(reveal,960);
+  else reveal();
+}
 function updateMotionControl() {
   const button = $('#motion-toggle');
   document.body.classList.toggle('hearts-paused',heartsPaused);
@@ -212,7 +320,8 @@ function updateMotionControl() {
   button.setAttribute('aria-pressed',String(heartsPaused || reducedMotion.matches));
   button.setAttribute('aria-label',reducedMotion.matches ? 'Heart animation is off because reduced motion is enabled' : heartsPaused ? 'Play floating hearts' : 'Pause floating hearts');
   button.querySelector('span').textContent = reducedMotion.matches ? 'Motion reduced' : heartsPaused ? 'Play hearts' : 'Pause hearts';
-  if (heartsPaused || reducedMotion.matches) { clearParticles(); clearSelectionSparkles(); }
+  if (heartsPaused || reducedMotion.matches) { clearParticles(); clearSelectionSparkles(); stopIdleMotion(); }
+  else resetIdleMotion();
 }
 $('#motion-toggle').addEventListener('click',() => { heartsPaused = !heartsPaused; updateMotionControl(); });
 createAmbientHearts();
@@ -256,6 +365,14 @@ function render(state) {
   scheduleAvailabilityCheck(state);
   document.title = `${active?.label || 'Just for you'} · Just for you`;
   if (changed) {
+    resetNoDodge();
+    stopIdleMotion();
+    resetIdleMotion();
+    clearTimeout(letterTimer);
+    letterOpening = false;
+    document.body.classList.remove('letter-opening');
+    $('[data-action="open-letter"]').disabled = false;
+    $('#letter-hint').textContent = 'Tap the heart. There’s a little something inside.';
     closeCalendar();
     $('#preview-error').hidden = true;
     $('#scheduler-error').hidden = true;
@@ -282,7 +399,7 @@ function navigate(action, replace = false) {
 function planText() {
   const state = store.getState();
   const food = config.dinner.options.filter(option => state.foodIds.includes(option.id)).map(option => option.label).join(', ') || 'Decide together';
-  return `Our little plan — confirmation preview\n${dateLabel(state.date)}\n${config.allowedTimes.find(slot => slot.value === state.time)?.label} · Asia/Manila (sample time)\n${config.activities.find(option => option.id === state.activityId)?.label}${config.dinner.enabled ? `\nFood (provisional): ${food}` : ''}\n\n${config.finalMessage}\n\nNothing has been sent or booked.`;
+  return `Our little plan — confirmation preview\n${dateLabel(state.date)}\n${config.allowedTimes.find(slot => slot.value === state.time)?.label} · Asia/Manila (sample time)\n${config.activities.find(option => option.id === state.activityId)?.label}${config.dinner.enabled ? `\nFood (provisional): ${food}` : ''}\n\n${config.finalMessage}\n\n${config.closingMessage}\n\nNothing has been sent or booked.`;
 }
 async function copyPlan() {
   if (!validatePlan(store.getState()).valid) { recheckSchedule(); return; }
@@ -350,6 +467,7 @@ document.addEventListener('click', async event => {
   if (performance.now() < navigationUntil && !['copy'].includes(button.dataset.action)) return;
   if (button.dataset.step) { navigate({type:'restore', screen:button.dataset.step}); return; }
   switch (button.dataset.action) {
+    case 'open-letter': openLetter(button); break;
     case 'accept': {
       const bounds = button.getBoundingClientRect();
       celebrationOrigin = {x:bounds.left + bounds.width / 2,y:bounds.top + bounds.height / 2};
@@ -417,7 +535,7 @@ window.addEventListener('popstate', event => {
 });
 function scheduleAvailabilityCheck(state) {
   clearTimeout(availabilityTimer);
-  if (!state.date || ['invitation','celebration'].includes(state.screen)) return;
+  if (!state.date || ['letter','invitation','celebration'].includes(state.screen)) return;
   const midnight = new Date(`${state.date}T00:00:00+08:00`).getTime() + 86400000;
   const slot = state.time && config.rejectElapsedSampleTimes ? new Date(`${state.date}T${state.time}:00+08:00`).getTime() : midnight;
   const remaining = Math.min(midnight,slot) - Date.now() + 10;
@@ -428,7 +546,7 @@ function recheckSchedule() {
   const state = store.getState();
   const staleDate = state.date && !isAllowedDate(state.date);
   const staleTime = state.time && !isAllowedTime(state.time,state.date);
-  if ((staleDate || staleTime) && !['invitation','celebration'].includes(state.screen)) {
+  if ((staleDate || staleTime) && !['letter','invitation','celebration'].includes(state.screen)) {
     if (state.screen !== 'scheduler') navigate({type:'restore',screen:'scheduler'});
     store.dispatch(staleDate ? {type:'date',value:null} : {type:'time',value:null});
     $('#scheduler-error').textContent = 'That day or sample time has passed. Please choose an available one.';
@@ -438,7 +556,7 @@ function recheckSchedule() {
 }
 document.addEventListener('visibilitychange', () => {
   document.body.classList.toggle('motion-paused', document.hidden);
-  if (document.hidden) { clearParticles(); clearSelectionSparkles(); } else recheckSchedule();
+  if (document.hidden) { clearParticles(); clearSelectionSparkles(); stopIdleMotion(); } else { recheckSchedule(); resetIdleMotion(); }
 });
 window.addEventListener('focus', recheckSchedule);
 reducedMotion.addEventListener('change',updateMotionControl);

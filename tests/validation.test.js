@@ -7,15 +7,15 @@ import { allowedDates, manilaDay, isAllowedDate, isAllowedTime, validatePlan } f
 const before = new Date('2026-10-25T12:00:00Z');
 const plan = { invitationAnswer: 'yes', date: '2026-10-28', time: '18:00', activityId: 'arcade', foodIds: [] };
 
-test('exact allowlist contains 32 unique approved dates and excludes October 30/31', () => {
-  assert.equal(allowedDates.length, 32);
-  assert.equal(new Set(allowedDates).size, 32);
+test('exact allowlist contains 34 unique approved dates including October 30/31', () => {
+  assert.equal(allowedDates.length, 34);
+  assert.equal(new Set(allowedDates).size, 34);
   assert.equal(allowedDates[0], '2026-10-28');
   assert.equal(allowedDates[1], '2026-10-29');
   assert.equal(allowedDates.at(-1), '2026-11-30');
   assert.equal(allowedDates.filter(date => date.startsWith('2026-11-')).length, 30);
   for (const date of allowedDates) assert.equal(isAllowedDate(date, before), true);
-  for (const date of ['2026-10-27', '2026-10-30', '2026-10-31', '2026-11-31', '2026-12-01', '2027-11-01', '2026-11-1', '', null]) {
+  for (const date of ['2026-10-26', '2026-10-27', '2026-11-31', '2026-12-01', '2027-11-01', '2026-11-1', '', null]) {
     assert.equal(isAllowedDate(date, before), false, String(date));
   }
 });
@@ -38,9 +38,9 @@ test('date set becomes unavailable after November without extending to a new yea
   assert.equal(isAllowedDate('2027-11-01', after), false);
 });
 
-test('October gap, last November day, and same-day sample times validate correctly', () => {
+test('additional October days, last November day, and same-day sample times validate correctly', () => {
   assert.equal(isAllowedTime('18:00', '2026-11-01', config, new Date('2026-10-29T16:00:00Z')), true);
-  assert.equal(isAllowedTime('18:00', '2026-10-30', config, before), false);
+  assert.equal(isAllowedTime('18:00', '2026-10-30', config, before), true);
   assert.equal(isAllowedTime('21:00', '2026-11-30', config, before), true);
   const now = new Date('2026-10-28T10:00:00Z');
   assert.equal(isAllowedTime('17:00', '2026-10-28', config, now), false);
@@ -60,7 +60,7 @@ test('same-day elapsed policy and sample slots can be configured centrally', () 
 test('plan validation rejects tampering and handles optional/omitted food correctly', () => {
   assert.equal(validatePlan(plan, config, before).valid, true);
   assert.equal(validatePlan({ ...plan, invitationAnswer: null }, config, before).valid, false);
-  assert.equal(validatePlan({ ...plan, date: '2026-10-31' }, config, before).valid, false);
+  assert.equal(validatePlan({ ...plan, date: '2026-10-27' }, config, before).valid, false);
   assert.equal(validatePlan({ ...plan, time: '16:00' }, config, before).valid, false);
   assert.equal(validatePlan({ ...plan, activityId: 'unknown' }, config, before).valid, false);
   for (const foodIds of [['unknown'], ['pizza', 'pizza'], null]) assert.equal(validatePlan({ ...plan, foodIds }, config, before).valid, false);

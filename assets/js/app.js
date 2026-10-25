@@ -1,7 +1,7 @@
 import { config } from './config.js';
 import { createStore } from './state.js';
 import { allowedDates, isAllowedDate, isAllowedTime, validatePlan } from './validation.js';
-import { previewSubmission, sendPlan } from './submission.js';
+import { previewSubmission, sendPlan, deliveryMessage } from './submission.js';
 
 const artPath = name => `./assets/art/${name}.svg`;
 const store = createStore();
@@ -407,7 +407,7 @@ function render(state) {
   const status = state.submission.status;
   $('#send-plan').disabled = status === 'sending' || status === 'sent';
   $('#send-plan').textContent = status === 'sending' ? 'Sending a little happiness…' : status === 'sent' ? 'Our plan is on its way ♡' : status === 'error' ? 'Try sending again ♡' : 'Send our plan ♡';
-  $('#send-status').textContent = status === 'sending' ? 'Sending your choices. One little moment…' : status === 'sent' ? 'Your plan was accepted by the email service. You’ve just made someone smile.' : status === 'error' ? 'We couldn’t confirm that your plan was sent. Your choices are safe here; check your connection and try again. If it keeps happening, share the plan directly.' : '';
+  $('#send-status').textContent = status === 'sending' ? 'Sending your choices. One little moment…' : status === 'sent' ? 'Your plan was accepted by the email service. You’ve just made someone smile.' : status === 'error' ? deliveryMessage(state.submission.errorCode) : '';
   $('#send-status').classList.toggle('is-error',status === 'error');
   $('#edit-plan').hidden = status === 'sent';
   $('#edit-plan').disabled = status === 'sending';
@@ -536,8 +536,8 @@ document.addEventListener('click', async event => {
       try {
         const result = await sendPlan(plan);
         if (session === startedSession) { store.dispatch({type:'sendSuccess',result}); celebrate(); }
-      } catch {
-        if (session === startedSession) store.dispatch({type:'sendError'});
+      } catch (error) {
+        if (session === startedSession) store.dispatch({type:'sendError', errorCode:error?.code});
       } finally {
         busy = false;
         $('#main').removeAttribute('aria-busy');

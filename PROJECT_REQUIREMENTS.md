@@ -1,5 +1,17 @@
 # Project requirements
 
+## Current Netlify delivery repair
+
+The urgent sending repair replaces Netlify's server-side Web3Forms relay with
+server-validated payload preparation followed by the provider-supported browser
+submission. The public form key remains a runtime setting, absent from Git and
+build files, and becomes visible to the submitting browser. Success requires the
+provider's affirmative receipt; no automatic retry or real synthetic email is
+introduced. See [NETLIFY_DEPLOY.md](NETLIFY_DEPLOY.md) for the architecture correction
+and evidence limits. Historical private-relay descriptions below are superseded
+for Netlify only.
+
+
 ## Latest live delivery and hosting migration
 
 The latest user request authorizes publishing and email delivery, confirms the existing food choices, allows any hour/minute through AM/PM wheels, and then requests a replacement host with no ChatGPT domain. This supersedes older mock-only, fixed-slot and release restrictions below. The existing live version and 35 Node/29 browser checks are recorded in [LIVE_DELIVERY.md](LIVE_DELIVERY.md). Netlify migration code and the account-owner deployment step are in [NETLIFY_DEPLOY.md](NETLIFY_DEPLOY.md). The replacement is prepared but is not yet verified live; no connected Netlify publishing account is available. Main remains unmerged.

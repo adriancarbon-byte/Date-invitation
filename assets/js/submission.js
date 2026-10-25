@@ -1,3 +1,16 @@
+const deliveryMessages = Object.freeze({
+  unavailable: 'Email sending is not set up on this site yet. Please ask the inviter to finish the email setup. Your choices are still here.',
+  rejected: 'The email service could not accept the plan. Please ask the inviter to check the email setup. Your choices are still here.',
+  invalid: 'Please edit your plan and check the date and time before sending again. Your choices are still here.',
+  busy: 'Too many sending attempts. Please wait an hour before trying again. Your choices are still here.',
+  unknown: 'We couldn’t confirm that your plan was sent. Your choices are safe here. Please check your connection before trying again; a retry may send a duplicate.',
+});
+export function deliveryMessage(code) {
+  return deliveryMessages[code] || deliveryMessages.unknown;
+}
+function deliveryError(code) {
+  return Object.assign(new Error(deliveryMessage(code)), { code });
+}
 // Reviewing a plan is local. Only the explicit Send button calls the server.
 export async function previewSubmission() {
   return Object.freeze({ mode: 'mock', sent: false });
@@ -8,8 +21,23 @@ export async function sendPlan(plan, request = globalThis.fetch, endpoint = '/ap
     body: JSON.stringify({ invitationAnswer: plan.invitationAnswer, date: plan.date, time: plan.time, foodIds: [...plan.foodIds], activityId: plan.activityId }),
     signal: AbortSignal.timeout(20000),
   });
+  if (!response.ok) {
+    const code = ({ 400: 'invalid', 404: 'unavailable', 405: 'unavailable', 429: 'busy', 502: 'rejected', 503: 'unavailable' })[response.status];
+    throw deliveryError(code || 'unknown');
+  }
   let result;
-  try { result = await response.json(); } catch { throw new Error('The server could not confirm delivery.'); }
-  if (!response.ok || result.accepted !== true) throw new Error('The email service did not accept your plan.');
+  try { result = await response.json(); } catch { throw deliveryError('unknown'); }
+  if (result.prepared === true) {
+    if (!result.payload || typeof result.payload.access_key !== 'string' || !result.payload.access_key.trim()) throw deliveryError('unavailable');
+    // Use the fixed provider URL, never a URL supplied by a response or visitor.
+    const delivery = await request('https://api.web3forms.com/submit', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(result.payload), signal: AbortSignal.timeout(20000),
+      credentials: 'omit',
+    });
+    let receipt;
+    try { receipt = await delivery.json(); } catch { throw deliveryError('unknown'); }
+    if (!delivery.ok || receipt.success !== true) throw deliveryError(delivery.status === 429 ? 'busy' : 'rejected');
+  } else if (result.accepted !== true) throw deliveryError('unknown');
   return Object.freeze({ accepted: true });
 }

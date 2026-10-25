@@ -417,6 +417,38 @@ class RomanticBrowserTests(unittest.TestCase):
         self.assertEqual(len(requests),1)
         self.assertEqual(requests[0],{'invitationAnswer':'yes','date':'2026-10-28','time':'18:00','foodIds':['pizza','ramen'],'activityId':'city-lights'})
 
+    def test_netlify_browser_delivery_uses_packaged_csp_and_waits_for_provider(self):
+        html = (ROOT / 'dist/index.html').read_text()
+        self.page.route(BASE, lambda route: route.fulfill(status=200, content_type='text/html', body=html))
+        prepared = '{"prepared":true,"payload":{"access_key":"fixture-public-form-key","message":"Synthetic plan"}}'
+        calls = []
+        def prepare(route):
+            calls.append('prepare')
+            route.fulfill(status=200, content_type='application/json', body=prepared)
+        def reject(route):
+            calls.append('provider')
+            route.fulfill(status=200, content_type='application/json', body='{"success":false}')
+        self.page.route('**/api/invitations', prepare)
+        self.page.route('https://api.web3forms.com/submit', reject)
+        self.page.goto(BASE)
+        self.full_journey()
+        self.assertEqual(calls, [])
+        self.page.locator('#send-plan').click()
+        expect(self.page.locator('#send-status')).to_contain_text('could not accept')
+        expect(self.page.locator('#summary-date')).to_contain_text('October 28')
+        self.assertEqual(calls, ['prepare', 'provider'])
+        self.page.unroute('https://api.web3forms.com/submit')
+        def accept(route):
+            calls.append('provider')
+            route.fulfill(status=200, content_type='application/json', body='{"success":true}')
+        self.page.route('https://api.web3forms.com/submit', accept)
+        self.page.locator('#send-plan').evaluate('(button)=>{button.click();button.click()}')
+        expect(self.page.locator('#send-status')).to_contain_text('accepted by the email service')
+        expect(self.page.locator('#send-plan')).to_be_disabled()
+        self.assertEqual(calls, ['prepare', 'provider', 'prepare', 'provider'])
+        self.assertEqual(self.external, ['https://api.web3forms.com/submit'] * 2)
+        self.external.clear()
+
     def test_send_failure_preserves_choices_and_can_retry(self):
         self.page.route('**/api/invitations',lambda route: route.fulfill(status=200,content_type='application/json',body='{"accepted":false}'))
         self.full_journey()

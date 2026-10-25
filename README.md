@@ -2,7 +2,7 @@
 
 **Live invitation update.** A centered, off-white invitation with original pastel SVG artwork, a coordinated serif/sans/handwritten font palette, floating hearts, a sealed-letter entrance, a playful dodging No, a heart-shaped Yes celebration, a sticker-decorated calendar, illustrated preference cards, and a personal keepsake ending. The hosted version includes an explicit email submission through a private server relay. See [LIVE_DELIVERY.md](LIVE_DELIVERY.md) for the current deployment and delivery behavior; earlier phase documents are historical.
 
-For the requested replacement address without ChatGPT, use the prepared [Netlify deployment](NETLIFY_DEPLOY.md). It retains server-side email delivery and needs a one-time Netlify sign-in. The replacement is not yet deployed.
+The user has deployed the Netlify invitation and reported an email failure. The [Netlify repair](NETLIFY_DEPLOY.md) changes delivery to the provider-supported browser request after server validation. The template-created production repository is `adriancarbon-byte/Date-invitation-c8933` on `main`; the original source remains on `codex/romantic-redesign`. Live acceptance and inbox receipt still need verification.
 
 ## Open the preview — no installation
 

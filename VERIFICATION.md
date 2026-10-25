@@ -122,3 +122,43 @@ The preservation commit and pull request do not establish website functionality,
 ## 9. Phase 1 foundation verification
 
 Phase 1 starts at latest merged main commit `dc4b1ebfc1c53b72d2420186acb5a680644b8286` on `codex/phase1-foundation`. The approved working foundation has now been built with compiled Tailwind and rendered locally. Detailed checks, actual screenshots, preview instructions, scope, and limitations are recorded in [PHASE1_REVIEW.md](PHASE1_REVIEW.md). Historical “not implemented” statements above describe the earlier checkpoint, not the current Phase 1 files. No live submissions, notifications, public Site, Pages deployment, or automatic merge is part of Phase 1.
+
+## Netlify sending investigation — 2026-10-26
+
+User reported a live sending failure and confirmed GitHub-connected Netlify
+hosting. Inspected the application on `codex/romantic-redesign` in a local
+`fix/plan-delivery` branch. Added safe deployment/provider/validation/rate-limit
+messages, preserving unknown-delivery wording, choices, retries and the success
+receipt gate. `npm test`: 37 passed. Regenerated the embedded preview and Netlify
+public files; `git diff --check` passed. No real email submitted.
+
+Live Netlify access was denied by the environment proxy; no Netlify management
+connection or runtime secret binding is available. The live root cause and account
+configuration remain unverified. Changes are saved locally, not pushed or deployed.
+
+
+## Netlify provider integration repair — 2026-10-26
+
+Further user evidence confirms the runtime variable in All scopes/Production and
+an HTTP 502 from the live API. Official Web3Forms troubleshooting states that
+standard API submissions must run in the browser and server-side proxy calls can
+be blocked. Replaced the Netlify relay with validated, no-store preparation and
+browser-side submission. The public form key is read from runtime settings,
+returned only on explicit valid preparation, and never embedded in Git/builds.
+The existing Sites Worker path is retained without a new deployment.
+
+Checks: 40 Node tests passed; `npm run build:netlify` passed; three focused Chromium
+checks passed, including the exact packaged Netlify HTML/CSP, provider rejection,
+manual retry, affirmative acceptance and pending/sent click locking. All provider
+requests were intercepted with fixtures; no real email was sent. An initial browser
+check exposed that the test had not navigated to the packaged HTML after installing
+its route; corrected the harness and reran successfully. No visual change required
+new screenshots. `git diff --check` passed.
+
+Found accessible template copy `adriancarbon-byte/Date-invitation-c8933` with main at
+migration SHA `3ad28f1`, identical to the original source branch. Both inspected
+source trees have no `.github` workflows. GitHub CLI API reads and live Netlify
+access are denied by the runtime proxy; GitHub plugin reads work. The repository
+copy has no commit statuses exposing a deployment URL. Production branch updates
+are intended to trigger the user's existing Netlify GitHub deployment under the
+urgent live-repair request. Deployment success and inbox receipt remain unverified.

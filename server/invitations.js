@@ -6,8 +6,8 @@ const json = (status, body) => new Response(JSON.stringify(body), { status, head
   'X-Content-Type-Options': 'nosniff',
 }});
 
-// An explicit same-origin submission is the only email boundary. No answer logs or storage.
-export async function handleInvitation(request, env, providerFetch = fetch, now = new Date()) {
+// Validate the explicit same-origin send action. No answer logs or storage.
+export async function prepareInvitation(request, env, now = new Date()) {
   if (request.method !== 'POST') return json(405, { accepted: false });
   const url = new URL(request.url);
   if (request.headers.get('Origin') !== url.origin) return json(403, { accepted: false });
@@ -30,18 +30,29 @@ export async function handleInvitation(request, env, providerFetch = fetch, now 
     plan = JSON.parse(new TextDecoder().decode(bytes));
   } catch { return json(400, { accepted: false }); }
   if (!plan || typeof plan !== 'object' || Array.isArray(plan) || !validatePlan(plan, config, now).valid) return json(400, { accepted: false });
-  if (!env.WEB3FORMS_ACCESS_KEY) return json(503, { accepted: false });
+  if (typeof env.WEB3FORMS_ACCESS_KEY !== 'string' || !env.WEB3FORMS_ACCESS_KEY.trim()) return json(503, { accepted: false });
   const activity = config.activities.find(option => option.id === plan.activityId).label;
   const food = config.dinner.options.filter(option => plan.foodIds.includes(option.id)).map(option => option.label).join(', ') || 'Decide together';
   const [hour,minute] = plan.time.split(':').map(Number);
   const time = `${hour % 12 || 12}:${String(minute).padStart(2,'0')} ${hour >= 12 ? 'PM' : 'AM'}`;
+  // Web3Forms form access keys are public submit-only identifiers, not management secrets.
+  // Return the validated payload without logging or caching it. The browser must submit it.
+  return json(200, { prepared: true, payload: {
+    access_key: env.WEB3FORMS_ACCESS_KEY.trim(), subject: 'She said yes! Your little date plan ♡', from_name: 'Your romantic invitation',
+    answer: 'Yes', date: plan.date, time: `${time} · Asia/Manila (UTC+08:00)`, food, activity,
+    message: `She said yes!\n\nDate: ${plan.date}\nTime: ${time} · Asia/Manila\nFood: ${food}\nActivity: ${activity}\n\nThese choices were shared using Send our plan on your invitation.`,
+  }});
+}
+
+// Legacy Worker adapter. Netlify uses prepareInvitation so delivery happens in the browser.
+export async function handleInvitation(request, env, providerFetch = fetch, now = new Date()) {
+  const prepared = await prepareInvitation(request, env, now);
+  if (!prepared.ok) return prepared;
+  const { payload } = await prepared.json();
   try {
     const response = await providerFetch('https://api.web3forms.com/submit', {
       method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({ access_key: env.WEB3FORMS_ACCESS_KEY, subject: 'She said yes! Your little date plan ♡', from_name: 'Your romantic invitation',
-        answer: 'Yes', date: plan.date, time: `${time} · Asia/Manila (UTC+08:00)`, food, activity,
-        message: `She said yes!\n\nDate: ${plan.date}\nTime: ${time} · Asia/Manila\nFood: ${food}\nActivity: ${activity}\n\nThese choices were shared using Send our plan on your invitation.`,
-      }), signal: AbortSignal.timeout(15000),
+      body: JSON.stringify(payload), signal: AbortSignal.timeout(15000),
     });
     const receipt = await response.json();
     if (!response.ok || receipt.success !== true) return json(502, { accepted: false });

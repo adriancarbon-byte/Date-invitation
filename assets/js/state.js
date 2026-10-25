@@ -99,7 +99,7 @@ export function createStore(settings = config, now = () => new Date()) {
         if (state.screen === 'ending' && state.submission.status === 'sending' && action.result?.accepted === true) next = { ...state, submission: { mode: 'email', status: 'sent', sent: true } };
         break;
       case 'sendError':
-        if (state.submission.status === 'sending') next = { ...state, submission: { mode: 'email', status: 'error', sent: false } };
+        if (state.submission.status === 'sending') next = { ...state, submission: { mode: 'email', status: 'error', sent: false, errorCode: ['unavailable', 'rejected', 'invalid', 'busy'].includes(action.errorCode) ? action.errorCode : 'unknown' } };
         break;
       case 'reset': next = initial(); break;
     }

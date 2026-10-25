@@ -1,10 +1,10 @@
 import { readFile, writeFile, mkdir, rm } from 'node:fs/promises';
 const root = new URL('../', import.meta.url);
 const dist = new URL('dist/',root);
-// Publish only the invitation. Repository files and the server-side key stay private.
+// Publish only the invitation. The public form key is read at function runtime, never bundled.
 let html = await readFile(new URL('docs/preview.html',root),'utf8');
-html = html.replace("connect-src 'none'", "connect-src 'self'");
-if (!html.includes("connect-src 'self'") || html.includes('chatgpt.site')) throw new Error('Unexpected hosted page configuration');
+html = html.replace("connect-src 'none'", "connect-src 'self' https://api.web3forms.com");
+if (!html.includes("connect-src 'self' https://api.web3forms.com") || html.includes('chatgpt.site')) throw new Error('Unexpected hosted page configuration');
 await rm(dist,{recursive:true,force:true});
 await mkdir(dist,{recursive:true});
 await writeFile(new URL('index.html',dist),html);

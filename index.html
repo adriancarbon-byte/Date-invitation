@@ -10,10 +10,10 @@
   <link rel="stylesheet" href="./assets/css/app.css">
   <script type="module" src="./assets/js/app.js"></script>
 </head>
-<body class="bg-paper text-ink antialiased">
+<body class="bg-paper text-ink antialiased" data-motion="full">
   <a class="skip-link" href="#main">Skip to the invitation</a>
   <div class="site-shell">
-    <div class="scene-controls"><div class="motion-settings"><label id="motion-panel" class="motion-panel" for="motion-mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21S2 15 2 8.5a5.5 5.5 0 0 1 10-3.1A5.5 5.5 0 0 1 22 8.5C22 15 12 21 12 21Z"/></svg><select id="motion-mode" aria-label="Animation style" aria-describedby="motion-note"><option value="full">Full animation</option><option value="gentle">Gentle motion</option><option value="paused">Pause animations</option></select><svg class="motion-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></label><p id="motion-note" class="motion-note" hidden>Gentle motion follows your device setting.<br>Choose Full animation for every little effect.</p></div></div>
+
     <main id="main" tabindex="-1">
       <nav class="progress-nav" aria-label="Invitation progress"><ol id="journey-steps"></ol><p id="step-label"></p></nav>
       <div class="stage-container">

@@ -12,15 +12,15 @@ Continue through the celebration, date/sample time, optional foods and one activ
 
 Dates are exactly October 28–31 and November 1–30, 2026, using Asia/Manila. Past dates and elapsed sample times are unavailable. After November 30, new availability must be confirmed; the app never extends the year. Refresh or **Start again** clears the in-memory draft and returns to the closed letter. Browser Back/Forward and app Back preserve selections during the session. No choices are stored in the URL, cookies, or browser storage.
 
-**For the complete experience, choose Full animation in the top-right selector before opening the letter.** It enables all effects even if your device requests reduced motion. **Gentle motion** and **Pause animations** remain available. The choice stays in the current tab and resets to the device preference on refresh; no answers or motion setting are stored.
+**The complete animation experience starts automatically. There is no animation menu or mode to choose.** The latest user explicitly requests this default even when a device reports reduced motion. Device settings are not changed.
 
-A fixed field of 96 small glowing hearts, plus flowers and stars, surrounds the screen. After 4.5 seconds without interaction, choices gently float until interaction resumes. Use **Gentle motion** or **Pause animations** to stop decorative movement. If the page initially uses Gentle motion, its note explains the device preference and how to enable Full animation.
+A fixed field of **240 clearly visible hearts** surrounds the screen: 160 drift/glow across it and 80 flow upward continuously. Eight flower/star charms remain. Effects keep their positions across scrolling, stop background work when the tab is hidden, and use bounded element pools. Choices gently float after 4.5 seconds of inactivity until interaction resumes.
 
 Food and time slots are provisional development fixtures in [assets/js/config.js](assets/js/config.js). Disable `dinner.enabled` to omit the food step; `multiple` and `required` configure its behavior. Final food options, actual available hours, and answer delivery still need decisions.
 
 ## Review evidence
 
-[FULL_ANIMATION_REVIEW.md](FULL_ANIMATION_REVIEW.md) records the latest motion controls, heart density and nearby No dodge. [CLIENT_REVISION.md](CLIENT_REVISION.md) records the current letter/calendar/Yes–No revision. [HEART_REFRESH.md](HEART_REFRESH.md) records the latest typography, heart motion and opening cleanup. [PHASE2A_REVIEW.md](PHASE2A_REVIEW.md) records the design comparison, render/critique/improve loop, checks, limitations, and screenshot index. Actual desktop and mobile captures for the letter, invitation/No joke, and planning stages are in [docs/previews/full-animation/](docs/previews/full-animation/). These use synthetic mock choices and a fixed October 25, 2026 test clock.
+[AUTOMATIC_HEARTS_REVIEW.md](AUTOMATIC_HEARTS_REVIEW.md) records the current automatic effects and brighter flowing background. [FULL_ANIMATION_REVIEW.md](FULL_ANIMATION_REVIEW.md) records the latest motion controls, heart density and nearby No dodge. [CLIENT_REVISION.md](CLIENT_REVISION.md) records the current letter/calendar/Yes–No revision. [HEART_REFRESH.md](HEART_REFRESH.md) records the latest typography, heart motion and opening cleanup. [PHASE2A_REVIEW.md](PHASE2A_REVIEW.md) records the design comparison, render/critique/improve loop, checks, limitations, and screenshot index. Actual desktop and mobile captures for the letter, invitation/No joke, and planning stages are in [docs/previews/automatic-hearts/](docs/previews/automatic-hearts/). These use synthetic mock choices and a fixed October 25, 2026 test clock.
 
 ## Development and verification
 

@@ -1,5 +1,7 @@
 # Full animation, more hearts, and a smaller No dodge
 
+Latest revision: [AUTOMATIC_HEARTS_REVIEW.md](AUTOMATIC_HEARTS_REVIEW.md). It removes the menu and supersedes the earlier selectable modes and heart density described below.
+
 Revision prepared on October 26, 2026 (Asia/Singapore). Updates the existing `codex/romantic-redesign` branch and draft PR #3 against `codex/phase1-foundation`; no merge or deployment is included.
 
 ## Viewing every effect

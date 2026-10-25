@@ -1,5 +1,7 @@
 # Project verification record
 
+Latest revision: [AUTOMATIC_HEARTS_REVIEW.md](AUTOMATIC_HEARTS_REVIEW.md). It removes the menu and supersedes the earlier selectable modes and heart density described below.
+
 Latest motion-control/nearby-dodge refinement: [FULL_ANIMATION_REVIEW.md](FULL_ANIMATION_REVIEW.md). It supersedes older motion-lock, heart-count and cross-screen No behavior described below.
 
 Latest revision: [CLIENT_REVISION.md](CLIENT_REVISION.md) supersedes the earlier dates, two-Yes buttons and initial screen described below.

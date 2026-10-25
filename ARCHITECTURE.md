@@ -1,5 +1,11 @@
 # Recommended architecture
 
+## Current automatic-animation and visible-heart revision
+
+The latest user explicitly removes the motion selector and all alternate animation options. Full effects now start automatically on opening the page, including when the device reports reduced motion. This supersedes the previous mode-selection/default-device-preference instructions. No device setting is changed and no preference is stored.
+
+The full-screen background now uses a bounded pool of **240 visible original SVG hearts**: **160 drifting/pulsing hearts and 80 continuously rising hearts**. Stronger rose/champagne color, brighter cores, clearer outline hearts and soft visible glow replace the earlier faint treatment. Effects are fixed to the viewport, noninteractive and behind readable content. Hidden-tab pausing/cleanup remains; dates, exact messages, small No dodge and mock-only transport are unchanged. Current evidence: [AUTOMATIC_HEARTS_REVIEW.md](AUTOMATIC_HEARTS_REVIEW.md).
+
 ## Current full-animation and small-dodge refinement
 
 The user asks to view the full effects despite a device reduced-motion preference. The motion control is now an always-operable selector: **Full animation**, **Gentle motion**, and **Pause animations**. The device preference sets the initial mode, while an explicit choice overrides it in the current tab, including the CSS reduced-motion rules. No system settings or persistent browser storage are changed.

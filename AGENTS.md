@@ -27,7 +27,7 @@ Keep changes small and phase-specific. Use explicit state transitions, preserve 
 
 Compile production Tailwind in cloud tooling; do not ship Play CDN. Pin actual selected versions and lock dependencies. Use relative paths tested at `/Date-invitation/`. Keep generated output reproducible and preserve asset/dependency licenses. Add packages/effects only when needed by the phase.
 
-All controls need labels, focus states, keyboard/touch support, usable targets, readable contrast, and reduced-motion handling. Default to the device preference, but an explicit in-page Full animation selection must enable both CSS and JavaScript effects even when the device requests reduced motion. Keep Gentle motion and Pause animations available; never disable the motion selector. Inactive stages must not receive focus. Background animation/audio/confetti must be nonessential and bounded. Audio begins only on user gesture with an off/on control.
+All controls need labels, focus states, keyboard/touch support, usable targets, readable contrast, and reduced-motion handling. The latest user explicitly requires full animation automatically, without any animation selector or alternate modes, including when the device reports reduced motion. This supersedes earlier mode-control guidance. Do not restore the removed menu or automatically reduce the effects. Pause background work when the document is hidden; retain bounded effects, normal browser controls and keyboard access. Inactive stages must not receive focus. Background animation/audio/confetti must be nonessential and bounded. Audio begins only on user gesture with an off/on control.
 
 ## Privacy and external actions
 

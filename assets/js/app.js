@@ -10,7 +10,6 @@ const sections = [...document.querySelectorAll('[data-stage]')];
 const dateTrigger = $('#date-trigger');
 const calendar = $('#calendar-panel');
 const timeSelect = $('#time-select');
-const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 let session = crypto.randomUUID();
 let lastScreen = store.getState().screen;
 let month = 10;
@@ -19,7 +18,6 @@ let navigationUntil = 0;
 let particleTimer;
 let selectionTimer;
 let celebrationOrigin = null;
-let requestedMotion = null;
 let letterOpening = false;
 let letterTimer;
 let idleTimer;
@@ -131,26 +129,33 @@ function closeCalendar(restoreFocus = false) {
 }
 // A fixed decorative pool: no intervals, network requests, or growing particle lists.
 function createAmbientHearts() {
-  // Fixed, evenly distributed layers fill the screen at both aspect ratios.
-  for (let index = 0; index < 96; index++) {
-    const jitterX = ((index * 37) % 11 - 5) * .48;
-    const jitterY = ((index * 29) % 9 - 4) * .42;
-    const desktopX = 3 + (index % 12) * 8.45 + jitterX;
-    const desktopY = 4 + Math.floor(index / 12) * 12.4 + jitterY;
-    const mobileX = 4 + (index % 8) * 12.9 + jitterX;
-    const mobileY = 3 + Math.floor(index / 8) * 8.45 + jitterY;
+  // A fixed field plus an upward stream: vivid from the first frame, without spawning.
+  for (let index = 0; index < 240; index++) {
+    const flowing = index >= 160;
+    const fieldIndex = flowing ? index - 160 : index;
+    const jitterX = ((index * 37) % 13 - 6) * .23;
+    const jitterY = ((index * 29) % 11 - 5) * .29;
+    const desktopX = flowing ? 2 + (fieldIndex * 37 % 100) * .96 : 2 + (fieldIndex % 20) * 5.02 + jitterX;
+    const desktopY = flowing ? 100 : 3 + Math.floor(fieldIndex / 20) * 13 + jitterY;
+    const mobileX = flowing ? 2 + (fieldIndex * 37 % 100) * .96 : 3 + (fieldIndex % 10) * 10.3 + jitterX;
+    const mobileY = flowing ? 100 : 2 + Math.floor(fieldIndex / 10) * 6.1 + jitterY;
+    const duration = flowing ? 20 + fieldIndex % 9 * 2 : 8 + fieldIndex % 6;
     const item = document.createElement('span');
-    item.className = 'ambient-heart';
+    item.className = `ambient-heart ${flowing ? 'heart-flow' : 'heart-field'}`;
     item.innerHTML = heart;
     item.style.setProperty('--desktop-x',`${desktopX}%`);
     item.style.setProperty('--desktop-y',`${desktopY}%`);
     item.style.setProperty('--mobile-x',`${mobileX}%`);
     item.style.setProperty('--mobile-y',`${mobileY}%`);
-    item.style.setProperty('--heart-size',`${8 + index % 6 * 2}px`);
-    item.style.setProperty('--float-time',`${13 + index % 9}s`);
-    item.style.setProperty('--float-delay',`${-index * 1.3}s`);
-    item.style.setProperty('--drift',`${index % 2 ? 20 : -20}px`);
-    item.style.setProperty('--heart-opacity',`${desktopX > 25 && desktopX < 75 ? .13 + index % 3 * .025 : .19 + index % 4 * .025}`);
+    item.style.setProperty('--heart-size',`${flowing ? 10 + fieldIndex % 5 * 2 : 12 + fieldIndex % 6 * 2}px`);
+    item.style.setProperty('--float-time',`${duration}s`);
+    item.style.setProperty('--float-delay',`${-((index * 31) % 100) / 100 * duration}s`);
+    item.style.setProperty('--glow-time',`${3.2 + index % 5 * .6}s`);
+    item.style.setProperty('--glow-delay',`${-index * .63}s`);
+    item.style.setProperty('--drift',`${(index % 2 ? 1 : -1) * (14 + index % 4 * 6)}px`);
+    item.style.setProperty('--desktop-opacity',`${desktopX > 28 && desktopX < 72 ? .34 + index % 4 * .04 : .46 + index % 4 * .06}`);
+    item.style.setProperty('--mobile-opacity',`${mobileX > 14 && mobileX < 86 ? .32 + index % 4 * .04 : .46 + index % 4 * .06}`);
+    item.style.setProperty('--heart-tint',['#bb6484','#ca7896','#ba718b','#ce85a0','#bd708d','#bd9470'][index % 6]);
     $('#ambient-hearts').append(item);
   }
   [[12,19],[88,13],[6,72],[93,42],[31,88],[73,82],[37,8],[64,64]].forEach(([x,y],index) => {
@@ -173,7 +178,8 @@ function clearSelectionSparkles() {
   clearTimeout(selectionTimer);
   $('#selection-sparkles').replaceChildren();
 }
-function motionAllowed() { return document.body.dataset.motion === 'full' && !document.hidden; }
+// Full effects are automatic by explicit user request; only hidden tabs pause work.
+function motionAllowed() { return !document.hidden; }
 function celebrate() {
   clearParticles();
   const origin = celebrationOrigin || {x:innerWidth / 2,y:Math.min(innerHeight * .35,330)};
@@ -269,7 +275,7 @@ function dodgeNo(event, repositionOnly = false) {
   const height = current.height;
   const home = {x:slot.left + (slot.width - width) / 2,y:slot.top + (slot.height - height) / 2};
   const protectedRects = [
-    $('[data-action="accept"]'),$('#motion-panel'),$('#invitation-title'),$('.opening>.eyebrow'),$('.opening>.description'),$('.opening-signoff'),$('#no-tease'),
+    $('[data-action="accept"]'),$('#invitation-title'),$('.opening>.eyebrow'),$('.opening>.description'),$('.opening-signoff'),$('#no-tease'),
   ].map(element => element.getBoundingClientRect());
   // Stay close to the original slot: no cross-screen jumps or cumulative drift.
   const offsets = [{x:24,y:-12},{x:8,y:-24},{x:28,y:-4},{x:16,y:-20},{x:0,y:-22},{x:20,y:-8}];
@@ -315,29 +321,12 @@ function openLetter(button) {
     document.body.classList.remove('letter-opening');
     if (session === startedSession && store.getState().screen === 'letter') navigate({type:'openLetter'});
   };
-  // Navigation does not depend on an animation event; reduced motion opens immediately.
+  // Navigation has a bounded fallback and never depends on an animation event.
   if (motionAllowed()) letterTimer = setTimeout(reveal,960);
   else reveal();
 }
-function updateMotionControl() {
-  const mode = requestedMotion || (reducedMotion.matches ? 'gentle' : 'full');
-  document.body.dataset.motion = mode;
-  document.body.classList.toggle('hearts-paused',mode === 'paused');
-  $('#motion-mode').value = mode;
-  const showDeviceNote = requestedMotion === null && reducedMotion.matches;
-  $('#motion-note').hidden = !showDeviceNote;
-  if (showDeviceNote) $('#motion-mode').setAttribute('aria-describedby','motion-note');
-  else $('#motion-mode').removeAttribute('aria-describedby');
-  if (mode !== 'full') { clearParticles(); clearSelectionSparkles(); stopIdleMotion(); }
-  else resetIdleMotion();
-}
-$('#motion-mode').addEventListener('change',event => {
-  if (!['full','gentle','paused'].includes(event.target.value)) return;
-  requestedMotion = event.target.value;
-  updateMotionControl();
-});
 createAmbientHearts();
-updateMotionControl();
+resetIdleMotion();
 function writeHistory(replace = false) {
   history[replace ? 'replaceState' : 'pushState']({invitationSession: session, screen: store.getState().screen}, '', `#${store.getState().screen}`);
 }
@@ -369,9 +358,9 @@ function render(state) {
   $('#summary-time').textContent = config.allowedTimes.find(slot => slot.value === state.time)?.label || '';
   $('#summary-food-row').hidden = !config.dinner.enabled;
   $('#summary-food').textContent = food.length ? food.map(option => option.label).join(' & ') : 'We’ll decide together';
-  if (food.length) $('#summary-food-art').src = artPath(food[0].art);
+  if (food.length && $('#summary-food-art').getAttribute('src') !== artPath(food[0].art)) $('#summary-food-art').src = artPath(food[0].art);
   $('#summary-activity').textContent = activity?.label || '';
-  if (activity) $('#summary-activity-art').src = artPath(activity.art);
+  if (activity && $('#summary-activity-art').getAttribute('src') !== artPath(activity.art)) $('#summary-activity-art').src = artPath(activity.art);
   $('.skip-food').hidden = config.dinner.required;
   $('[data-stage="dinner"] .description').textContent = config.dinner.multiple ? 'A little of this, a little of that. Pick as many as you like.' : 'What sounds good? Pick one little favorite.';
   scheduleAvailabilityCheck(state);
@@ -571,7 +560,6 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden) { clearParticles(); clearSelectionSparkles(); stopIdleMotion(); } else { recheckSchedule(); resetIdleMotion(); }
 });
 window.addEventListener('focus', recheckSchedule);
-reducedMotion.addEventListener('change',updateMotionControl);
 store.subscribe(render);
 writeHistory(true);
 render(store.getState());

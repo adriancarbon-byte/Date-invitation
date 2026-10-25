@@ -19,7 +19,7 @@ let navigationUntil = 0;
 let particleTimer;
 let selectionTimer;
 let celebrationOrigin = null;
-let heartsPaused = false;
+let requestedMotion = null;
 let letterOpening = false;
 let letterTimer;
 let idleTimer;
@@ -131,24 +131,28 @@ function closeCalendar(restoreFocus = false) {
 }
 // A fixed decorative pool: no intervals, network requests, or growing particle lists.
 function createAmbientHearts() {
-  const positions = [
-    [5,14],[14,30],[7,56],[19,76],[4,89],[28,12],[35,87],[45,7],
-    [61,13],[75,9],[91,20],[84,40],[96,58],[88,77],[72,89],[56,92],
-    [23,48],[78,59],[12,94],[94,92],[42,64],[65,41],
-  ];
-  positions.forEach(([x,y],index) => {
+  // Fixed, evenly distributed layers fill the screen at both aspect ratios.
+  for (let index = 0; index < 96; index++) {
+    const jitterX = ((index * 37) % 11 - 5) * .48;
+    const jitterY = ((index * 29) % 9 - 4) * .42;
+    const desktopX = 3 + (index % 12) * 8.45 + jitterX;
+    const desktopY = 4 + Math.floor(index / 12) * 12.4 + jitterY;
+    const mobileX = 4 + (index % 8) * 12.9 + jitterX;
+    const mobileY = 3 + Math.floor(index / 8) * 8.45 + jitterY;
     const item = document.createElement('span');
     item.className = 'ambient-heart';
     item.innerHTML = heart;
-    item.style.left = `${x}%`;
-    item.style.top = `${y}%`;
-    item.style.setProperty('--heart-size',`${11 + index % 5 * 3}px`);
-    item.style.setProperty('--float-time',`${10 + index % 7}s`);
+    item.style.setProperty('--desktop-x',`${desktopX}%`);
+    item.style.setProperty('--desktop-y',`${desktopY}%`);
+    item.style.setProperty('--mobile-x',`${mobileX}%`);
+    item.style.setProperty('--mobile-y',`${mobileY}%`);
+    item.style.setProperty('--heart-size',`${8 + index % 6 * 2}px`);
+    item.style.setProperty('--float-time',`${13 + index % 9}s`);
     item.style.setProperty('--float-delay',`${-index * 1.3}s`);
-    item.style.setProperty('--drift',`${index % 2 ? 16 : -16}px`);
-    item.style.setProperty('--heart-opacity',`${index % 4 === 0 ? .23 : .13}`);
+    item.style.setProperty('--drift',`${index % 2 ? 20 : -20}px`);
+    item.style.setProperty('--heart-opacity',`${desktopX > 25 && desktopX < 75 ? .13 + index % 3 * .025 : .19 + index % 4 * .025}`);
     $('#ambient-hearts').append(item);
-  });
+  }
   [[12,19],[88,13],[6,72],[93,42],[31,88],[73,82],[37,8],[64,64]].forEach(([x,y],index) => {
     const charm = document.createElement('span');
     charm.className = 'ambient-charm';
@@ -169,7 +173,7 @@ function clearSelectionSparkles() {
   clearTimeout(selectionTimer);
   $('#selection-sparkles').replaceChildren();
 }
-function motionAllowed() { return !reducedMotion.matches && !document.hidden && !heartsPaused; }
+function motionAllowed() { return document.body.dataset.motion === 'full' && !document.hidden; }
 function celebrate() {
   clearParticles();
   const origin = celebrationOrigin || {x:innerWidth / 2,y:Math.min(innerHeight * .35,330)};
@@ -241,10 +245,13 @@ for (const type of ['pointermove','pointerdown','keydown','scroll']) document.ad
 function resetNoDodge() {
   const no = $('#no-button');
   no.classList.remove('is-dodging');
-  $('.no-slot').append(no);
+  const slot = $('.no-slot');
+  if (no.parentElement !== slot) slot.append(no);
   no.style.removeProperty('left');
   no.style.removeProperty('top');
   no.style.removeProperty('width');
+  no.style.removeProperty('--no-x');
+  no.style.removeProperty('--no-y');
   dodgeCount = 0;
   lastDodgeAt = -Infinity;
   $('#no-tease').textContent = 'p.s. one of these buttons is a little shy.';
@@ -257,29 +264,28 @@ function dodgeNo(event, repositionOnly = false) {
   if (!repositionOnly && performance.now() - lastDodgeAt < 220) return;
   const no = $('#no-button');
   const current = no.getBoundingClientRect();
-  const width = Math.min(current.width,innerWidth - 32);
+  const slot = $('.no-slot').getBoundingClientRect();
+  const width = current.width;
   const height = current.height;
-  const maxX = Math.max(16,innerWidth - width - 16);
-  const maxY = Math.max(16,innerHeight - height - 16);
+  const home = {x:slot.left + (slot.width - width) / 2,y:slot.top + (slot.height - height) / 2};
   const protectedRects = [
-    $('[data-action="accept"]'),$('#motion-toggle'),$('#invitation-title'),$('.opening>.eyebrow'),$('.opening-signoff'),$('#no-tease'),
+    $('[data-action="accept"]'),$('#motion-panel'),$('#invitation-title'),$('.opening>.eyebrow'),$('.opening>.description'),$('.opening-signoff'),$('#no-tease'),
   ].map(element => element.getBoundingClientRect());
-  const candidates = [];
-  for (const x of [16,maxX,Math.max(16,(innerWidth - width) / 2)]) {
-    for (const y of [96,innerHeight * .24,innerHeight * .42,innerHeight * .68,maxY - 18]) {
-      const point = {x:Math.max(16,Math.min(x,maxX)),y:Math.max(16,Math.min(y,maxY))};
-      if (!protectedRects.some(rect => point.x < rect.right + 16 && point.x + width > rect.left - 16 && point.y < rect.bottom + 12 && point.y + height > rect.top - 12) && Math.hypot(point.x - current.left,point.y - current.top) > 80) candidates.push(point);
-    }
-  }
-  const point = candidates.length ? candidates[(dodgeCount * 7) % candidates.length] : {x:Math.max(16,Math.min(current.left,maxX)),y:Math.max(16,Math.min(current.top,maxY))};
+  // Stay close to the original slot: no cross-screen jumps or cumulative drift.
+  const offsets = [{x:24,y:-12},{x:8,y:-24},{x:28,y:-4},{x:16,y:-20},{x:0,y:-22},{x:20,y:-8}];
+  const candidates = offsets.filter(offset => {
+    const point = {x:home.x + offset.x,y:home.y + offset.y};
+    return point.x >= 8 && point.x + width <= innerWidth - 8 && point.y >= 8 && point.y + height <= innerHeight - 8 &&
+      !protectedRects.some(rect => point.x < rect.right + 6 && point.x + width > rect.left - 6 && point.y < rect.bottom + 5 && point.y + height > rect.top - 5) &&
+      Math.hypot(point.x-current.left,point.y-current.top)>9;
+  });
+  const offset = candidates.length ? candidates[dodgeCount % candidates.length] : {x:0,y:0};
   const bodyZoom = Number.parseFloat(getComputedStyle(document.body).zoom) || 1;
-  no.style.width = `${width / bodyZoom}px`;
-  no.style.left = `${point.x / bodyZoom}px`;
-  no.style.top = `${point.y / bodyZoom}px`;
+  no.style.setProperty('--no-x',`${offset.x / bodyZoom}px`);
+  no.style.setProperty('--no-y',`${offset.y / bodyZoom}px`);
   no.classList.add('is-dodging');
-  document.body.append(no);
   if (!repositionOnly) {
-    const captions = ['Oops. That button has butterflies.','A little shy. A little dramatic.','BRB, pretending to play hard to get.','The No button has left the chat.','Plot twist: it’s very bad at sitting still.','Okay, who gave this button tiny legs?'];
+    const captions = ['Oops. Just a tiny case of butterflies.','A little shy. A little dramatic.','Just a tiny hop. Still right here.','The world’s smallest getaway.','Psst… it’s only teasing.','Okay, that was my best tiny escape.'];
     $('#no-tease').textContent = captions[dodgeCount % captions.length];
     dodgeCount++;
     lastDodgeAt = performance.now();
@@ -314,16 +320,22 @@ function openLetter(button) {
   else reveal();
 }
 function updateMotionControl() {
-  const button = $('#motion-toggle');
-  document.body.classList.toggle('hearts-paused',heartsPaused);
-  button.disabled = reducedMotion.matches;
-  button.setAttribute('aria-pressed',String(heartsPaused || reducedMotion.matches));
-  button.setAttribute('aria-label',reducedMotion.matches ? 'Heart animation is off because reduced motion is enabled' : heartsPaused ? 'Play floating hearts' : 'Pause floating hearts');
-  button.querySelector('span').textContent = reducedMotion.matches ? 'Motion reduced' : heartsPaused ? 'Play hearts' : 'Pause hearts';
-  if (heartsPaused || reducedMotion.matches) { clearParticles(); clearSelectionSparkles(); stopIdleMotion(); }
+  const mode = requestedMotion || (reducedMotion.matches ? 'gentle' : 'full');
+  document.body.dataset.motion = mode;
+  document.body.classList.toggle('hearts-paused',mode === 'paused');
+  $('#motion-mode').value = mode;
+  const showDeviceNote = requestedMotion === null && reducedMotion.matches;
+  $('#motion-note').hidden = !showDeviceNote;
+  if (showDeviceNote) $('#motion-mode').setAttribute('aria-describedby','motion-note');
+  else $('#motion-mode').removeAttribute('aria-describedby');
+  if (mode !== 'full') { clearParticles(); clearSelectionSparkles(); stopIdleMotion(); }
   else resetIdleMotion();
 }
-$('#motion-toggle').addEventListener('click',() => { heartsPaused = !heartsPaused; updateMotionControl(); });
+$('#motion-mode').addEventListener('change',event => {
+  if (!['full','gentle','paused'].includes(event.target.value)) return;
+  requestedMotion = event.target.value;
+  updateMotionControl();
+});
 createAmbientHearts();
 updateMotionControl();
 function writeHistory(replace = false) {

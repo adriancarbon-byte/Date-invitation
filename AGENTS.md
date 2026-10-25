@@ -13,7 +13,7 @@ Keep client-confirmed requirements, newer-spec proposals, engineering recommenda
 ## Product guardrails
 
 - Preserve invitation wording, four activities (City Lights, Around the City, Movie Date, Arcade), and latest approved 2026 date set: Oct 28–31 and Nov 1–30 (34 dates before past filtering). The user explicitly added Oct 30/31 in the current revision. Product scheduling timezone is Asia/Manila.
-- The latest user revision starts with an animated closed letter and exact caption “Hey, I want you to open this for me.” Opening reveals **Yes** and a playful **No** that moves when activated; only Yes advances. This explicitly supersedes the earlier two-Yes/no-prank instructions. Keep No inside the viewport, preserve keyboard focus and normal browser exit, respect reduced motion, and do not make it overlap Yes or essential text. Preserve Back/reset behavior.
+- The latest user revision starts with an animated closed letter and exact caption “Hey, I want you to open this for me.” Opening reveals **Yes** and a playful **No** that moves when activated; only Yes advances. This explicitly supersedes the earlier two-Yes/no-prank instructions. Keep No near its original slot (roughly 30px maximum offset), inside the viewport, with keyboard focus and normal browser exit preserved. Do not return to cross-screen jumps or make it overlap Yes or essential text. Preserve Back/reset behavior.
 - The user explicitly supplied the additional bottom message “One thing is for sure, i like you so much my christine.” Preserve its case and punctuation, along with the original final note. Do not invent further personal details.
 - Dinner and exact time availability are unconfirmed; keep them configurable and label development fixtures.
 - Off-white, classy, restrained design has priority over literal reference copying. Uploaded recording observations are documented; direct TikTok was inaccessible. Do not claim exact fonts, colors, timing, audio behavior, or delivery from it.
@@ -27,7 +27,7 @@ Keep changes small and phase-specific. Use explicit state transitions, preserve 
 
 Compile production Tailwind in cloud tooling; do not ship Play CDN. Pin actual selected versions and lock dependencies. Use relative paths tested at `/Date-invitation/`. Keep generated output reproducible and preserve asset/dependency licenses. Add packages/effects only when needed by the phase.
 
-All controls need labels, focus states, keyboard/touch support, usable targets, readable contrast, and reduced-motion handling. Inactive stages must not receive focus. Background animation/audio/confetti must be nonessential and bounded. Audio begins only on user gesture with an off/on control.
+All controls need labels, focus states, keyboard/touch support, usable targets, readable contrast, and reduced-motion handling. Default to the device preference, but an explicit in-page Full animation selection must enable both CSS and JavaScript effects even when the device requests reduced motion. Keep Gentle motion and Pause animations available; never disable the motion selector. Inactive stages must not receive focus. Background animation/audio/confetti must be nonessential and bounded. Audio begins only on user gesture with an off/on control.
 
 ## Privacy and external actions
 

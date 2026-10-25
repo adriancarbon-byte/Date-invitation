@@ -1,5 +1,7 @@
 # Client revision: a little letter, a playful No, and a romantic calendar
 
+Latest motion-control/nearby-dodge refinement: [FULL_ANIMATION_REVIEW.md](FULL_ANIMATION_REVIEW.md). It supersedes older motion-lock, heart-count and cross-screen No behavior described below.
+
 This revision updates `codex/romantic-redesign` and draft PR #3 against `codex/phase1-foundation`. No merge, deployment, Pages enablement, email or live submission is included.
 
 ## What changed

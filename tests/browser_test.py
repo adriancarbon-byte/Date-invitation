@@ -172,10 +172,10 @@ class RomanticBrowserTests(unittest.TestCase):
         self.assertIn('Invitation',families['heading'])
         self.assertIn('Allura',families['accent'])
         self.assertTrue(all(families['loaded']))
-        self.assertEqual(self.page.locator('.ambient-heart').count(),22)
+        self.assertEqual(self.page.locator('.ambient-heart').count(),96)
         self.assertNotEqual(self.page.locator('.ambient-heart').first.evaluate('(el)=>getComputedStyle(el).animationName'),'none')
-        self.page.get_by_role('button',name='Pause floating hearts',exact=True).click()
-        expect(self.page.locator('#motion-toggle')).to_have_attribute('aria-pressed','true')
+        self.page.locator('#motion-mode').select_option('paused')
+        expect(self.page.locator('body')).to_have_attribute('data-motion','paused')
         self.assertEqual(self.page.locator('.ambient-heart').first.evaluate('(el)=>getComputedStyle(el).animationPlayState'),'paused')
         self.page.get_by_role('button',name='Yes',exact=True).click()
         self.assert_stage('celebration')
@@ -185,7 +185,7 @@ class RomanticBrowserTests(unittest.TestCase):
         self.page.get_by_role('button',name='Yes',exact=True).click()
         self.assert_stage('celebration')
         self.assertEqual(self.page.locator('.heart-burst-piece').count(),64)
-        self.assertEqual(self.page.locator('.ambient-heart').count(),22)
+        self.assertEqual(self.page.locator('.ambient-heart').count(),96)
         self.page.wait_for_timeout(3300)
         self.assertEqual(self.page.locator('.heart-burst-piece').count(),0)
         self.page.get_by_role('button',name='Okay, okay!',exact=True).click()
@@ -199,7 +199,8 @@ class RomanticBrowserTests(unittest.TestCase):
         self.page.emulate_media(reduced_motion='reduce')
         self.open_letter()
         self.assertEqual(self.page.locator('.ambient-heart').first.evaluate('(el)=>getComputedStyle(el).animationName'),'none')
-        expect(self.page.locator('#motion-toggle')).to_be_disabled()
+        expect(self.page.locator('#motion-mode')).to_be_enabled()
+        expect(self.page.locator('#motion-mode')).to_have_value('gentle')
         self.page.get_by_role('button',name='Yes',exact=True).click()
         self.assert_stage('celebration')
         self.assertEqual(self.page.locator('.heart-burst-piece').count(),0)
@@ -482,7 +483,7 @@ class RomanticBrowserTests(unittest.TestCase):
             context.close()
 
     def test_offline_single_file_preview_complete_journey(self):
-        context = self.browser.new_context()
+        context = self.browser.new_context(reduced_motion='reduce')
         requests, errors = [], []
         try:
             page = context.new_page()
@@ -492,6 +493,8 @@ class RomanticBrowserTests(unittest.TestCase):
             page.on('pageerror', lambda error: errors.append(str(error)))
             # Exercise the exact standalone document, then cut all connectivity.
             page.goto(BASE + 'review.html', wait_until='networkidle')
+            expect(page.locator('#motion-mode')).to_have_value('gentle')
+            page.locator('#motion-mode').select_option('full')
             context.set_offline(True)
             self.full_journey(page)
             expect(page.locator('[data-stage="ending"]')).to_contain_text(EXACT_NOTE)
@@ -524,7 +527,12 @@ class RomanticBrowserTests(unittest.TestCase):
             no.click()
             self.page.wait_for_timeout(280)
             current=no.bounding_box()
-            self.assertGreater(abs(current['x']-previous['x'])+abs(current['y']-previous['y']),50)
+            distance=((current['x']-previous['x'])**2+(current['y']-previous['y'])**2)**.5
+            self.assertGreater(distance,8)
+            self.assertLessEqual(distance,42)
+            slot=no.locator('..').bounding_box()
+            home={'x':slot['x']+(slot['width']-current['width'])/2,'y':slot['y']+(slot['height']-current['height'])/2}
+            self.assertLessEqual(((current['x']-home['x'])**2+(current['y']-home['y'])**2)**.5,34)
             self.assertGreaterEqual(current['x'],0)
             self.assertGreaterEqual(current['y'],0)
             self.assertLessEqual(current['x']+current['width'],1440)
@@ -540,6 +548,7 @@ class RomanticBrowserTests(unittest.TestCase):
         self.assert_stage('invitation')
         self.page.keyboard.press('Escape')
         self.assertFalse(no.evaluate('(el)=>el.classList.contains("is-dodging")'))
+        expect(no).to_be_focused()
         context=self.browser.new_context(viewport={'width':390,'height':844},is_mobile=True,has_touch=True)
         try:
             page=context.new_page()
@@ -603,10 +612,10 @@ class RomanticBrowserTests(unittest.TestCase):
         self.assertEqual(yes.evaluate('(el)=>getComputedStyle(el).animationName'),'idle-option-float')
         self.page.mouse.move(22,22)
         self.assertFalse(self.page.locator('body').evaluate('(el)=>el.classList.contains("is-idle")'))
-        self.page.get_by_role('button',name='Pause floating hearts',exact=True).click()
+        self.page.locator('#motion-mode').select_option('paused')
         self.page.wait_for_timeout(4700)
         self.assertFalse(self.page.locator('body').evaluate('(el)=>el.classList.contains("is-idle")'))
-        self.page.get_by_role('button',name='Play floating hearts',exact=True).click()
+        self.page.locator('#motion-mode').select_option('full')
         self.accept()
         self.choose_schedule()
         self.next()
@@ -637,14 +646,60 @@ class RomanticBrowserTests(unittest.TestCase):
         expect(self.page.locator('.site-footer')).not_to_be_visible()
         expect(self.page.locator('#final-message')).to_have_text(EXACT_NOTE)
 
+    def test_full_animation_overrides_reduced_device_preference(self):
+        self.page.emulate_media(reduced_motion='reduce')
+        expect(self.page.locator('#motion-mode')).to_have_value('gentle')
+        expect(self.page.locator('#motion-note')).to_be_visible()
+        self.assertEqual(self.page.locator('.sealed-letter-svg').evaluate('(el)=>getComputedStyle(el).animationName'),'none')
+        self.page.locator('#motion-mode').select_option('full')
+        expect(self.page.locator('body')).to_have_attribute('data-motion','full')
+        expect(self.page.locator('#motion-note')).not_to_be_visible()
+        self.assertIsNone(self.page.locator('#motion-mode').get_attribute('aria-describedby'))
+        self.assertNotEqual(self.page.locator('.sealed-letter-svg').evaluate('(el)=>getComputedStyle(el).animationName'),'none')
+        self.assertNotEqual(self.page.locator('.letter-seal').evaluate('(el)=>getComputedStyle(el).animationName'),'none')
+        self.assertNotEqual(self.page.locator('.ambient-heart').first.evaluate('(el)=>getComputedStyle(el).animationName'),'none')
+        self.assertEqual(self.page.locator('.ambient-heart').count(),96)
+        self.open_letter()
+        self.page.get_by_role('button',name='Yes',exact=True).click()
+        self.assert_stage('celebration')
+        self.assertEqual(self.page.locator('.heart-burst-piece').count(),64)
+        self.assertNotEqual(self.page.locator('.heart-burst-piece').first.evaluate('(el)=>getComputedStyle(el).display'),'none')
+        self.page.locator('#motion-mode').select_option('gentle')
+        self.assertEqual(self.page.locator('.heart-burst-piece').count(),0)
+        self.assertEqual(self.page.locator('.ambient-heart').first.evaluate('(el)=>getComputedStyle(el).animationName'),'none')
+        self.page.locator('#motion-mode').select_option('full')
+        self.page.locator('#motion-mode').select_option('paused')
+        self.assertEqual(self.page.locator('.ambient-heart').first.evaluate('(el)=>getComputedStyle(el).animationPlayState'),'paused')
+        self.assertEqual(self.page.locator('.ambient-heart').count(),96)
+        self.page.locator('#motion-mode').select_option('full')
+        self.assertEqual(self.page.locator('.ambient-heart').first.evaluate('(el)=>getComputedStyle(el).animationPlayState'),'running')
+        self.assertEqual(self.page.evaluate('localStorage.length+sessionStorage.length'),0)
+
+    def test_manual_motion_choice_survives_device_preference_changes(self):
+        expect(self.page.locator('#motion-mode')).to_have_value('full')
+        self.page.emulate_media(reduced_motion='reduce')
+        expect(self.page.locator('#motion-mode')).to_have_value('gentle')
+        self.page.emulate_media(reduced_motion='no-preference')
+        expect(self.page.locator('#motion-mode')).to_have_value('full')
+        self.page.locator('#motion-mode').select_option('gentle')
+        self.page.emulate_media(reduced_motion='reduce')
+        self.page.emulate_media(reduced_motion='no-preference')
+        expect(self.page.locator('#motion-mode')).to_have_value('gentle')
+        self.page.locator('#motion-mode').select_option('full')
+        self.page.emulate_media(reduced_motion='reduce')
+        expect(self.page.locator('#motion-mode')).to_have_value('full')
+        self.assertNotEqual(self.page.locator('.ambient-heart').first.evaluate('(el)=>getComputedStyle(el).animationName'),'none')
+        self.page.reload()
+        expect(self.page.locator('#motion-mode')).to_have_value('gentle')
+
     def test_actual_screenshots_desktop_and_mobile(self):
-        output = ROOT / 'docs' / 'previews' / 'client-revision'
+        output = ROOT / 'docs' / 'previews' / 'full-animation'
         output.mkdir(parents=True, exist_ok=True)
         for name, options in (
             ('desktop', {'viewport': {'width': 1440, 'height': 1000}}),
             ('mobile', {'viewport': {'width': 390, 'height': 844}, 'is_mobile': True, 'has_touch': True, 'device_scale_factor': 1}),
         ):
-            context = self.browser.new_context(**options)
+            context = self.browser.new_context(**options,reduced_motion='reduce')
             try:
                 page = context.new_page()
                 self.observe_page(page)
@@ -653,6 +708,8 @@ class RomanticBrowserTests(unittest.TestCase):
                 def capture(stage):
                     page.wait_for_timeout(1250 if stage == 'celebration' else 700)
                     page.screenshot(path=str(output / f'{name}-{stage}.png'), full_page=True)
+                capture('gentle-mode')
+                page.locator('#motion-mode').select_option('full')
                 capture('letter')
                 self.open_letter(page)
                 capture('invitation')

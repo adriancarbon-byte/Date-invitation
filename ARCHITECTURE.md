@@ -1,5 +1,11 @@
 # Recommended architecture
 
+## Current full-animation and small-dodge refinement
+
+The user asks to view the full effects despite a device reduced-motion preference. The motion control is now an always-operable selector: **Full animation**, **Gentle motion**, and **Pause animations**. The device preference sets the initial mode, while an explicit choice overrides it in the current tab, including the CSS reduced-motion rules. No system settings or persistent browser storage are changed.
+
+No now stays in its original layout slot and dodges locally, at most roughly 30 pixels from home, with no cumulative travel or cross-screen jumps. The background uses a fixed field of **96 small glowing hearts** across desktop/mobile layouts. Subtle ambient light, progress, hover and focus details complete the refinement. Dates, exact messages, letter entrance and mock-only delivery remain as previously specified. Current evidence: [FULL_ANIMATION_REVIEW.md](FULL_ANIMATION_REVIEW.md).
+
 ## Current sealed-letter and calendar revision
 
 `letter` is now the first of seven configurable stages. The explicit `openLetter` action reveals the question without accepting it; reset/refresh begins at the sealed letter. The inline original SVG separates paper, flap and wax seal so they animate when opened. A bounded timeout guarantees navigation, including when animation events are unavailable; reduced motion opens immediately.

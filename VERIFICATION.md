@@ -1,5 +1,7 @@
 # Project verification record
 
+Latest motion-control/nearby-dodge refinement: [FULL_ANIMATION_REVIEW.md](FULL_ANIMATION_REVIEW.md). It supersedes older motion-lock, heart-count and cross-screen No behavior described below.
+
 Latest revision: [CLIENT_REVISION.md](CLIENT_REVISION.md) supersedes the earlier dates, two-Yes buttons and initial screen described below.
 
 Current follow-up revision: [HEART_REFRESH.md](HEART_REFRESH.md). It supersedes the opening exit/branding and motion/type details described at the historical Phase 2A checkpoint below.

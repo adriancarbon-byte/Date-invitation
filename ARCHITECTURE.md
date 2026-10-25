@@ -1,5 +1,17 @@
 # Recommended architecture
 
+## Implemented Phase 2A architecture
+
+The current app retains the Phase 1 static HTML/native-module/Tailwind architecture. `config.js` centralizes provisional times/food, four activities, exact wording and six-stage order. `validation.js` owns the exact 32-date allowlist, Manila day/time checks and plan validation. `state.js` exposes guarded actions and immutable snapshots for acceptance, navigation, selections and mock completion. `app.js` renders native checkbox/radio cards, an inline calendar and native time select, heart progress, summary, history/focus, copy with fallback, and bounded CSS particles. CSS effects replace the proposed effect dependencies; no additional runtime package or framework was needed.
+
+The state changes are necessary because Phase 1 intentionally left real choice fields unset. Date/time and activity are now validated mock choices; food IDs are an optional configurable array. They remain in memory only. Same-tab history retains the existing session token/reset policy and prerequisites are checked when restoring. Editing invalidates the prior mock ending. A short navigation lock rejects rapid double navigation, while controls remain independent of animation events.
+
+Availability is revalidated on entry/actions, tab focus/visibility, mock completion and copying. One bounded timeout wakes at the selected slot/day expiry. Invalid plans return to the scheduler, preserving other choices. Same-day elapsed sample slots are rejected as a documented engineering preview default, configurable independently of final client policy.
+
+The calendar renders October/November 2026 with disabled unavailable days, full date labels, selection state, arrows/Home/End, month controls, and Escape focus return. It expands within the card to avoid mobile popup clipping. Time uses a native labeled select. Native checkbox/radio inputs preserve keyboard/touch semantics; selected cards include a checkmark. Inactive sections use `hidden` and new headings receive focus.
+
+`export-preview.mjs` embeds the module dependency graph, all local SVGs and both licensed WOFF2 font files into one reproducible `docs/preview.html`. A network-blocking CSP also applies to the local server. Clipboard permission failure reveals selectable local text. No remote transport, tracker, persistent answers, or deployment was added. Current evidence: [PHASE2A_REVIEW.md](PHASE2A_REVIEW.md). The remaining sections preserve historical recommendations where not superseded.
+
 Status: Phase 0 production recommendation with a working Phase 1 foundation. HTML, native modules, compiled Tailwind, mock state/navigation, a local server, tests, and an exported review HTML now exist. Later-phase features, service configuration, and deployment workflows remain unimplemented. Source requirements: [PROJECT_REQUIREMENTS.md](PROJECT_REQUIREMENTS.md). Product choices requiring approval remain in [DECISIONS_AND_OPEN_QUESTIONS.md](DECISIONS_AND_OPEN_QUESTIONS.md).
 
 ## 1. Simplest dependable approach

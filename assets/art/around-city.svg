@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" fill="none" role="img" aria-labelledby="title"><title id="title">A charming miniature street with a little café and a warm streetlamp</title><defs>
+<linearGradient id="cream" x2="0.3" y2="1"><stop stop-color="#FFFDF7"/><stop offset="1" stop-color="#EEDAC3"/></linearGradient>
+<linearGradient id="rose" x2="0.2" y2="1"><stop stop-color="#EDB5BC"/><stop offset="1" stop-color="#C16D86"/></linearGradient>
+<linearGradient id="gold" x2="0.2" y2="1"><stop stop-color="#F7D998"/><stop offset="1" stop-color="#DEAF73"/></linearGradient>
+<linearGradient id="sage" x2="0.3" y2="1"><stop stop-color="#C7D9B6"/><stop offset="1" stop-color="#95B199"/></linearGradient>
+<linearGradient id="night" x2="0.3" y2="1"><stop stop-color="#9CA9B6"/><stop offset="1" stop-color="#6D778E"/></linearGradient>
+<filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#9D7E68" flood-opacity=".15"/></filter>
+</defs><g stroke="#A38170" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+<ellipse cx="100" cy="139" rx="68" ry="6" fill="#DDCAB7" opacity=".24" stroke="none"/>
+<path d="M34 106V69Q34 28 101 28T167 69V106" fill="#F0EDE3" stroke="none"/>
+<path transform="translate(144 36) scale(0.55)" d="M0-7 2-2 7 0 2 2 0 7-2 2-7 0-2-2Z" fill="#D4B58D" stroke="none"/><path transform="translate(82 30) scale(0.4)" d="M0 4C-9-4-12 5-8 10L0 17 8 10C12 5 9-4 0 4Z" fill="#CC8094" stroke="none"/>
+<g filter="url(#shadow)"><path d="M48 132V66L70 54 91 66V132Z" fill="#D7B7AE"/><path d="M45 66 70 51 94 66" fill="none" stroke="#BA948B" stroke-width="4"/>
+<path d="M93 131V77H143V131" fill="url(#cream)"/>
+<path d="M91 77 97 67H138L145 77Z" fill="#A9BCAC"/>
+<path d="M99 99V84H137V99" fill="#F8E9D4"/>
+<path d="M99 99V89h38v10q-5 6-10 0-4 6-9 0-5 6-10 0-4 6-9 0Z" fill="#CB9196"/>
+<path d="M106 89V98m12-9v9m11-9v9" stroke="#F7E2D6" stroke-width="5"/>
+<rect x="105" y="111" width="12" height="20" rx="3" fill="#B9C6BC"/>
+<rect x="125" y="109" width="10" height="11" rx="2" fill="#D4DCD0"/>
+<g fill="#F4E4BC"><rect x="58" y="74" width="8" height="13" rx="2"/><rect x="75" y="74" width="8" height="13" rx="2"/><rect x="58" y="97" width="8" height="13" rx="2"/><rect x="75" y="97" width="8" height="13" rx="2"/></g>
+<path d="M36 133H167" stroke="#C8B29D" stroke-width="4"/>
+<path d="M153 130V72m-6 0h12m-10-2 2-10h4l2 10" fill="#F3E2B9" stroke="#9A9A82"/>
+<path d="M34 127v-14m0 4q-14-5-6-14m6 7q14-7 9-14" stroke="#9CAF92" stroke-width="6"/>
+</g></g></svg>

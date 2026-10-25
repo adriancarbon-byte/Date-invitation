@@ -1,5 +1,13 @@
 # Project requirements
 
+## Current Phase 2A scope (supersedes historical phase restrictions below)
+
+The user's supplied Phase 2A execution request authorizes a full frontend redesign, original SVGs, interactive calendar/cards, bounded motion, mock ending, standalone export, rendered screenshots, tests, commit/push and draft PR against `codex/phase1-foundation`. It explicitly forbids deployment, Pages enablement, merging, live Web3Forms integration, emails, paid services, and private client data. Source is verified Phase 1 commit `df96a2bdcaef6f863dd656989d788fc5c0a78caa`; review branch is `codex/romantic-redesign`.
+
+R02/R09 are resolved for this phase: exact question “Will you go out on a date with me?”, **Yes!**, **Yes, of course!**, and stable **Not now**. R11/R12 use optional, configurable provisional food with explicit Continue, skip, and configurable multi-selection. R14/R20 use six focused stages: invitation → celebration → scheduler → optional food → activity → confirmation preview. R04/R05 retain the exact 32 dates in Asia/Manila; R06 uses clearly labeled sample slots only. R20 now includes the exact supplied romantic message, preserved in config and final view. R25/R26 use original SVGs and locally bundled licensed Cormorant fonts. R21/R27 use brief bounded decorative hearts with reduced-motion handling; no continuous background effects or audio are required. R19 remains strictly a mock preview; real delivery and retrieval remain unresolved.
+
+The historic requirement details below remain the baseline where not superseded here. Historical restrictions to Phase 0/1 and the former five-stage order do not block the authorized redesign. Current behavior and verification are in [PHASE2A_REVIEW.md](PHASE2A_REVIEW.md).
+
 Baseline: Master Project Handoff V2.0, supplied 2026-10-25. This is the full planning baseline, not evidence of implementation or approval of every proposal.
 
 ## 1. Authority and sources

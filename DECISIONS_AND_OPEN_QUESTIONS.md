@@ -1,5 +1,23 @@
 # Decisions and open questions
 
+## Phase 2A decisions and superseding authorization
+
+Source: user's current Phase 2A execution request, supplied 2026-10-25 (Asia/Singapore); client details are attributed to that request. This authorizes implementation and GitHub review, while forbidding merge/deployment, live submissions, emails and paid services. This section supersedes conflicting historical open entries below for the current phase.
+
+| Affected items | Current decision |
+| --- | --- |
+| Q01, C02, R02/R09 | Implement **Yes!** / **Yes, of course!**, with stable accessible **Not now**. No escaping button. |
+| Q03, E03 | Explicit Continue after choices, preserve selections and permit editing. |
+| Q02, R11/R12 | Six sample foods, optional/skippable/configurable; multi-select is a review fixture. Final inclusion/options remain open. |
+| Q05/Q06, R06/R16 | Five clearly labeled sample evening slots. Manila past-date filtering required; elapsed same-day samples rejected by configurable engineering policy. Final hours/policy remain open. |
+| Q12, R20 | The exact supplied “See you cutie…” message is implemented without rewriting. Other neutral supporting copy is review copy. |
+| Q13/Q16, T01 | Use authoritative text-only visual brief; invitation → celebration → schedule → optional food → required activity → mock confirmation. |
+| Q20, R25/R26 | Off-white/rose centered design, 15 original SVGs and licensed local Cormorant regular/italic fonts are review choices. No media copied from the reference. |
+| Q18 | Preserve Phase 1 in-memory draft/history; refresh/reset clears. No cross-device persistence. |
+| Q04/Q07/Q08/Q09/Q22 | Delivery, authenticated retrieval, verified provider setup, response revision/repetition and retention remain unresolved for later scope. |
+
+Current implementation/evidence is in [PHASE2A_REVIEW.md](PHASE2A_REVIEW.md). The following register preserves the historical baseline; do not treat its superseded Q01/Q03 entries or phase restrictions as current blockers.
+
 Status at Phase 0, 2026-10-25. “Confirmed” below means reported as client-confirmed in the handoff; the original screenshots were not supplied. Technical proposals and engineering recommendations remain separate. No unknown is silently approved by this document.
 
 ## 1. Client-confirmed baseline

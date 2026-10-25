@@ -1,139 +1,361 @@
 import { config } from './config.js';
 import { createStore } from './state.js';
+import { allowedDates, isAllowedDate, isAllowedTime, validatePlan } from './validation.js';
 import { previewSubmission } from './submission.js';
 
+const artPath = name => `./assets/art/${name}.svg`;
 const store = createStore();
+const $ = selector => document.querySelector(selector);
 const sections = [...document.querySelectorAll('[data-stage]')];
-const select = document.querySelector('#preview-preference');
-const progress = document.querySelector('#journey-steps');
-const main = document.querySelector('#main');
-const error = document.querySelector('#preview-error');
+const dateTrigger = $('#date-trigger');
+const calendar = $('#calendar-panel');
+const timeSelect = $('#time-select');
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 let session = crypto.randomUUID();
 let lastScreen = store.getState().screen;
+let month = 10;
 let busy = false;
-
-for (const option of config.previewOptions) {
-  const element = document.createElement('option');
-  element.value = option.id;
-  element.textContent = option.label;
-  select.append(element);
-}
-
+let navigationUntil = 0;
+let particleTimer;
+let availabilityTimer;
+const dateLabel = value => new Intl.DateTimeFormat('en-US', {
+  timeZone: config.timezone, month: 'long', day: 'numeric', year: 'numeric',
+}).format(new Date(`${value}T12:00:00+08:00`));
+const dateFullLabel = value => new Intl.DateTimeFormat('en-US', {
+  timeZone: config.timezone, weekday: 'long', month: 'long', day: 'numeric', year: 'numeric',
+}).format(new Date(`${value}T12:00:00+08:00`));
+const heart = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21S2 15 2 8.5a5.5 5.5 0 0 1 10-3.1A5.5 5.5 0 0 1 22 8.5C22 15 12 21 12 21Z"/></svg>';
 const stepButtons = store.stages.map((stage, index) => {
   const item = document.createElement('li');
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'journey-step';
   button.dataset.step = stage.id;
-  button.setAttribute('aria-label', `Step ${index + 1}: ${stage.label}`);
-  const number = document.createElement('span');
-  number.className = 'step-number';
-  number.textContent = String(index + 1).padStart(2, '0');
-  const label = document.createElement('span');
-  label.className = 'step-name';
-  label.textContent = stage.label;
-  button.append(number, label);
+  button.setAttribute('aria-label', `Step ${index + 1} of ${store.stages.length}: ${stage.label}`);
+  button.innerHTML = heart;
   item.append(button);
-  progress.append(item);
+  $('#journey-steps').append(item);
   return button;
 });
-
-function writeHistory(replace = false) {
-  history[replace ? 'replaceState' : 'pushState'](
-    { invitationSession: session, screen: store.getState().screen },
-    '', `#${store.getState().screen}`,
-  );
+const descriptions = { 'city-lights': 'A little evening glow', 'around-city': 'Wander a little together', 'movie-date': 'Share the popcorn?', arcade: 'A little friendly rivalry' };
+function createChoices(parent, options, type, name) {
+  for (const option of options) {
+    const label = document.createElement('label');
+    label.className = 'choice-card';
+    const input = document.createElement('input');
+    input.type = type;
+    input.name = name;
+    input.value = option.id;
+    const image = document.createElement('img');
+    image.src = artPath(option.art);
+    image.width = 150;
+    image.height = 120;
+    image.alt = '';
+    const title = document.createElement('span');
+    title.className = 'choice-label';
+    title.textContent = option.label;
+    const indicator = document.createElement('span');
+    indicator.className = 'choice-indicator';
+    indicator.setAttribute('aria-hidden', 'true');
+    indicator.textContent = '✓';
+    label.append(input, image, title, indicator);
+    if (descriptions[option.id]) {
+      const description = document.createElement('span');
+      description.className = 'choice-description';
+      description.textContent = descriptions[option.id];
+      label.append(description);
+    }
+    parent.append(label);
+  }
 }
+createChoices($('#food-grid'), config.dinner.options, config.dinner.multiple ? 'checkbox' : 'radio', 'food');
+createChoices($('#activity-grid'), config.activities, 'radio', 'activity');
+for (const slot of config.allowedTimes) {
+  const option = document.createElement('option');
+  option.value = slot.value;
+  option.textContent = slot.label;
+  timeSelect.append(option);
+}
+$('#final-message').textContent = config.finalMessage;
 
+function renderCalendar() {
+  const state = store.getState();
+  $('#calendar-month').textContent = `${month === 10 ? 'October' : 'November'} 2026`;
+  $('[data-month="-1"]').disabled = month === 10;
+  $('[data-month="1"]').disabled = month === 11;
+  const grid = $('#calendar-days');
+  grid.replaceChildren();
+  const offset = new Date(Date.UTC(2026, month - 1, 1)).getUTCDay();
+  const count = month === 10 ? 31 : 30;
+  for (let index = 0; index < offset; index++) {
+    const blank = document.createElement('span');
+    blank.setAttribute('aria-hidden', 'true');
+    grid.append(blank);
+  }
+  for (let day = 1; day <= count; day++) {
+    const value = `2026-${month}-${String(day).padStart(2, '0')}`;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'calendar-day';
+    button.dataset.date = value;
+    button.textContent = day;
+    button.disabled = !isAllowedDate(value);
+    button.setAttribute('aria-label', dateFullLabel(value));
+    button.setAttribute('aria-pressed', String(state.date === value));
+    grid.append(button);
+  }
+}
+function openCalendar() {
+  recheckSchedule();
+  month = store.getState().date ? Number(store.getState().date.slice(5, 7)) :
+    allowedDates.find(date => isAllowedDate(date))?.includes('-11-') ? 11 : 10;
+  renderCalendar();
+  calendar.hidden = false;
+  dateTrigger.setAttribute('aria-expanded', 'true');
+  (calendar.querySelector('[aria-pressed="true"]:not(:disabled)') || calendar.querySelector('[data-date]:not(:disabled)') || calendar.querySelector('h2')).focus();
+}
+function closeCalendar(restoreFocus = false) {
+  calendar.hidden = true;
+  dateTrigger.setAttribute('aria-expanded', 'false');
+  if (restoreFocus) dateTrigger.focus();
+}
+function clearParticles() {
+  clearTimeout(particleTimer);
+  $('#celebration-particles').replaceChildren();
+}
+function celebrate() {
+  clearParticles();
+  if (reducedMotion.matches || document.hidden) return;
+  for (let index = 0; index < 22; index++) {
+    const piece = document.createElement('span');
+    piece.className = 'particle';
+    piece.style.setProperty('--x', `${Math.cos(index * 2.4) * (100 + index * 12)}px`);
+    piece.style.setProperty('--y', `${Math.sin(index * 2.4) * 150 + 150}px`);
+    piece.style.setProperty('--r', `${index * 47}deg`);
+    piece.style.animationDelay = `${index % 5 * 30}ms`;
+    $('#celebration-particles').append(piece);
+  }
+  particleTimer = setTimeout(clearParticles, 1900);
+}
+function writeHistory(replace = false) {
+  history[replace ? 'replaceState' : 'pushState']({invitationSession: session, screen: store.getState().screen}, '', `#${store.getState().screen}`);
+}
 function render(state) {
-  const changedScreen = state.screen !== lastScreen;
+  const changed = state.screen !== lastScreen;
   for (const section of sections) section.hidden = section.dataset.stage !== state.screen;
   const index = store.stages.findIndex(stage => stage.id === state.screen);
   const active = store.stages[index];
-  document.querySelector('#step-label').textContent = index < 0 ? 'A little pause' :
-    `${String(index + 1).padStart(2, '0')} / ${String(store.stages.length).padStart(2, '0')}  —  ${active.label}`;
+  $('#step-label').textContent = index < 0 ? 'A little pause' : `${String(index + 1).padStart(2, '0')} / ${String(store.stages.length).padStart(2, '0')} · ${active.label}`;
   stepButtons.forEach((button, stepIndex) => {
     button.disabled = stepIndex > state.furthest;
-    button.classList.toggle('is-visited', stepIndex <= state.furthest);
-    if (button.dataset.step === state.screen) button.setAttribute('aria-current', 'step');
+    button.classList.toggle('is-visited', stepIndex <= index);
+    if (stepIndex === index) button.setAttribute('aria-current', 'step');
     else button.removeAttribute('aria-current');
   });
-  select.value = state.previewPreference;
-  const chosen = config.previewOptions.find(option => option.id === state.previewPreference);
-  document.querySelector('[data-preview-choice]').textContent = chosen?.label || 'No sample chosen';
+  $('#date-display').textContent = state.date ? dateLabel(state.date) : 'Choose our day';
+  timeSelect.querySelectorAll('option[value]:not([value=""])').forEach(option => { option.disabled = !isAllowedTime(option.value, state.date); });
+  timeSelect.value = state.time || '';
+  $('#availability-note').hidden = allowedDates.some(date => isAllowedDate(date));
+  $('#schedule-continue').disabled = !isAllowedDate(state.date) || !isAllowedTime(state.time, state.date);
+  document.querySelectorAll('input[name="food"]').forEach(input => { input.checked = state.foodIds.includes(input.value); });
+  document.querySelectorAll('input[name="activity"]').forEach(input => { input.checked = state.activityId === input.value; });
+  const activity = config.activities.find(option => option.id === state.activityId);
+  $('#activity-hint').textContent = activity ? `${activity.label} it is. A lovely choice.` : 'Choose the one that makes you smile.';
+  $('#preview-button').disabled = !activity || busy;
+  const food = config.dinner.options.filter(option => state.foodIds.includes(option.id));
+  $('#summary-date').textContent = state.date ? dateLabel(state.date) : '';
+  $('#summary-time').textContent = config.allowedTimes.find(slot => slot.value === state.time)?.label || '';
+  $('#summary-food-row').hidden = !config.dinner.enabled;
+  $('#summary-food').textContent = food.length ? food.map(option => option.label).join(' & ') : 'We’ll decide together';
+  if (food.length) $('#summary-food-art').src = artPath(food[0].art);
+  $('#summary-activity').textContent = activity?.label || '';
+  if (activity) $('#summary-activity-art').src = artPath(activity.art);
+  $('.skip-food').hidden = config.dinner.required;
+  $('[data-stage="dinner"] .description').textContent = config.dinner.multiple ? 'A little of this, a little of that. Pick as many as you like.' : 'What sounds good? Pick one little favorite.';
+  scheduleAvailabilityCheck(state);
   document.title = `${active?.label || 'At your own pace'} · A little invitation`;
-  if (changedScreen) {
-    error.hidden = true;
-    const heading = document.querySelector(`[data-stage="${state.screen}"] h1`);
-    heading.focus({ preventScroll: true });
-    window.scrollTo(0, 0);
-    document.querySelector('#stage-announcement').textContent = index < 0 ? 'Invitation paused. Nothing was sent.' :
-      `Step ${index + 1} of ${store.stages.length}: ${active.label}. Preview only; nothing is sent.`;
+  if (changed) {
+    closeCalendar();
+    $('#preview-error').hidden = true;
+    $('#scheduler-error').hidden = true;
+    $('#copy-status').textContent = '';
+    $('#copy-fallback').hidden = true;
+    const heading = $(`[data-stage="${state.screen}"] h1`);
+    heading.focus({preventScroll:true});
+    window.scrollTo({top:0, behavior:'instant'});
+    $('#stage-announcement').textContent = index < 0 ? 'Invitation paused. Nothing was sent.' : `Step ${index + 1} of ${store.stages.length}: ${active.label}. Preview only; nothing is sent.`;
+    if (['celebration', 'ending'].includes(state.screen)) celebrate();
+    else clearParticles();
   }
   lastScreen = state.screen;
 }
-
-function navigate(action) {
-  const previous = store.getState().screen;
+function navigate(action, replace = false) {
+  const before = store.getState().screen;
   store.dispatch(action);
-  if (store.getState().screen !== previous) writeHistory();
+  if (store.getState().screen !== before) {
+    writeHistory(replace);
+    navigationUntil = performance.now() + 320;
+  }
 }
-
-select.addEventListener('change', () => store.dispatch({ type: 'preference', value: select.value }));
-document.querySelector('.skip-link').addEventListener('click', event => {
-  event.preventDefault();
-  document.querySelector(`[data-stage="${store.getState().screen}"] h1`).focus();
+function planText() {
+  const state = store.getState();
+  const food = config.dinner.options.filter(option => state.foodIds.includes(option.id)).map(option => option.label).join(', ') || 'Decide together';
+  return `Our little plan — confirmation preview\n${dateLabel(state.date)}\n${config.allowedTimes.find(slot => slot.value === state.time)?.label} · Asia/Manila (sample time)\n${config.activities.find(option => option.id === state.activityId)?.label}${config.dinner.enabled ? `\nFood (provisional): ${food}` : ''}\n\n${config.finalMessage}\n\nNothing has been sent or booked.`;
+}
+async function copyPlan() {
+  if (!validatePlan(store.getState()).valid) { recheckSchedule(); return; }
+  const value = planText();
+  try {
+    await navigator.clipboard.writeText(value);
+    $('#copy-status').textContent = 'Copied. Your little plan is ready to keep.';
+  } catch {
+    const fallback = $('#copy-fallback');
+    fallback.value = value;
+    fallback.hidden = false;
+    fallback.focus();
+    fallback.select();
+    $('#copy-status').textContent = 'Select and copy your plan below.';
+  }
+}
+document.addEventListener('change', event => {
+  if (event.target.matches('input[name="food"]')) store.dispatch({type:'food', value:event.target.value});
+  if (event.target.matches('input[name="activity"]')) store.dispatch({type:'activity', value:event.target.value});
+  if (event.target === timeSelect) store.dispatch({type:'time', value:timeSelect.value});
 });
-
+dateTrigger.addEventListener('click', () => { if (calendar.hidden) openCalendar(); else closeCalendar(); });
+calendar.addEventListener('click', event => {
+  const day = event.target.closest('[data-date]');
+  const monthButton = event.target.closest('[data-month]');
+  if (day && !day.disabled) {
+    store.dispatch({type:'date', value:day.dataset.date});
+    closeCalendar(true);
+  } else if (monthButton && !monthButton.disabled) {
+    month += Number(monthButton.dataset.month);
+    renderCalendar();
+    calendar.querySelector(`[data-month="${month === 10 ? '1' : '-1'}"]`).focus();
+  }
+});
+calendar.addEventListener('keydown', event => {
+  if (event.key === 'Escape') { event.preventDefault(); closeCalendar(true); return; }
+  const current = event.target.closest('[data-date]');
+  if (!current || !['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'].includes(event.key)) return;
+  event.preventDefault();
+  const value = current.dataset.date;
+  const instant = new Date(`${value}T12:00:00Z`);
+  const weekday = instant.getUTCDay();
+  const shifts = {ArrowLeft:-1, ArrowRight:1, ArrowUp:-7, ArrowDown:7, Home:-weekday, End:6-weekday};
+  const shift = shifts[event.key];
+  instant.setUTCDate(instant.getUTCDate() + shift);
+  const searchDirection = event.key === 'Home' ? 1 : event.key === 'End' ? -1 : Math.sign(shift);
+  let target = instant.toISOString().slice(0,10);
+  for (let attempts = 0; !isAllowedDate(target) && attempts < 32; attempts++) {
+    if (target < allowedDates[0] || target > allowedDates.at(-1) || searchDirection === 0) return;
+    instant.setUTCDate(instant.getUTCDate() + searchDirection);
+    target = instant.toISOString().slice(0,10);
+  }
+  if (!isAllowedDate(target)) return;
+  month = Number(target.slice(5,7));
+  renderCalendar();
+  calendar.querySelector(`[data-date="${target}"]`)?.focus();
+});
 document.addEventListener('click', async event => {
   const button = event.target.closest('[data-action], [data-step]');
   if (!button || button.disabled || busy) return;
   const owner = button.closest('[data-stage]');
   if (owner && owner.dataset.stage !== store.getState().screen) return;
   event.preventDefault();
-  if (button.dataset.step) { navigate({ type: 'restore', screen: button.dataset.step }); return; }
+  if (performance.now() < navigationUntil && !['copy'].includes(button.dataset.action)) return;
+  if (button.dataset.step) { navigate({type:'restore', screen:button.dataset.step}); return; }
   switch (button.dataset.action) {
-    case 'next': navigate({ type: 'next' }); break;
-    case 'home': navigate({ type: 'restore', screen: 'invitation' }); break;
-    case 'decline': navigate({ type: 'decline' }); break;
+    case 'accept': navigate({type:'accept'}); break;
+    case 'next': {
+      const from = store.getState().screen;
+      recheckSchedule();
+      if (store.getState().screen !== from) return;
+      navigate({type:'next', from});
+      if (from === 'scheduler' && store.getState().screen === from) {
+        $('#scheduler-error').textContent = 'Please choose an available day and sample time.';
+        $('#scheduler-error').hidden = false;
+      }
+      break;
+    }
+    case 'skip-food':
+      store.dispatch({type:'clear-food'});
+      navigate({type:'next', from:'dinner'});
+      break;
+    case 'home': navigate({type:'restore', screen:'invitation'}); break;
+    case 'decline': navigate({type:'decline'}); break;
     case 'back': history.back(); break;
     case 'restart':
       session = crypto.randomUUID();
-      store.dispatch({ type: 'reset' });
+      store.dispatch({type:'reset'});
       writeHistory(true);
       break;
+    case 'copy': await copyPlan(); break;
     case 'preview': {
+      const validation = validatePlan(store.getState());
+      if (!validation.valid) {
+        if (validation.errors.date || validation.errors.time) { recheckSchedule(); return; }
+        $('#preview-error').textContent = Object.values(validation.errors).join(' ');
+        $('#preview-error').hidden = false;
+        return;
+      }
       busy = true;
       button.disabled = true;
-      main.setAttribute('aria-busy', 'true');
+      $('#main').setAttribute('aria-busy','true');
       const startedSession = session;
       try {
         const result = await previewSubmission();
-        if (session === startedSession) navigate({ type: 'previewComplete', result });
+        if (session === startedSession) {
+          navigate({type:'previewComplete', result});
+          if (store.getState().screen !== 'ending') throw new Error('The date needs checking again');
+        }
       } catch {
-        error.textContent = 'The preview could not open. Nothing was sent. Please try again.';
-        error.hidden = false;
+        $('#preview-error').textContent = 'Please check your available day and time again. Nothing was sent.';
+        $('#preview-error').hidden = false;
       } finally {
         busy = false;
-        button.disabled = false;
-        main.removeAttribute('aria-busy');
+        button.disabled = !store.getState().activityId;
+        $('#main').removeAttribute('aria-busy');
       }
       break;
     }
   }
 });
-
+$('.skip-link').addEventListener('click', event => {event.preventDefault(); $(`[data-stage="${store.getState().screen}"] h1`).focus();});
 window.addEventListener('popstate', event => {
-  if (event.state?.invitationSession === session) {
-    store.dispatch({ type: 'restore', screen: event.state.screen });
-  } else {
-    // Refresh and reset begin a new session. Old history cannot resurrect drafts.
-    store.dispatch({ type: 'reset' });
-  }
+  if (event.state?.invitationSession === session) store.dispatch({type:'restore', screen:event.state.screen});
+  else store.dispatch({type:'reset'});
   writeHistory(true);
 });
-
+function scheduleAvailabilityCheck(state) {
+  clearTimeout(availabilityTimer);
+  if (!state.date || ['invitation','declined','celebration'].includes(state.screen)) return;
+  const midnight = new Date(`${state.date}T00:00:00+08:00`).getTime() + 86400000;
+  const slot = state.time && config.rejectElapsedSampleTimes ? new Date(`${state.date}T${state.time}:00+08:00`).getTime() : midnight;
+  const remaining = Math.min(midnight,slot) - Date.now() + 10;
+  // One bounded wakeup at the selected slot/day expiry; long delays recheck safely.
+  availabilityTimer = setTimeout(recheckSchedule, Math.max(20,Math.min(remaining,2147483647)));
+}
+function recheckSchedule() {
+  const state = store.getState();
+  const staleDate = state.date && !isAllowedDate(state.date);
+  const staleTime = state.time && !isAllowedTime(state.time,state.date);
+  if ((staleDate || staleTime) && !['invitation','declined','celebration'].includes(state.screen)) {
+    if (state.screen !== 'scheduler') navigate({type:'restore',screen:'scheduler'});
+    store.dispatch(staleDate ? {type:'date',value:null} : {type:'time',value:null});
+    $('#scheduler-error').textContent = 'That day or sample time has passed. Please choose an available one.';
+    $('#scheduler-error').hidden = false;
+  } else render(store.getState());
+  if (!calendar.hidden) renderCalendar();
+}
+document.addEventListener('visibilitychange', () => {
+  document.body.classList.toggle('motion-paused', document.hidden);
+  if (document.hidden) clearParticles(); else recheckSchedule();
+});
+window.addEventListener('focus', recheckSchedule);
+reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) clearParticles(); });
 store.subscribe(render);
 writeHistory(true);
 render(store.getState());
-document.querySelector('#script-fallback').hidden = true;
+$('#script-fallback').hidden = true;

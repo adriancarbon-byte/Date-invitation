@@ -1,5 +1,20 @@
 # Implementation roadmap and acceptance criteria
 
+## Current Phase 2A checkpoint
+
+The latest user request explicitly authorizes the redesign and mock interaction portions of the historical Phases 2–4, including a real calendar with provisional times, optional food, the four required activities, exact supplied note, original artwork, bounded motion, tests, offline export, rendered screenshots and draft PR. The original phase prerequisites below are historical; Q01/Q03 are resolved for this review, and unconfirmed food/times remain labeled fixtures. Live delivery, notes collection, music, backend retrieval and release remain outside this task.
+
+- [x] Start from the verified Phase 1 branch and preserve its ancestry.
+- [x] Replace the split prototype with focused centered romantic screens.
+- [x] Create original coherent SVG artwork and bundle licensed local serif fonts.
+- [x] Implement guarded date/time, optional configurable food and single activity choices.
+- [x] Preserve navigation, selections, mock-only transport and session reset behavior.
+- [x] Add accurate summary, exact romantic note, and local copy/fallback.
+- [x] Render, critique, refine and rerender desktop/mobile views.
+- [x] Extend logic/browser verification and regenerate the standalone preview.
+
+Commit/push and draft PR results are reported in the final handoff and Git history. No deployment or merge is authorized. See [PHASE2A_REVIEW.md](PHASE2A_REVIEW.md) for actual results and limits.
+
 Status: **Phases 0 and 1 completed for review; Phases 2–6 not started.** Tasks below are a roadmap, not authorization to execute future phases. Requirement IDs refer to [PROJECT_REQUIREMENTS.md](PROJECT_REQUIREMENTS.md); Q IDs refer to [DECISIONS_AND_OPEN_QUESTIONS.md](DECISIONS_AND_OPEN_QUESTIONS.md).
 
 ## Phase 0 — Repository and requirements preparation

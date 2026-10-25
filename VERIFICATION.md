@@ -1,5 +1,9 @@
 # Project verification record
 
+## Current Phase 2A evidence
+
+The romantic redesign starts directly at verified Phase 1 commit `df96a2bdcaef6f863dd656989d788fc5c0a78caa`. Current tests, screenshot locations, build/export results, offline checks, design refinements and limitations are recorded in [PHASE2A_REVIEW.md](PHASE2A_REVIEW.md). Historical evidence below is retained as historical, including earlier statements that implementation had not begun. No live integration, email, merge, Pages enablement or deployment is part of Phase 2A.
+
 Inspection date: **2026-10-25**, reported using Asia/Singapore (UTC+08:00). Invitation scheduling remains Asia/Manila. Sections 1–7 record the initial Phase 0 checkpoint; section 8 records its preservation review. Those are historical results. Section 9 links the subsequent Phase 1 build/browser verification. No website has been publicly deployed.
 
 ## 1. Repository baseline

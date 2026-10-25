@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" fill="none" role="img" aria-labelledby="title"><title id="title">A rose ramen bowl with noodles, egg, seaweed, and gentle steam</title><defs>
+<linearGradient id="cream" x2="0.3" y2="1"><stop stop-color="#FFFDF7"/><stop offset="1" stop-color="#EEDAC3"/></linearGradient>
+<linearGradient id="rose" x2="0.2" y2="1"><stop stop-color="#EDB5BC"/><stop offset="1" stop-color="#C16D86"/></linearGradient>
+<linearGradient id="gold" x2="0.2" y2="1"><stop stop-color="#F7D998"/><stop offset="1" stop-color="#DEAF73"/></linearGradient>
+<linearGradient id="sage" x2="0.3" y2="1"><stop stop-color="#C7D9B6"/><stop offset="1" stop-color="#95B199"/></linearGradient>
+<linearGradient id="night" x2="0.3" y2="1"><stop stop-color="#9CA9B6"/><stop offset="1" stop-color="#6D778E"/></linearGradient>
+<filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#9D7E68" flood-opacity=".15"/></filter>
+</defs><g stroke="#A38170" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+<ellipse cx="100" cy="137" rx="53" ry="7" fill="#DDCAB7" opacity=".24" stroke="none"/>
+<path transform="translate(45 45) scale(0.65)" d="M0-7 2-2 7 0 2 2 0 7-2 2-7 0-2-2Z" fill="#D4B58D" stroke="none"/><path d="M79 43Q71 34 80 25m20 14Q92 30 101 21m19 23Q112 35 121 26" stroke="#D9C9B8" stroke-width="2.4"/>
+<g filter="url(#shadow)"><path d="m129 63 32-36m-20 39 31-31" stroke="#B99472" stroke-width="4"/>
+<path d="M44 83Q48 129 99 131Q151 129 156 83Z" fill="url(#rose)"/>
+<path d="M84 129v6h32v-6" fill="#E8B3BA"/>
+<ellipse cx="100" cy="82" rx="56" ry="21" fill="#FAF1DD"/>
+<ellipse cx="100" cy="81" rx="47" ry="15" fill="#D7B28A" stroke="#C9A179"/>
+<g stroke="#F4D99C" stroke-width="3"><path d="M67 81q9-10 18 0t19 0 19 0 16-2"/><path d="M68 88q8-9 16-2t18 0 19 1"/><path d="M79 74q10-7 21 0t21-1"/></g>
+<path d="M125 77Q108 66 118 53Q129 42 138 55Q148 70 133 79Z" fill="#FFFBEB"/><ellipse cx="128" cy="65" rx="7" ry="9" fill="#E8BD72" stroke="none"/>
+<path d="M64 76 69 56 85 60 82 81" fill="#8DA390" stroke="#78927B"/>
+<g stroke="#97AB88" stroke-width="4"><path d="m91 74 4-2m8 9 4-3m6 13 4-2"/></g>
+<path d="M54 99Q100 122 145 99" stroke="#F8DADB" opacity=".8"/>
+<g transform="translate(100 111)" fill="#806052" stroke="none"><circle cx="-8" r="1.8"/><circle cx="8" r="1.8"/><ellipse cx="-13" cy="5" rx="4" ry="2.5" fill="#EDB4AF"/><ellipse cx="13" cy="5" rx="4" ry="2.5" fill="#EDB4AF"/><path d="M-3 5Q0 9 3 5" fill="none" stroke="#806052" stroke-width="1.6"/></g></g></g></svg>

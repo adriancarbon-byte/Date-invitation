@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" fill="none" role="img" aria-labelledby="title"><title id="title">A tiny romantic skyline with warm windows, moonlight, and a heart</title><defs>
+<linearGradient id="cream" x2="0.3" y2="1"><stop stop-color="#FFFDF7"/><stop offset="1" stop-color="#EEDAC3"/></linearGradient>
+<linearGradient id="rose" x2="0.2" y2="1"><stop stop-color="#EDB5BC"/><stop offset="1" stop-color="#C16D86"/></linearGradient>
+<linearGradient id="gold" x2="0.2" y2="1"><stop stop-color="#F7D998"/><stop offset="1" stop-color="#DEAF73"/></linearGradient>
+<linearGradient id="sage" x2="0.3" y2="1"><stop stop-color="#C7D9B6"/><stop offset="1" stop-color="#95B199"/></linearGradient>
+<linearGradient id="night" x2="0.3" y2="1"><stop stop-color="#9CA9B6"/><stop offset="1" stop-color="#6D778E"/></linearGradient>
+<filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#9D7E68" flood-opacity=".15"/></filter>
+</defs><g stroke="#A38170" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+<ellipse cx="100" cy="139" rx="67" ry="6" fill="#DDCAB7" opacity=".24" stroke="none"/>
+<path d="M35 109V63Q35 23 100 23T165 63V109Z" fill="#EEF0EB" stroke="none"/>
+<path d="M128 35q-6 14 10 17-16 9-23-4-3-10 13-13Z" fill="#EBD4A1" stroke="none"/>
+<path transform="translate(70 32) scale(0.5)" d="M0-7 2-2 7 0 2 2 0 7-2 2-7 0-2-2Z" fill="#D4B58D" stroke="none"/><path transform="translate(104 47) scale(0.4)" d="M0-7 2-2 7 0 2 2 0 7-2 2-7 0-2-2Z" fill="#D4B58D" stroke="none"/><path transform="translate(154 65) scale(0.35)" d="M0-7 2-2 7 0 2 2 0 7-2 2-7 0-2-2Z" fill="#D4B58D" stroke="none"/>
+<g filter="url(#shadow)"><path d="M42 133V78H72V133" fill="#A6B6AE"/><path d="M69 133V61H102V133" fill="url(#night)"/><path d="M79 61V49H91V61" fill="#A6B2BC"/><path d="M86 49V41"/>
+<path d="M104 133V86H133V133" fill="#C7B3B4"/><path d="M131 133V70H157V133" fill="#B8BDAA"/>
+<g stroke="#F7E0AA" stroke-width="5"><path d="M51 89h3m8 0h3M51 102h3m8 0h3M51 115h3m8 0h3M79 73h3m8 0h3M79 88h3m8 0h3M79 103h3m8 0h3M79 118h3m8 0h3M113 97h3m8 0h2M113 111h3m8 0h2M140 82h2m7 0h1M140 96h2m7 0h1M140 110h2m7 0h1"/></g>
+<path d="M35 133H166" stroke="#C8B29D" stroke-width="4"/>
+<path transform="translate(112 55) scale(0.55)" d="M0 4C-9-4-12 5-8 10L0 17 8 10C12 5 9-4 0 4Z" fill="#CC8094" stroke="none"/>
+<path d="M92 133v-9q0-7 7-7t7 7v9" fill="#EDD4BE" stroke="none"/>
+</g></g></svg>

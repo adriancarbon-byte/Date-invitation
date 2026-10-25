@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Local-only Phase 1 invitation foundation with mock data",
+  "description": "Phase 2A romantic invitation redesign with offline mock review",
   "engines": { "node": ">=22" },
   "scripts": {
     "build": "tailwindcss -i ./src/styles.css -o ./assets/css/app.css --minify",

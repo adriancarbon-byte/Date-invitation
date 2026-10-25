@@ -1,68 +1,40 @@
-# Date Invitation
+# A little invitation
 
-A romantic invitation with a classy off-white design, serif typography, a muted rose accent, and a small original envelope illustration.
+**Phase 2A romantic redesign, ready for review.** A centered, off-white invitation with original pastel SVG artwork, local serif fonts, a real calendar, illustrated preference cards, and a personal keepsake ending. Everything is mock-only: nothing is sent or booked.
 
-**Status: Phase 1 foundation complete for review.** The responsive page and five-stage navigation work. All choices are mock preview data. Final activity selection, scheduling, effects, and answer delivery belong to later phases. Nothing is sent, and no public website has been deployed.
+## Open the preview — no installation
 
-## Preview in your browser — no installation
+Download [docs/preview.html](docs/preview.html) from the `codex/romantic-redesign` branch or its draft pull request, then open the downloaded HTML in your browser. It is one offline file with all artwork, fonts, CSS, and JavaScript embedded. No server, account, key, or installation is needed. GitHub's source viewer does not run HTML; use **Download raw file**.
 
-1. Open the Phase 1 pull request or the `codex/phase1-foundation` branch in GitHub.
-2. Open `docs/preview.html` (use **View file** from the pull request file menu).
-3. Choose **Download raw file**, then open the downloaded `preview.html` in your browser.
-4. Use “Let’s take a look” to explore. Choose a sample preference, go back, and check that it stays selected. “Start again” or refreshing clears the draft.
+Choose either **Yes!** or **Yes, of course!**, enjoy the brief celebration, pick an available date and a sample time, optionally choose foods, then pick an activity. The final view shows your actual choices and the exact supplied note. **Copy our little plan** copies locally, with a selectable text fallback if clipboard permission is unavailable. **Not now** is a stable, respectful exit.
 
-This single HTML file includes the same compiled CSS, JavaScript, and artwork as the working source. It needs no server, account, API key, or internet connection after downloading. It does not enable live delivery. Do not paste its code into another service.
+Dates are exactly October 28–29 and November 1–30, 2026, using Asia/Manila. Past dates and elapsed sample times are unavailable. After November 30, new availability must be confirmed; the app never extends the year. Refresh or **Start again** clears the in-memory draft. Browser Back/Forward and app Back preserve selections during the session. No choices are stored in the URL, cookies, or browser storage.
 
-The exported document was tested through a local HTTP page with network access switched off after loading. The managed cloud browser prohibits `file://` navigation, so direct opening of the downloaded file in a real desktop browser remains a manual check. Actual rendered [desktop](docs/previews/desktop.png), [mobile](docs/previews/mobile.png), and [mobile sample-stage](docs/previews/mobile-sample.png) screenshots are included for immediate visual review.
+Food and time slots are provisional development fixtures in [assets/js/config.js](assets/js/config.js). Disable `dinner.enabled` to omit the food step; `multiple` and `required` configure its behavior. Final food options, actual available hours, and answer delivery still need decisions.
 
-## Cloud development preview
+## Review evidence
 
-Run these commands **inside Codex Cloud**, not on the café computer:
+[PHASE2A_REVIEW.md](PHASE2A_REVIEW.md) records the design comparison, render/critique/improve loop, checks, limitations, and screenshot index. Actual desktop and mobile captures for all seven requested views are in [docs/previews/phase2a/](docs/previews/phase2a/). These use synthetic mock choices and a fixed October 25, 2026 test clock.
+
+## Development and verification
+
+Run inside the development environment:
 
 ```sh
 npm ci --ignore-scripts
 npm run build
+npm run preview:export
+npm test
+npm run test:browser
 npm run dev
 ```
 
-The development server prints `http://127.0.0.1:4173/Date-invitation/`. That address belongs to the cloud machine; it is not a public link for your café browser. If your Codex client supplies a port-preview/forwarding control, open port 4173 there. No user-facing port-opening tool was available in this session, so the downloadable HTML and screenshots are the browser-only handoff.
+The dev server prints `http://127.0.0.1:4173/Date-invitation/`, a loopback address inside the development environment. It is not a public link. The server exposes site assets and `/Date-invitation/review.html`, while blocking repository metadata and private development files. Stop with Ctrl+C. Browser tests own and stop separate test servers.
 
-The server is loopback-only by default. It serves the site and the explicit `/Date-invitation/review.html` standalone-review endpoint, not private repository files. It does not deploy anything. Rebuild CSS after HTML/style/class changes. Regenerate the single-file copy after any source change:
+The static app retains HTML5, vanilla JavaScript modules, centralized state, and Tailwind/CLI 4.3.3 compiled locally. No runtime framework, remote font service, tracker, live form endpoint, API key, or deployment workflow is included. Fonts and artwork notices are in [ASSET_LICENSES.md](ASSET_LICENSES.md).
 
-```sh
-npm run build
-npm run preview:export
-```
+## Source and scope
 
-## Checks
+Review branch: `codex/romantic-redesign`, based directly on Phase 1 commit `df96a2bdcaef6f863dd656989d788fc5c0a78caa`. The draft pull request targets `codex/phase1-foundation`, preserving PR #2 and main. No merge, deployment, Pages configuration, email, or live Web3Forms integration is part of this work.
 
-```sh
-npm test
-npm run test:browser
-```
-
-Eight Node tests cover state, navigation guards, configuration, and the no-network mock boundary. Ten Python Playwright/browser checks cover the journey, history/focus, sample retention, refresh/reset, keyboard exit, repeated clicks, responsive widths, reduced motion, omitted dinner, disabled JavaScript, the disconnected single-file preview, screenshots, and the local server boundary. Browser checks start and stop their own test servers.
-
-Python Playwright and Chromium were already available in Codex Cloud. `requirements-dev.txt` pins the Python browser-check package for another cloud environment; it is not a website runtime dependency. The tests use system Chromium when available, otherwise a Playwright-installed Chromium. The compiled CSS and review HTML are checked in; no package installation is needed to use the single-file preview.
-
-## Project documentation
-
-| File | Purpose |
-| --- | --- |
-| [PROJECT_REQUIREMENTS.md](PROJECT_REQUIREMENTS.md) | Full scope and source distinctions |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | Architecture, state, and planned future structure |
-| [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) | Phases and acceptance criteria |
-| [DECISIONS_AND_OPEN_QUESTIONS.md](DECISIONS_AND_OPEN_QUESTIONS.md) | Client decisions and engineering defaults |
-| [PHASE1_REVIEW.md](PHASE1_REVIEW.md) | Completed scope, tests, screenshots, limits, and next task |
-| [REFERENCE_REVIEW.md](REFERENCE_REVIEW.md) | Uploaded-reference evidence and its limits |
-| [VERIFICATION.md](VERIFICATION.md) | Historical Phase 0 evidence and Phase 1 verification |
-| [ASSET_LICENSES.md](ASSET_LICENSES.md) | Original artwork, fonts, and dependency notices |
-| [AGENTS.md](AGENTS.md) | Guidance for future Codex tasks |
-
-## Repository and remaining decisions
-
-Phase 1 starts from latest main commit `dc4b1ebfc1c53b72d2420186acb5a680644b8286` (the merged Phase 0 pull request) on review branch `codex/phase1-foundation`. Git history and the pull request identify the saved revision. No automatic merge or deployment is authorized.
-
-Final invitation buttons, dinner inclusion/options, available times, and client answer access remain unresolved. The neutral preview button is not approval of Yes/Yes or Yes/No. Web3Forms email remains a proposal; it does not provide a private results dashboard. Optional music, hearts, Animate.css, and confetti are deferred.
-
-After visually reviewing Phase 1, resolve Q01–Q03 before authorizing Phase 2. No later phase starts automatically.
+[PROJECT_REQUIREMENTS.md](PROJECT_REQUIREMENTS.md), [ARCHITECTURE.md](ARCHITECTURE.md), [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md), and [DECISIONS_AND_OPEN_QUESTIONS.md](DECISIONS_AND_OPEN_QUESTIONS.md) distinguish the current Phase 2A authorization from historical planning. [PHASE1_REVIEW.md](PHASE1_REVIEW.md) preserves the previous checkpoint. [REFERENCE_REVIEW.md](REFERENCE_REVIEW.md) records historical reference evidence and the current text-only reference. [VERIFICATION.md](VERIFICATION.md) links verification evidence by phase.

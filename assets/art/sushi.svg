@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" fill="none" role="img" aria-labelledby="title"><title id="title">Two tiny sushi rolls and a salmon nigiri on an ivory plate</title><defs>
+<linearGradient id="cream" x2="0.3" y2="1"><stop stop-color="#FFFDF7"/><stop offset="1" stop-color="#EEDAC3"/></linearGradient>
+<linearGradient id="rose" x2="0.2" y2="1"><stop stop-color="#EDB5BC"/><stop offset="1" stop-color="#C16D86"/></linearGradient>
+<linearGradient id="gold" x2="0.2" y2="1"><stop stop-color="#F7D998"/><stop offset="1" stop-color="#DEAF73"/></linearGradient>
+<linearGradient id="sage" x2="0.3" y2="1"><stop stop-color="#C7D9B6"/><stop offset="1" stop-color="#95B199"/></linearGradient>
+<linearGradient id="night" x2="0.3" y2="1"><stop stop-color="#9CA9B6"/><stop offset="1" stop-color="#6D778E"/></linearGradient>
+<filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#9D7E68" flood-opacity=".15"/></filter>
+</defs><g stroke="#A38170" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+<ellipse cx="100" cy="134" rx="64" ry="8" fill="#DDCAB7" opacity=".24" stroke="none"/>
+<path transform="translate(148 35) scale(0.65)" d="M0-7 2-2 7 0 2 2 0 7-2 2-7 0-2-2Z" fill="#D4B58D" stroke="none"/><path transform="translate(46 41) scale(0.4)" d="M0 4C-9-4-12 5-8 10L0 17 8 10C12 5 9-4 0 4Z" fill="#CC8094" stroke="none"/>
+<g filter="url(#shadow)"><ellipse cx="102" cy="119" rx="65" ry="14" fill="url(#cream)" stroke="#D9C4B2"/>
+<g transform="translate(0 -12)"><path d="M47 91V113Q47 126 68 126T89 113V91Z" fill="#7F9987"/><ellipse cx="68" cy="91" rx="21" ry="14" fill="#FFFCF2"/><ellipse cx="68" cy="91" rx="13" ry="8" fill="#E8D8BD" stroke="none"/><path d="m60 87 10-3 7 9-9 7-8-5Z" fill="#E4A18E" stroke="none"/><path d="m61 95 4 3 8-4" stroke="#9BAE8A" stroke-width="4"/></g>
+<path d="M99 93V115Q99 128 122 128T145 115V93Z" fill="#7F9987"/><ellipse cx="122" cy="93" rx="23" ry="15" fill="#FFFCF2"/><ellipse cx="122" cy="93" rx="14" ry="8" fill="#E8D8BD" stroke="none"/><path d="m112 91 11-7 9 8-9 8Z" fill="#E4A18E" stroke="none"/><path d="m127 90 4 4" stroke="#9BAE8A" stroke-width="4"/>
+<path d="M82 60Q88 47 112 54L135 64Q143 69 138 79L132 85 84 72Z" fill="#FAF5E7"/><path d="M79 61Q85 49 100 50L136 61Q146 65 142 76L138 80 79 65Z" fill="#E7AB98"/><path d="m96 54-5 13m19-9-4 14m18-10-4 14" stroke="#F8D5BF" stroke-width="4"/>
+</g></g></svg>

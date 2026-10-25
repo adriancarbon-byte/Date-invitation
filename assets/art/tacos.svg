@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" fill="none" role="img" aria-labelledby="title"><title id="title">A cheerful little taco filled with soft green lettuce and tomato</title><defs>
+<linearGradient id="cream" x2="0.3" y2="1"><stop stop-color="#FFFDF7"/><stop offset="1" stop-color="#EEDAC3"/></linearGradient>
+<linearGradient id="rose" x2="0.2" y2="1"><stop stop-color="#EDB5BC"/><stop offset="1" stop-color="#C16D86"/></linearGradient>
+<linearGradient id="gold" x2="0.2" y2="1"><stop stop-color="#F7D998"/><stop offset="1" stop-color="#DEAF73"/></linearGradient>
+<linearGradient id="sage" x2="0.3" y2="1"><stop stop-color="#C7D9B6"/><stop offset="1" stop-color="#95B199"/></linearGradient>
+<linearGradient id="night" x2="0.3" y2="1"><stop stop-color="#9CA9B6"/><stop offset="1" stop-color="#6D778E"/></linearGradient>
+<filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#9D7E68" flood-opacity=".15"/></filter>
+</defs><g stroke="#A38170" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+<ellipse cx="100" cy="136" rx="58" ry="7" fill="#DDCAB7" opacity=".24" stroke="none"/>
+<path transform="translate(151 47) scale(0.7)" d="M0-7 2-2 7 0 2 2 0 7-2 2-7 0-2-2Z" fill="#D4B58D" stroke="none"/><path transform="translate(45 66) scale(0.4)" d="M0 4C-9-4-12 5-8 10L0 17 8 10C12 5 9-4 0 4Z" fill="#CC8094" stroke="none"/>
+<g filter="url(#shadow)"><path d="M53 113Q40 58 91 53Q137 50 150 113Z" fill="#DBB481"/>
+<path d="m54 82 9-12 12 3 7-13 17 5 12-8 14 13 12-1 10 21-8 23H56Z" fill="url(#sage)"/>
+<path d="m65 79 10 5 10-8 11 8 12-9 13 10 10-6 9 20-79 10Z" fill="#B98971" stroke="none"/>
+<g fill="#DA9784" stroke="#C78473"><rect x="73" y="75" width="10" height="10" rx="2" transform="rotate(-12 73 75)"/><rect x="99" y="76" width="11" height="11" rx="2" transform="rotate(16 99 76)"/><rect x="121" y="85" width="10" height="10" rx="2"/></g>
+<path d="m72 92 9-2m8 2 7 4m20-4 8 3" stroke="#F5D588" stroke-width="4"/>
+<path d="M50 114Q52 78 86 78Q122 77 150 114Q149 129 136 130H64Q51 129 50 114Z" fill="url(#gold)"/>
+<path d="M59 112Q67 87 87 87" stroke="#FCE9BA" stroke-width="4"/>
+<g fill="#D7AA71" stroke="none"><circle cx="71" cy="108" r="2"/><circle cx="121" cy="117" r="2"/><circle cx="83" cy="121" r="1.6"/><circle cx="135" cy="111" r="1.5"/></g>
+<g transform="translate(103 112)" fill="#806052" stroke="none"><circle cx="-8" r="1.8"/><circle cx="8" r="1.8"/><ellipse cx="-13" cy="5" rx="4" ry="2.5" fill="#EDB4AF"/><ellipse cx="13" cy="5" rx="4" ry="2.5" fill="#EDB4AF"/><path d="M-3 5Q0 9 3 5" fill="none" stroke="#806052" stroke-width="1.6"/></g></g></g></svg>

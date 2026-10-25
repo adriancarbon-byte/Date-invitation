@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" fill="none" role="img" aria-labelledby="title"><title id="title">A pastel arcade cabinet with a tiny heart game on its glowing screen</title><defs>
+<linearGradient id="cream" x2="0.3" y2="1"><stop stop-color="#FFFDF7"/><stop offset="1" stop-color="#EEDAC3"/></linearGradient>
+<linearGradient id="rose" x2="0.2" y2="1"><stop stop-color="#EDB5BC"/><stop offset="1" stop-color="#C16D86"/></linearGradient>
+<linearGradient id="gold" x2="0.2" y2="1"><stop stop-color="#F7D998"/><stop offset="1" stop-color="#DEAF73"/></linearGradient>
+<linearGradient id="sage" x2="0.3" y2="1"><stop stop-color="#C7D9B6"/><stop offset="1" stop-color="#95B199"/></linearGradient>
+<linearGradient id="night" x2="0.3" y2="1"><stop stop-color="#9CA9B6"/><stop offset="1" stop-color="#6D778E"/></linearGradient>
+<filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#9D7E68" flood-opacity=".15"/></filter>
+</defs><g stroke="#A38170" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+<ellipse cx="100" cy="139" rx="52" ry="7" fill="#DDCAB7" opacity=".24" stroke="none"/>
+<path transform="translate(148 52) scale(0.6)" d="M0-7 2-2 7 0 2 2 0 7-2 2-7 0-2-2Z" fill="#D4B58D" stroke="none"/><path transform="translate(47 60) scale(0.4)" d="M0 4C-9-4-12 5-8 10L0 17 8 10C12 5 9-4 0 4Z" fill="#CC8094" stroke="none"/>
+<g filter="url(#shadow)"><path d="M70 30H130L136 79 146 93V130Q146 136 139 136H61Q54 136 54 130V94L64 79Z" fill="#CEABA9"/>
+<path d="M70 30H130L127 47H73Z" fill="url(#rose)"/>
+<path d="M78 36H122" stroke="#F9DCCF" stroke-width="3"/>
+<path d="M73 51H127L130 82H70Z" fill="url(#night)"/>
+<path d="M78 56H123L124 77H76Z" fill="#AFBEBC" stroke="none"/>
+<path d="M78 75 86 67 93 72 105 61 116 71 123 66V77H77Z" fill="#CAD5C5" stroke="none"/>
+<path transform="translate(102 57) scale(0.6)" d="M0 4C-9-4-12 5-8 10L0 17 8 10C12 5 9-4 0 4Z" fill="#FAE3BB" stroke="none"/>
+<path d="m64 82-7 14h86l-7-14Z" fill="#F3DCCC"/>
+<path d="M76 90v-9" stroke="#927C79" stroke-width="3"/><circle cx="76" cy="80" r="4" fill="#BE7C8B"/>
+<ellipse cx="114" cy="90" rx="4" ry="2.5" fill="#B48691"/><ellipse cx="126" cy="88" rx="4" ry="2.5" fill="#A8B6A3"/>
+<path d="M63 102H137V129H63Z" fill="url(#rose)" stroke="#BA8992"/>
+<path d="M94 108h13v14H94Z" fill="#C8A59E"/><path d="M97 112h7" stroke="#866E6D"/>
+<path d="M60 100V128m73-91-3 8" stroke="#FBE9DF" stroke-width="3"/>
+</g></g></svg>

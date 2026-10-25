@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A little invitation, made with a lot of heart. An interactive, private-to-this-tab design preview; nothing is sent.">
+  <meta name="description" content="A romantic question, made with a lot of heart. An interactive, private-to-this-tab design preview; nothing is sent.">
   <meta name="color-scheme" content="light">
-  <title>A little invitation · Just for you</title>
+  <title>Just for you · A lovely little question</title>
   <link rel="icon" href="./assets/art/flower.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./assets/css/app.css">
   <script type="module" src="./assets/js/app.js"></script>
@@ -13,21 +13,17 @@
 <body class="bg-paper text-ink antialiased">
   <a class="skip-link" href="#main">Skip to the invitation</a>
   <div class="site-shell">
-    <header class="site-header">
-      <a class="brand" href="#invitation" data-action="home" aria-label="A little invitation, return to the beginning"><img src="./assets/art/flower.svg" width="28" height="28" alt="">a little invitation<span>.</span></a>
-      <span class="preview-badge"><span aria-hidden="true"></span>Design preview</span>
-    </header>
+    <div class="scene-controls"><button id="motion-toggle" class="motion-toggle" type="button" aria-pressed="false" aria-label="Pause floating hearts"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21S2 15 2 8.5a5.5 5.5 0 0 1 10-3.1A5.5 5.5 0 0 1 22 8.5C22 15 12 21 12 21Z"/><path class="pause-symbol" d="M10 8v6m4-6v6"/></svg><span>Pause hearts</span></button></div>
     <main id="main" tabindex="-1">
       <nav class="progress-nav" aria-label="Invitation progress"><ol id="journey-steps"></ol><p id="step-label"></p></nav>
       <div class="stage-container">
         <section data-stage="invitation" class="opening" aria-labelledby="invitation-title">
           <p class="eyebrow">A little question, just for you</p>
           <div class="opening-art"><img src="./assets/art/envelope.svg" width="280" height="200" alt="An ivory love letter with a rose heart"><span class="handwritten">psst… this one's for you</span></div>
-          <h1 id="invitation-title" tabindex="-1">Will you go out on a<br class="desktop-break"> <em>date with me?</em></h1>
+          <h1 id="invitation-title" tabindex="-1"><span class="question-lead">Will you go out on a</span><br class="desktop-break"> <em>date with me?</em></h1>
           <p class="description">Nothing too fancy. Just you, me,<br>and a little time to make a lovely memory.</p>
           <div class="affirmative-actions"><button class="button-primary" data-action="accept" type="button">Yes! <span aria-hidden="true">♡</span></button><button class="button-secondary" data-action="accept" type="button">Yes, of course!</button></div>
-          <button class="button-text exit-button" data-action="decline" type="button">Not now</button>
-          <p class="handwritten opening-signoff">a little courage, a lot of heart.</p>
+          <p class="handwritten opening-signoff">a little courage. a lovely possibility.</p>
         </section>
         <section data-stage="celebration" class="celebration" aria-labelledby="celebration-title" hidden>
           <p class="eyebrow">Well, that just made my day</p>
@@ -85,16 +81,13 @@
           <p id="copy-status" role="status" class="field-help"></p><textarea id="copy-fallback" aria-label="Your plan, select and copy this text" hidden readonly></textarea>
           <button class="button-text" data-action="restart" type="button">Start again</button>
         </section>
-        <section data-stage="declined" aria-labelledby="declined-title" hidden>
-          <img class="hero-art" src="./assets/art/envelope.svg" width="220" height="157" alt="An ivory letter with a heart">
-          <p class="eyebrow">At your own pace</p><h1 id="declined-title" tabindex="-1">Another time,<br><em>perhaps.</em></h1><p class="description">No pressure, cutie. You can close this tab,<br>or come back whenever you like.</p><button class="button-primary" data-action="home" type="button">Back to the invitation</button><p class="field-help">Nothing has been sent.</p>
-        </section>
       </div>
-      <p class="privacy-note"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="5" y="8" width="10" height="9" rx="2"/><path d="M7 8V6a3 3 0 0 1 6 0v2"/></svg>Just a preview. Your choices stay in this tab.</p>
     </main>
-    <footer class="site-footer"><span>Made with a little thought &amp; a lot of heart.</span><span class="footer-flourish" aria-hidden="true">♡</span><span>Good things start with a little question.</span></footer>
+    <footer class="site-footer"><span class="footer-flourish" aria-hidden="true">♡</span><span>made with a little thought &amp; a lot of heart.</span></footer>
   </div>
+  <div id="ambient-hearts" aria-hidden="true"></div>
   <div id="celebration-particles" aria-hidden="true"></div>
+  <div id="selection-sparkles" aria-hidden="true"></div>
   <p id="stage-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
   <div id="script-fallback" class="noscript-message" role="note">This interactive preview needs JavaScript. Nothing is submitted; please enable JavaScript to explore the stages.</div>
 </body>

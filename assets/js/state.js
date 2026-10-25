@@ -55,7 +55,6 @@ export function createStore(settings = config, now = () => new Date()) {
       case 'restore': {
         const targetIndex = stages.findIndex(stage => stage.id === action.screen);
         if (targetIndex >= 0 && targetIndex <= state.furthest && canVisit(action.screen)) next = { ...state, screen: action.screen };
-        else if (action.screen === 'declined') next = { ...state, screen: 'declined' };
         break;
       }
       case 'date':
@@ -83,9 +82,6 @@ export function createStore(settings = config, now = () => new Date()) {
         break;
       case 'activity':
         if (state.screen === 'activity' && settings.activities.some(option => option.id === action.value)) next = changedChoice({ activityId: action.value });
-        break;
-      case 'decline':
-        if (state.screen === 'invitation') next = { ...state, screen: 'declined' };
         break;
       case 'previewComplete':
         if (state.screen === 'activity' && action.result?.mode === 'mock' && action.result.sent === false && validatePlan(state, settings, now()).valid) {

@@ -139,18 +139,62 @@ class RomanticBrowserTests(unittest.TestCase):
         self.choose_activity(page)
         self.finish(page)
 
-    def test_both_affirmative_controls_and_respectful_exit(self):
+    def test_both_affirmative_controls_and_clean_opening(self):
         expect(self.page.locator('#invitation-title')).to_have_text('Will you go out on a date with me?')
+        self.assertEqual(self.page.locator('[data-stage="invitation"] button').count(), 2)
+        self.assertEqual(self.page.locator('[data-action="decline"], .brand, .site-header, .privacy-note').count(), 0)
+        self.assertNotIn('Just a preview. Your choices stay in this tab.', self.page.locator('body').inner_text())
+        self.assertNotIn('a little invitation.', self.page.locator('body').inner_text())
         for secondary in (False, True):
             self.page.reload()
             self.accept(secondary=secondary)
             expect(self.page.locator('#scheduler-title')).to_be_focused()
+
+    def test_font_palette_and_heart_effect_lifecycle(self):
+        self.page.evaluate('document.fonts.ready')
+        families = self.page.evaluate("""() => ({
+            body:getComputedStyle(document.body).fontFamily,
+            heading:getComputedStyle(document.querySelector('h1')).fontFamily,
+            accent:getComputedStyle(document.querySelector('.handwritten')).fontFamily,
+            loaded:[document.fonts.check('14px "DM Sans"'),document.fonts.check('30px Allura'),document.fonts.check('40px Invitation')]
+        })""")
+        self.assertIn('DM Sans',families['body'])
+        self.assertIn('Invitation',families['heading'])
+        self.assertIn('Allura',families['accent'])
+        self.assertTrue(all(families['loaded']))
+        self.assertEqual(self.page.locator('.ambient-heart').count(),22)
+        self.assertNotEqual(self.page.locator('.ambient-heart').first.evaluate('(el)=>getComputedStyle(el).animationName'),'none')
+        self.page.get_by_role('button',name='Pause floating hearts',exact=True).click()
+        expect(self.page.locator('#motion-toggle')).to_have_attribute('aria-pressed','true')
+        self.assertEqual(self.page.locator('.ambient-heart').first.evaluate('(el)=>getComputedStyle(el).animationPlayState'),'paused')
+        self.page.get_by_role('button',name='Yes!',exact=True).click()
+        self.assert_stage('celebration')
+        self.assertEqual(self.page.locator('.heart-burst-piece').count(),0)
         self.page.reload()
-        self.page.get_by_role('button', name='Not now', exact=True).click()
-        self.assert_stage('declined')
-        expect(self.page.locator('#declined-title')).to_be_focused()
-        self.page.get_by_role('button', name='Back to the invitation', exact=True).click()
-        self.assert_stage('invitation')
+        self.page.get_by_role('button',name='Yes!',exact=True).click()
+        self.assert_stage('celebration')
+        self.assertEqual(self.page.locator('.heart-burst-piece').count(),64)
+        self.assertEqual(self.page.locator('.ambient-heart').count(),22)
+        self.page.wait_for_timeout(3300)
+        self.assertEqual(self.page.locator('.heart-burst-piece').count(),0)
+        self.page.get_by_role('button',name='Okay, okay!',exact=True).click()
+        self.assert_stage('scheduler')
+        self.choose_schedule()
+        self.assertEqual(self.page.locator('.selection-heart').count(),10)
+        self.page.wait_for_timeout(1200)
+        self.assertEqual(self.page.locator('.selection-heart').count(),0)
+
+    def test_reduced_motion_disables_bursts_and_ambient_animation(self):
+        self.page.emulate_media(reduced_motion='reduce')
+        self.assertEqual(self.page.locator('.ambient-heart').first.evaluate('(el)=>getComputedStyle(el).animationName'),'none')
+        expect(self.page.locator('#motion-toggle')).to_be_disabled()
+        self.page.get_by_role('button',name='Yes!',exact=True).click()
+        self.assert_stage('celebration')
+        self.assertEqual(self.page.locator('.heart-burst-piece').count(),0)
+        self.page.get_by_role('button',name='Okay, okay!',exact=True).click()
+        self.assert_stage('scheduler')
+        self.choose_schedule()
+        self.assertEqual(self.page.locator('.selection-heart').count(),0)
 
     def test_full_journey_history_focus_retention_and_exact_note(self):
         self.accept()
@@ -436,7 +480,7 @@ class RomanticBrowserTests(unittest.TestCase):
             context.close()
 
     def test_actual_screenshots_desktop_and_mobile(self):
-        output = ROOT / 'docs' / 'previews' / 'phase2a'
+        output = ROOT / 'docs' / 'previews' / 'heart-refresh'
         output.mkdir(parents=True, exist_ok=True)
         for name, options in (
             ('desktop', {'viewport': {'width': 1440, 'height': 1000}}),
@@ -449,7 +493,7 @@ class RomanticBrowserTests(unittest.TestCase):
                 page.clock.install(time=FIXTURE_NOW)
                 page.goto(BASE, wait_until='networkidle')
                 def capture(stage):
-                    page.wait_for_timeout(450)
+                    page.wait_for_timeout(1250 if stage == 'celebration' else 700)
                     page.screenshot(path=str(output / f'{name}-{stage}.png'), full_page=True)
                 capture('invitation')
                 page.get_by_role('button', name='Yes!', exact=True).tap() if name == 'mobile' else page.get_by_role('button', name='Yes!', exact=True).click()

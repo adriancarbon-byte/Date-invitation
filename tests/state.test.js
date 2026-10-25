@@ -231,10 +231,10 @@ test('stale source-stage next actions cannot skip a stage', () => {
   assert.equal(store.getState().screen, 'scheduler');
 });
 
-test('decline is an exit without affirmative answer or submission', () => {
+test('only explicit acceptance advances the opening; removed decline is ignored', () => {
   const store = makeStore();
   store.dispatch({ type: 'decline' });
-  assert.equal(store.getState().screen, 'declined');
+  assert.equal(store.getState().screen, 'invitation');
   assert.equal(store.getState().invitationAnswer, null);
   assert.equal(store.getState().submission.sent, false);
   store.dispatch({ type: 'restore', screen: 'invitation' });

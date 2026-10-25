@@ -13,7 +13,7 @@ Keep client-confirmed requirements, newer-spec proposals, engineering recommenda
 ## Product guardrails
 
 - Preserve invitation wording, four activities (City Lights, Around the City, Movie Date, Arcade), and exact 2026 date set: Oct 28/29 and Nov 1–30. Exclude Oct 30/31. Product scheduling timezone is Asia/Manila.
-- Resolve Yes/Yes versus Yes/No before final behavior. Keep respectful exit/decline and keyboard/touch access even if a prank is approved.
+- The latest user revision requires only **Yes!** and **Yes, of course!** on the opening and explicitly removes **Not now**. Do not restore the superseded decline UI. Preserve normal browser exit, keyboard/touch operation, and Back/reset behavior. Never add an escaping button.
 - Dinner and exact time availability are unconfirmed; keep them configurable and label development fixtures.
 - Off-white, classy, restrained design has priority over literal reference copying. Uploaded recording observations are documented; direct TikTok was inaccessible. Do not claim exact fonts, colors, timing, audio behavior, or delivery from it.
 - Email delivery does not fulfill private on-site retrieval automatically. Never claim Web3Forms supplies a private dashboard.

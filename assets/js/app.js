@@ -17,6 +17,9 @@ let month = 10;
 let busy = false;
 let navigationUntil = 0;
 let particleTimer;
+let selectionTimer;
+let celebrationOrigin = null;
+let heartsPaused = false;
 let availabilityTimer;
 const dateLabel = value => new Intl.DateTimeFormat('en-US', {
   timeZone: config.timezone, month: 'long', day: 'numeric', year: 'numeric',
@@ -119,29 +122,107 @@ function closeCalendar(restoreFocus = false) {
   dateTrigger.setAttribute('aria-expanded', 'false');
   if (restoreFocus) dateTrigger.focus();
 }
+// A fixed decorative pool: no intervals, network requests, or growing particle lists.
+function createAmbientHearts() {
+  const positions = [
+    [5,14],[14,30],[7,56],[19,76],[4,89],[28,12],[35,87],[45,7],
+    [61,13],[75,9],[91,20],[84,40],[96,58],[88,77],[72,89],[56,92],
+    [23,48],[78,59],[12,94],[94,92],[42,64],[65,41],
+  ];
+  positions.forEach(([x,y],index) => {
+    const item = document.createElement('span');
+    item.className = 'ambient-heart';
+    item.innerHTML = heart;
+    item.style.left = `${x}%`;
+    item.style.top = `${y}%`;
+    item.style.setProperty('--heart-size',`${11 + index % 5 * 3}px`);
+    item.style.setProperty('--float-time',`${10 + index % 7}s`);
+    item.style.setProperty('--float-delay',`${-index * 1.3}s`);
+    item.style.setProperty('--drift',`${index % 2 ? 16 : -16}px`);
+    item.style.setProperty('--heart-opacity',`${index % 4 === 0 ? .23 : .13}`);
+    $('#ambient-hearts').append(item);
+  });
+}
 function clearParticles() {
   clearTimeout(particleTimer);
   $('#celebration-particles').replaceChildren();
 }
+function clearSelectionSparkles() {
+  clearTimeout(selectionTimer);
+  $('#selection-sparkles').replaceChildren();
+}
+function motionAllowed() { return !reducedMotion.matches && !document.hidden && !heartsPaused; }
 function celebrate() {
   clearParticles();
-  if (reducedMotion.matches || document.hidden) return;
-  for (let index = 0; index < 22; index++) {
+  const origin = celebrationOrigin || {x:innerWidth / 2,y:Math.min(innerHeight * .35,330)};
+  celebrationOrigin = null;
+  if (!motionAllowed()) return;
+  const isEnding = store.getState().screen === 'ending';
+  const center = {x:innerWidth / 2,y:isEnding ? Math.min(innerHeight * .23,240) : innerHeight * .42};
+  const radius = isEnding ? Math.min(innerWidth * .33,140) : Math.min(innerWidth * .40,innerHeight * .33,285);
+  // Parametric heart outline plus an inner ring, each built from tiny original SVG hearts.
+  for (let index = 0; index < 64; index++) {
+    const inner = index >= 44;
+    const count = inner ? 20 : 44;
+    const angle = (inner ? index - 44 : index) / count * Math.PI * 2;
+    const scale = radius * (inner ? .82 : 1) / 16;
+    const x = 16 * Math.sin(angle) ** 3 * scale;
+    const y = -(13 * Math.cos(angle) - 5 * Math.cos(2 * angle) - 2 * Math.cos(3 * angle) - Math.cos(4 * angle)) * scale;
     const piece = document.createElement('span');
-    piece.className = 'particle';
-    piece.style.setProperty('--x', `${Math.cos(index * 2.4) * (100 + index * 12)}px`);
-    piece.style.setProperty('--y', `${Math.sin(index * 2.4) * 150 + 150}px`);
-    piece.style.setProperty('--r', `${index * 47}deg`);
-    piece.style.animationDelay = `${index % 5 * 30}ms`;
+    piece.className = 'heart-burst-piece';
+    piece.innerHTML = heart;
+    piece.style.left = `${origin.x}px`;
+    piece.style.top = `${origin.y}px`;
+    piece.style.setProperty('--x',`${center.x + x - origin.x}px`);
+    piece.style.setProperty('--y',`${center.y + y - origin.y}px`);
+    piece.style.setProperty('--end-x',`${center.x + x * 1.5 - origin.x}px`);
+    piece.style.setProperty('--end-y',`${center.y + y * 1.35 + (isEnding ? 10 : 80) - origin.y}px`);
+    piece.style.setProperty('--size',`${inner ? 10 : 12 + index % 4 * 2}px`);
+    piece.style.setProperty('--tilt',`${index % 2 ? 12 : -12}deg`);
+    piece.style.animationDelay = `${index % 6 * 18}ms`;
     $('#celebration-particles').append(piece);
   }
-  particleTimer = setTimeout(clearParticles, 1900);
+  particleTimer = setTimeout(clearParticles,3250);
 }
+function selectionBloom(element) {
+  clearSelectionSparkles();
+  if (!motionAllowed()) return;
+  const bounds = element.getBoundingClientRect();
+  const group = document.createElement('div');
+  group.className = 'selection-bloom';
+  group.style.left = `${bounds.left + bounds.width / 2}px`;
+  group.style.top = `${bounds.top + bounds.height / 2}px`;
+  for (let index = 0; index < 10; index++) {
+    const piece = document.createElement('span');
+    piece.className = 'selection-heart';
+    piece.innerHTML = heart;
+    const angle = index / 10 * Math.PI * 2;
+    piece.style.setProperty('--x',`${Math.cos(angle) * (48 + bounds.width * .12)}px`);
+    piece.style.setProperty('--y',`${Math.sin(angle) * 45 - 18}px`);
+    piece.style.animationDelay = `${index % 3 * 30}ms`;
+    group.append(piece);
+  }
+  $('#selection-sparkles').append(group);
+  selectionTimer = setTimeout(clearSelectionSparkles,1100);
+}
+function updateMotionControl() {
+  const button = $('#motion-toggle');
+  document.body.classList.toggle('hearts-paused',heartsPaused);
+  button.disabled = reducedMotion.matches;
+  button.setAttribute('aria-pressed',String(heartsPaused || reducedMotion.matches));
+  button.setAttribute('aria-label',reducedMotion.matches ? 'Heart animation is off because reduced motion is enabled' : heartsPaused ? 'Play floating hearts' : 'Pause floating hearts');
+  button.querySelector('span').textContent = reducedMotion.matches ? 'Motion reduced' : heartsPaused ? 'Play hearts' : 'Pause hearts';
+  if (heartsPaused || reducedMotion.matches) { clearParticles(); clearSelectionSparkles(); }
+}
+$('#motion-toggle').addEventListener('click',() => { heartsPaused = !heartsPaused; updateMotionControl(); });
+createAmbientHearts();
+updateMotionControl();
 function writeHistory(replace = false) {
   history[replace ? 'replaceState' : 'pushState']({invitationSession: session, screen: store.getState().screen}, '', `#${store.getState().screen}`);
 }
 function render(state) {
   const changed = state.screen !== lastScreen;
+  document.body.dataset.screen = state.screen;
   for (const section of sections) section.hidden = section.dataset.stage !== state.screen;
   const index = store.stages.findIndex(stage => stage.id === state.screen);
   const active = store.stages[index];
@@ -173,7 +254,7 @@ function render(state) {
   $('.skip-food').hidden = config.dinner.required;
   $('[data-stage="dinner"] .description').textContent = config.dinner.multiple ? 'A little of this, a little of that. Pick as many as you like.' : 'What sounds good? Pick one little favorite.';
   scheduleAvailabilityCheck(state);
-  document.title = `${active?.label || 'At your own pace'} · A little invitation`;
+  document.title = `${active?.label || 'Just for you'} · Just for you`;
   if (changed) {
     closeCalendar();
     $('#preview-error').hidden = true;
@@ -184,6 +265,7 @@ function render(state) {
     heading.focus({preventScroll:true});
     window.scrollTo({top:0, behavior:'instant'});
     $('#stage-announcement').textContent = index < 0 ? 'Invitation paused. Nothing was sent.' : `Step ${index + 1} of ${store.stages.length}: ${active.label}. Preview only; nothing is sent.`;
+    clearSelectionSparkles();
     if (['celebration', 'ending'].includes(state.screen)) celebrate();
     else clearParticles();
   }
@@ -218,9 +300,9 @@ async function copyPlan() {
   }
 }
 document.addEventListener('change', event => {
-  if (event.target.matches('input[name="food"]')) store.dispatch({type:'food', value:event.target.value});
-  if (event.target.matches('input[name="activity"]')) store.dispatch({type:'activity', value:event.target.value});
-  if (event.target === timeSelect) store.dispatch({type:'time', value:timeSelect.value});
+  if (event.target.matches('input[name="food"]')) { store.dispatch({type:'food', value:event.target.value}); if (event.target.checked) selectionBloom(event.target.closest('label')); }
+  if (event.target.matches('input[name="activity"]')) { store.dispatch({type:'activity', value:event.target.value}); selectionBloom(event.target.closest('label')); }
+  if (event.target === timeSelect) { store.dispatch({type:'time', value:timeSelect.value}); if (store.getState().time) selectionBloom(timeSelect); }
 });
 dateTrigger.addEventListener('click', () => { if (calendar.hidden) openCalendar(); else closeCalendar(); });
 calendar.addEventListener('click', event => {
@@ -229,6 +311,7 @@ calendar.addEventListener('click', event => {
   if (day && !day.disabled) {
     store.dispatch({type:'date', value:day.dataset.date});
     closeCalendar(true);
+    selectionBloom(dateTrigger);
   } else if (monthButton && !monthButton.disabled) {
     month += Number(monthButton.dataset.month);
     renderCalendar();
@@ -267,7 +350,12 @@ document.addEventListener('click', async event => {
   if (performance.now() < navigationUntil && !['copy'].includes(button.dataset.action)) return;
   if (button.dataset.step) { navigate({type:'restore', screen:button.dataset.step}); return; }
   switch (button.dataset.action) {
-    case 'accept': navigate({type:'accept'}); break;
+    case 'accept': {
+      const bounds = button.getBoundingClientRect();
+      celebrationOrigin = {x:bounds.left + bounds.width / 2,y:bounds.top + bounds.height / 2};
+      navigate({type:'accept'});
+      break;
+    }
     case 'next': {
       const from = store.getState().screen;
       recheckSchedule();
@@ -284,7 +372,6 @@ document.addEventListener('click', async event => {
       navigate({type:'next', from:'dinner'});
       break;
     case 'home': navigate({type:'restore', screen:'invitation'}); break;
-    case 'decline': navigate({type:'decline'}); break;
     case 'back': history.back(); break;
     case 'restart':
       session = crypto.randomUUID();
@@ -330,7 +417,7 @@ window.addEventListener('popstate', event => {
 });
 function scheduleAvailabilityCheck(state) {
   clearTimeout(availabilityTimer);
-  if (!state.date || ['invitation','declined','celebration'].includes(state.screen)) return;
+  if (!state.date || ['invitation','celebration'].includes(state.screen)) return;
   const midnight = new Date(`${state.date}T00:00:00+08:00`).getTime() + 86400000;
   const slot = state.time && config.rejectElapsedSampleTimes ? new Date(`${state.date}T${state.time}:00+08:00`).getTime() : midnight;
   const remaining = Math.min(midnight,slot) - Date.now() + 10;
@@ -341,7 +428,7 @@ function recheckSchedule() {
   const state = store.getState();
   const staleDate = state.date && !isAllowedDate(state.date);
   const staleTime = state.time && !isAllowedTime(state.time,state.date);
-  if ((staleDate || staleTime) && !['invitation','declined','celebration'].includes(state.screen)) {
+  if ((staleDate || staleTime) && !['invitation','celebration'].includes(state.screen)) {
     if (state.screen !== 'scheduler') navigate({type:'restore',screen:'scheduler'});
     store.dispatch(staleDate ? {type:'date',value:null} : {type:'time',value:null});
     $('#scheduler-error').textContent = 'That day or sample time has passed. Please choose an available one.';
@@ -351,10 +438,10 @@ function recheckSchedule() {
 }
 document.addEventListener('visibilitychange', () => {
   document.body.classList.toggle('motion-paused', document.hidden);
-  if (document.hidden) clearParticles(); else recheckSchedule();
+  if (document.hidden) { clearParticles(); clearSelectionSparkles(); } else recheckSchedule();
 });
 window.addEventListener('focus', recheckSchedule);
-reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) clearParticles(); });
+reducedMotion.addEventListener('change',updateMotionControl);
 store.subscribe(render);
 writeHistory(true);
 render(store.getState());

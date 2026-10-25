@@ -4,13 +4,16 @@
   "private": true,
   "type": "module",
   "description": "Phase 2A romantic invitation redesign with offline mock review",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "build": "tailwindcss -i ./src/styles.css -o ./assets/css/app.css --minify",
     "dev": "node scripts/preview.mjs",
     "preview:export": "node scripts/export-preview.mjs",
     "test": "node --test tests/*.test.js",
-    "test:browser": "python3 tests/browser_test.py"
+    "test:browser": "python3 tests/browser_test.py",
+    "preview:download": "python3 scripts/package-preview.py"
   },
   "devDependencies": {
     "@tailwindcss/cli": "4.3.3",

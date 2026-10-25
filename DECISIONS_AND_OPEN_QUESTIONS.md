@@ -1,5 +1,11 @@
 # Decisions and open questions
 
+## Latest heart and typography revision
+
+The user's follow-up explicitly removes the opening's **Not now** action, the visible “a little invitation.” brand, the top divider, and the “Just a preview. Your choices stay in this tab.” footer notice. These changes supersede earlier requests for that exit/branding. Only **Yes!** and **Yes, of course!** remain on the opening. The six-stage flow and exact question/message/date/activity requirements are retained.
+
+The user also authorizes animated floating/glowing theme-matched hearts, a heart made of smaller hearts spreading after Yes, additional selection feedback, improved typography and UI polish. A fixed decorative pool, pause control, reduced-motion handling and hidden-tab cleanup keep these additions nonessential. Mock-only transport and the explicit ending notice remain intact. Current evidence and download instructions: [HEART_REFRESH.md](HEART_REFRESH.md).
+
 ## Phase 2A decisions and superseding authorization
 
 Source: user's current Phase 2A execution request, supplied 2026-10-25 (Asia/Singapore); client details are attributed to that request. This authorizes implementation and GitHub review, while forbidding merge/deployment, live submissions, emails and paid services. This section supersedes conflicting historical open entries below for the current phase.

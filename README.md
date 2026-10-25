@@ -1,12 +1,12 @@
-# A little invitation
+# Just for you
 
-**Phase 2A romantic redesign, ready for review.** A centered, off-white invitation with original pastel SVG artwork, local serif fonts, a real calendar, illustrated preference cards, and a personal keepsake ending. Everything is mock-only: nothing is sent or booked.
+**Phase 2A romantic redesign, ready for review.** A centered, off-white invitation with original pastel SVG artwork, a coordinated serif/sans/handwritten font palette, floating hearts, a heart-shaped Yes celebration, a real calendar, illustrated preference cards, and a personal keepsake ending. Everything is mock-only: nothing is sent or booked.
 
 ## Open the preview — no installation
 
-Download [docs/preview.html](docs/preview.html) from the `codex/romantic-redesign` branch or its draft pull request, then open the downloaded HTML in your browser. It is one offline file with all artwork, fonts, CSS, and JavaScript embedded. No server, account, key, or installation is needed. GitHub's source viewer does not run HTML; use **Download raw file**.
+Download [invitation-preview.zip](docs/invitation-preview.zip), extract it, and double-click **preview.html**. This avoids viewing HTML source in the browser. The [standalone HTML](docs/preview.html) is also available from the `codex/romantic-redesign` branch or its draft pull request. It is one offline file with all artwork, fonts, CSS, and JavaScript embedded. No server, account, key, or installation is needed. GitHub's source viewer does not run HTML; use **Download raw file**.
 
-Choose either **Yes!** or **Yes, of course!**, enjoy the brief celebration, pick an available date and a sample time, optionally choose foods, then pick an activity. The final view shows your actual choices and the exact supplied note. **Copy our little plan** copies locally, with a selectable text fallback if clipboard permission is unavailable. **Not now** is a stable, respectful exit.
+Choose either **Yes!** or **Yes, of course!**, enjoy the brief celebration, pick an available date and a sample time, optionally choose foods, then pick an activity. The final view shows your actual choices and the exact supplied note. **Copy our little plan** copies locally, with a selectable text fallback if clipboard permission is unavailable. The opening contains only the two affirmative choices, as requested in the latest revision.
 
 Dates are exactly October 28–29 and November 1–30, 2026, using Asia/Manila. Past dates and elapsed sample times are unavailable. After November 30, new availability must be confirmed; the app never extends the year. Refresh or **Start again** clears the in-memory draft. Browser Back/Forward and app Back preserve selections during the session. No choices are stored in the URL, cookies, or browser storage.
 
@@ -14,7 +14,7 @@ Food and time slots are provisional development fixtures in [assets/js/config.js
 
 ## Review evidence
 
-[PHASE2A_REVIEW.md](PHASE2A_REVIEW.md) records the design comparison, render/critique/improve loop, checks, limitations, and screenshot index. Actual desktop and mobile captures for all seven requested views are in [docs/previews/phase2a/](docs/previews/phase2a/). These use synthetic mock choices and a fixed October 25, 2026 test clock.
+[HEART_REFRESH.md](HEART_REFRESH.md) records the latest typography, heart motion and opening cleanup. [PHASE2A_REVIEW.md](PHASE2A_REVIEW.md) records the design comparison, render/critique/improve loop, checks, limitations, and screenshot index. Actual desktop and mobile captures for all seven requested views are in [docs/previews/heart-refresh/](docs/previews/heart-refresh/). These use synthetic mock choices and a fixed October 25, 2026 test clock.
 
 ## Development and verification
 
@@ -24,6 +24,7 @@ Run inside the development environment:
 npm ci --ignore-scripts
 npm run build
 npm run preview:export
+npm run preview:download
 npm test
 npm run test:browser
 npm run dev
@@ -31,7 +32,7 @@ npm run dev
 
 The dev server prints `http://127.0.0.1:4173/Date-invitation/`, a loopback address inside the development environment. It is not a public link. The server exposes site assets and `/Date-invitation/review.html`, while blocking repository metadata and private development files. Stop with Ctrl+C. Browser tests own and stop separate test servers.
 
-The static app retains HTML5, vanilla JavaScript modules, centralized state, and Tailwind/CLI 4.3.3 compiled locally. No runtime framework, remote font service, tracker, live form endpoint, API key, or deployment workflow is included. Fonts and artwork notices are in [ASSET_LICENSES.md](ASSET_LICENSES.md).
+The static app retains HTML5, vanilla JavaScript modules, centralized state, and Tailwind/CLI 4.3.3 compiled locally. The ZIP packaging command uses Python 3, already used by the browser checks. No runtime framework, remote font service, tracker, live form endpoint, API key, or deployment workflow is included. Fonts and artwork notices are in [ASSET_LICENSES.md](ASSET_LICENSES.md).
 
 ## Source and scope
 

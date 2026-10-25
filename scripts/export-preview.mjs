@@ -27,7 +27,8 @@ for (const file of (await readdir(new URL('assets/art/', root))).filter(name => 
   css = css.replaceAll(`../art/${file}`, uri);
 }
 let html = await read('index.html');
-html = html.replace('</head>', `<!-- Bundled Cormorant Garamond font license\n${await read('assets/art/CORMORANT-LICENSE.txt')}\n-->\n</head>`);
+const licenses = await Promise.all(['CORMORANT-LICENSE.txt','DM-SANS-LICENSE.txt','ALLURA-LICENSE.txt'].map(name => read(`assets/art/${name}`)));
+html = html.replace('</head>', `<!-- Bundled font licenses: Cormorant Garamond, DM Sans, Allura\n${licenses.join('\n\n')}\n-->\n</head>`);
 html = html.replace('<link rel="stylesheet" href="./assets/css/app.css">', `<style>${css.replace(/<\/style/gi,'<\\/style')}</style>`);
 html = html.replace('<script type="module" src="./assets/js/app.js"></script>', `<script type="module">${(await moduleSource('assets/js/app.js')).replace(/<\/script/gi,'<\\/script')}</script>`);
 for (const [name, uri] of Object.entries(art)) html = html.replaceAll(`./assets/art/${name}.svg`, uri);

@@ -1,5 +1,11 @@
 # Recommended architecture
 
+## Heart motion and type revision
+
+`app.js` now builds a fixed pool of 22 background SVG hearts animated by CSS. A 64-piece parametric heart outline blooms from the chosen Yes button and disperses; smaller 10-piece selection accents are replaced/cleaned instead of accumulating. A global pause control and `prefers-reduced-motion` disable motion without delaying navigation. Hidden-tab handling clears transient effects and pauses decoration. The opening no longer has a decline state or visible branding/header, per the latest user request.
+
+The local font palette combines Cormorant Garamond regular/italic, DM Sans 400/600 and Allura script. Offline export embeds all five WOFF2 files and their licenses. `scripts/package-preview.py` creates a deterministic single-entry ZIP for easier downloading; it contains exactly the current standalone `preview.html`. No browser/runtime dependency was added. See [HEART_REFRESH.md](HEART_REFRESH.md).
+
 ## Implemented Phase 2A architecture
 
 The current app retains the Phase 1 static HTML/native-module/Tailwind architecture. `config.js` centralizes provisional times/food, four activities, exact wording and six-stage order. `validation.js` owns the exact 32-date allowlist, Manila day/time checks and plan validation. `state.js` exposes guarded actions and immutable snapshots for acceptance, navigation, selections and mock completion. `app.js` renders native checkbox/radio cards, an inline calendar and native time select, heart progress, summary, history/focus, copy with fallback, and bounded CSS particles. CSS effects replace the proposed effect dependencies; no additional runtime package or framework was needed.

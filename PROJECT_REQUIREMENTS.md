@@ -1,5 +1,11 @@
 # Project requirements
 
+## Latest heart and typography revision
+
+The user's follow-up explicitly removes the opening's **Not now** action, the visible “a little invitation.” brand, the top divider, and the “Just a preview. Your choices stay in this tab.” footer notice. These changes supersede earlier requests for that exit/branding. Only **Yes!** and **Yes, of course!** remain on the opening. The six-stage flow and exact question/message/date/activity requirements are retained.
+
+The user also authorizes animated floating/glowing theme-matched hearts, a heart made of smaller hearts spreading after Yes, additional selection feedback, improved typography and UI polish. A fixed decorative pool, pause control, reduced-motion handling and hidden-tab cleanup keep these additions nonessential. Mock-only transport and the explicit ending notice remain intact. Current evidence and download instructions: [HEART_REFRESH.md](HEART_REFRESH.md).
+
 ## Current Phase 2A scope (supersedes historical phase restrictions below)
 
 The user's supplied Phase 2A execution request authorizes a full frontend redesign, original SVGs, interactive calendar/cards, bounded motion, mock ending, standalone export, rendered screenshots, tests, commit/push and draft PR against `codex/phase1-foundation`. It explicitly forbids deployment, Pages enablement, merging, live Web3Forms integration, emails, paid services, and private client data. Source is verified Phase 1 commit `df96a2bdcaef6f863dd656989d788fc5c0a78caa`; review branch is `codex/romantic-redesign`.

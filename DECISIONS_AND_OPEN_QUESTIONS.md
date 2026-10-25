@@ -85,7 +85,7 @@ All entries are **OPEN**. “Needed by” identifies the phase that depends on t
 | Q15 | Is music wanted? Which licensed track and volume? | Off with no network fetch until an approved asset exists | Optional Phase 4 enhancement |
 | Q16 | Are additional stages or a real multi-stop timeline required? | Keep scheduler/review scope; no extra screen by default | Before scope expansion |
 | Q17 | Does a 500-character notes limit work? Are notes displayed in final summary? | Optional plain text, local safe rendering; configurable cap | Phase 3 |
-| Q18 | Should draft selections survive refresh? How should browser Back behave? | In-memory only; choose accessible stage history in Phase 1 without data in URLs | Phase 1 history policy; persistence before release |
+| Q18 | Should draft selections survive refresh? How should browser Back behave? | Phase 1 uses in-memory state and guarded same-tab stage history; refresh/reset clears it. Confirm if the client needs persistence | Client persistence policy before release |
 | Q19 | Which phone/browser versions must be supported? | Plan mobile Chrome/Safari plus desktop Chromium/Firefox/WebKit; validate Tailwind compatibility before pinning | Phase 1; real devices by release |
 | Q20 | Which legal image/font assets and final palette are approved? | Use licensed optimized assets and tested contrast; proposed hex values are not confirmations | Phase 2/4 |
 | Q21 | Should a decline be sent to the client at all? | No remote decline notification by default; respect exit without collecting more data | Before adding decline submissions |
@@ -104,4 +104,16 @@ Immediate review priorities: Q01 (buttons), Q02 (dinner), Q04 (answer retrieval)
 - 2026-10-25: Recommended compiled Tailwind, native-module SPA, mock/live transport boundary, and conditional email-only route. No client choice was approved on their behalf.
 - 2026-10-25: Follow-up user request authorizes Phase 0 documentation review/corrections, a commit on `work`, a branch push, and a pull request targeting `main`. Phase 1, merging, and deployment remain unauthorized. Product questions Q01–Q22 remain open; preservation approval does not resolve them.
 
+- 2026-10-25: User approved Phase 0 and authorized Phase 1 from latest main, with mock data, actual mobile/desktop screenshots, tests, and GitHub review preparation. No live submissions, notifications, public deployment, or automatic merge. The neutral preview action does not resolve Q01; sample preferences do not resolve Q02. Engineering history and browser defaults are documented below.
+
 For each future answer, record decision ID, date, who approved it, source, affected requirement IDs, and impact on plan/tests. Record approval status without copying private conversations, credentials, or real response data. Update conflicting documents together.
+
+## 8. Implemented Phase 1 engineering defaults
+
+Q18: same-tab History API stage entries, app Back through browser history, draft retained between stages, refresh/reset clears state, and no answers in URLs or browser storage. This implements the provisional recommendation without approving cross-refresh persistence.
+
+Q19: Tailwind/CLI 4.3.3 pins the provisional modern-browser baseline (Chrome 111+, Safari 16.4+, Firefox 128+). Chromium 154 has been tested; client phone requirements and other engines remain unverified.
+
+Q20: provisional design uses off-white #F8F5EF, ink #443D36, muted #70675F, and rose #92534D, with system serif/sans fonts and original local SVG artwork. These are reviewable design choices, not client-approved exact color/font values. No soundtrack, stock photo, personalized name, or venue is invented.
+
+The latest request approves foundation work; the product questions above remain open unless their actual choices are supplied.

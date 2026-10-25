@@ -1,6 +1,6 @@
 # Recommended architecture
 
-Status: proposed production design, saved during Phase 0. No application files, packages, service configuration, or workflows have been created. Source requirements: [PROJECT_REQUIREMENTS.md](PROJECT_REQUIREMENTS.md). Product choices requiring approval remain in [DECISIONS_AND_OPEN_QUESTIONS.md](DECISIONS_AND_OPEN_QUESTIONS.md).
+Status: Phase 0 production recommendation with a working Phase 1 foundation. HTML, native modules, compiled Tailwind, mock state/navigation, a local server, tests, and an exported review HTML now exist. Later-phase features, service configuration, and deployment workflows remain unimplemented. Source requirements: [PROJECT_REQUIREMENTS.md](PROJECT_REQUIREMENTS.md). Product choices requiring approval remain in [DECISIONS_AND_OPEN_QUESTIONS.md](DECISIONS_AND_OPEN_QUESTIONS.md).
 
 ## 1. Simplest dependable approach
 
@@ -24,7 +24,7 @@ If opening the original link to retrieve answers is mandatory, pause the email-o
 
 ## 2. Proposed file structure
 
-This tree is a future plan, **not files already created**. Create each part in its phase, not all at once.
+This tree is the original target structure. Phase 1 implements index.html, src/styles.css, assets/css/app.css, and assets/js/{app,config,state,submission}.js. It uses tests/state.test.js and tests/browser_test.py for the current foundation; future validation/effects modules and tests remain deferred. scripts/preview.mjs runs the loopback preview; scripts/export-preview.mjs produces docs/preview.html. Original SVG artwork and actual browser captures are included. Create remaining pieces only in their phase.
 
 ```text
 Date-invitation/
@@ -84,7 +84,7 @@ The declined state is a simple respectful exit panel, not an extra itinerary ste
 
 Derive enabled stage order from public configuration. Do not require dinner when omitted or optional. Keep existing choices when rendering stages. Only the active stage is visible/focusable. Native radio groups or equivalent accessible controls represent mutually exclusive cards. On navigation, announce the stage and focus its heading without a scroll jump.
 
-Use explicit app Back/Continue actions. Recommend small History API entries or hash-based stage state so browser Back can mirror stage navigation without server routes. Decide the exact policy in Phase 1; do not put selections/notes in the URL. Guard direct history navigation to stages whose prerequisites are missing. Refresh starts a new in-memory session unless a later approved policy changes it.
+Use explicit app Back/Continue actions. Recommend small History API entries or hash-based stage state so browser Back can mirror stage navigation without server routes. Phase 1 implements same-tab History API entries for each visited stage, app Back via browser history, and guarded restore of reached stages. A fresh session token on load/reset prevents old history from resurrecting a cleared draft. No selections/notes go in the URL. Guard direct history navigation to stages whose prerequisites are missing. Refresh starts a new in-memory session unless a later approved policy changes it.
 
 Avoid advancing during a card's focus event. The technical auto-advance proposal and the recommended explicit Continue control must be resolved before final Phase 2 behavior. Animation completion is never the only mechanism that unlocks navigation; reduced motion, skipped animation events, and rapid taps must still work.
 
@@ -138,9 +138,9 @@ Mocks must cover success, application failure, HTTP errors, offline, timeout, ma
 
 ## 7. Production dependencies and effects
 
-Use exact dependency versions with a lockfile and `npm ci` for later reproducibility. Registry metadata read during Phase 0 reported Tailwind and its CLI `4.3.3`, Animate.css `4.1.1`, and Canvas Confetti `1.9.4`; these are observed candidates, not installed or final compatibility approval.
+Use exact dependency versions with a lockfile and `npm ci` for later reproducibility. Registry metadata read during Phase 0 reported Tailwind and its CLI `4.3.3`, Animate.css `4.1.1`, and Canvas Confetti `1.9.4`; these were Phase 0 candidates. Phase 1 pins and builds Tailwind/CLI 4.3.3 with a lockfile. Animate.css and confetti remain deferred, not installed.
 
-Phase 1 should validate the chosen Tailwind version's browser support against the target phones before pinning it. Use the CLI package matching that Tailwind release and a small `build:css` script. Scan HTML and JS sources; keep utility names complete/static or explicitly include dynamic variants so production CSS is not missing states.
+The provisional modern-browser target follows Tailwind v4's documented baseline: Chrome 111+, Safari 16.4+, and Firefox 128+; client device requirements remain open. Chromium 154 was actually exercised, while real Safari/Firefox and phones remain unverified. See [Tailwind compatibility](https://tailwindcss.com/docs/compatibility). Use the CLI package matching that Tailwind release and a small `build:css` script. Scan HTML and JS sources; keep utility names complete/static or explicitly include dynamic variants so production CSS is not missing states.
 
 Build the CSS in cloud tooling, check it into the simple prebuilt root-publication approach, and rebuild on CSS/template changes. Keep generated CSS reproducible. Serve pinned Animate.css and confetti distributions locally with license notices; avoid production dependency on a third-party CDN. Add these only when their phase needs them.
 
@@ -168,3 +168,11 @@ Official references consulted on 2026-10-25:
 - [Canvas Confetti project](https://github.com/catdad/canvas-confetti): browser confetti library; verify reduced-motion settings during integration.
 - [Web3Forms API reference](https://docs.web3forms.com/getting-started/api-reference): browser submission endpoint, access key, response success/failure and rate limits. This is submission documentation, not proof of private retrieval or actual inbox delivery.
 - [GitHub Pages publishing sources](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site): branch/folder and Actions publication options; configured source pushes can publish automatically.
+
+## 10. Phase 1 implementation boundaries
+
+The actual prototype uses `ending` rather than `success`, and a local mock result `{mode: 'mock', sent: false}`. It never claims confirmed real delivery. Central state contains a separate preview preference and null placeholders for real answers; selecting a sample does not silently become an approved dinner answer. The actual date/time selector, image catalog, final button variant, effects, and live transport are not implemented.
+
+The public config can omit dinner; its final categories and requiredness remain unknown. State is held in memory only. No localStorage, sessionStorage, analytics, external fonts, or persistent answers are used. Fonts are system serif/sans stacks. The original SVG illustrations are local assets.
+
+Phase 1 budgets: initial HTML+CSS+JS+art under 100 KiB uncompressed; CSS under 30 KiB; JavaScript under 20 KiB. Actual initial files total 37,349 bytes at verification. The exported single-file review copy is a separate 41,774-byte artifact and is not loaded by the source entry page. No runtime framework or browser CSS compiler is present. The local server limits served paths and sets a policy forbidding outgoing connections/form submission. The standalone copy embeds a matching no-connections policy. See PHASE1_REVIEW.md for the exact checks and current limits.

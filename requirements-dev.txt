@@ -1,0 +1,2 @@
+# Cloud browser checks only. No Python dependency is needed by the website.
+playwright==1.62.0

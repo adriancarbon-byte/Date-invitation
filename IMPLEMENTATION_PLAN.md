@@ -1,6 +1,6 @@
 # Implementation roadmap and acceptance criteria
 
-Status: **Phase 0 completed; Phases 1–6 not started.** Tasks below are a roadmap, not authorization to execute future phases. Requirement IDs refer to [PROJECT_REQUIREMENTS.md](PROJECT_REQUIREMENTS.md); Q IDs refer to [DECISIONS_AND_OPEN_QUESTIONS.md](DECISIONS_AND_OPEN_QUESTIONS.md).
+Status: **Phases 0 and 1 completed for review; Phases 2–6 not started.** Tasks below are a roadmap, not authorization to execute future phases. Requirement IDs refer to [PROJECT_REQUIREMENTS.md](PROJECT_REQUIREMENTS.md); Q IDs refer to [DECISIONS_AND_OPEN_QUESTIONS.md](DECISIONS_AND_OPEN_QUESTIONS.md).
 
 ## Phase 0 — Repository and requirements preparation
 
@@ -25,19 +25,19 @@ The user subsequently authorized reviewing/correcting the documentation, committ
 
 ## Phase 1 — Minimal frontend foundation
 
-Priority: next. Prerequisite: user approves Phase 0 and authorizes Phase 1. Smallest testable deliverable: one responsive entry page with neutral placeholder stages and dependable state-preserving navigation. It must not be mistaken for the final invitation.
+Status: implemented and tested following the user’s explicit Phase 1 authorization. Smallest testable deliverable: one responsive entry page with neutral placeholder stages and dependable state-preserving navigation. It must not be mistaken for the final invitation.
 
-- [ ] Re-read AGENTS and repository status; preserve unrelated edits.
-- [ ] Choose browser support/history policy, recording Q18/Q19 assumptions without blocking neutral scaffolding unnecessarily.
-- [ ] Add minimal semantic HTML, native JavaScript modules, configuration, and in-memory state.
-- [ ] Pin compatible Tailwind/CLI versions, add lockfile and CSS build script, compile local CSS in cloud tooling.
-- [ ] Establish off-white theme variables, sensible fallbacks, contrast, focus styles, and responsive spacing.
-- [ ] Add neutral placeholder stages, app forward/back navigation, stage announcements, and focus handling; support optional dinner in stage order.
-- [ ] Establish mock submission boundary without a live key or network send. No final prank, image catalog, scheduler, music, hearts, or confetti yet.
-- [ ] Define a modest initial asset/performance budget and document build/preview/test commands.
-- [ ] Run checks below; update docs and stop for review.
+- [x] Re-read AGENTS and repository status; preserve unrelated edits.
+- [x] Choose browser support/history policy, recording Q18/Q19 assumptions without blocking neutral scaffolding unnecessarily.
+- [x] Add minimal semantic HTML, native JavaScript modules, configuration, and in-memory state.
+- [x] Pin compatible Tailwind/CLI versions, add lockfile and CSS build script, compile local CSS in cloud tooling.
+- [x] Establish off-white theme variables, sensible fallbacks, contrast, focus styles, and responsive spacing.
+- [x] Add neutral placeholder stages, app forward/back navigation, stage announcements, and focus handling; support optional dinner in stage order.
+- [x] Establish mock submission boundary without a live key or network send. No final prank, image catalog, scheduler, music, hearts, or confetti yet.
+- [x] Define a modest initial asset/performance budget and document build/preview/test commands.
+- [x] Run checks below; update docs and stop for review.
 
-Phase 1 acceptance (R23–R25, R29–R30, R34, R37): CSS builds reproducibly from pinned dependencies; entry page loads under `/Date-invitation/`; no missing CSS/modules; no production Play CDN; back/forward keeps a sample state value without reload; only active-stage controls are tabbable; focus moves to the active heading; no horizontal overflow at 320/390/768/1440 CSS pixels; zoom remains usable; reduced motion avoids mandatory transition delays. No live submission requests occur. Placeholder/test states are clear. Native browser history behavior is documented and checked. These checks are future acceptance, not Phase 0 results.
+Phase 1 acceptance (R23–R25, R29–R30, R34, R37): CSS builds reproducibly from pinned dependencies; entry page loads under `/Date-invitation/`; no missing CSS/modules; no production Play CDN; back/forward keeps a sample state value without reload; only active-stage controls are tabbable; focus moves to the active heading; no horizontal overflow at 320/390/768/1440 CSS pixels; zoom remains usable; reduced motion avoids mandatory transition delays. No live submission requests occur. Placeholder/test states are clear. Native browser history behavior is documented and checked. These checks passed for Phase 1 in Chromium; see PHASE1_REVIEW.md. Real phone/Safari/Firefox and full screen-reader audits remain future coverage. Browser screenshots and a single-file review export were additionally prepared at the user’s request.
 
 ## Phase 2 — Core interactions
 
@@ -145,4 +145,4 @@ Automate pure validation/serialization/state/transport checks; use browser tests
 
 ## Exact next instruction
 
-The copy-ready Phase 1 instruction is maintained in [README.md](README.md), under “Review and next task.” Review and approve Phase 0 first. No unresolved personal detail blocks that neutral foundation. Prioritize client answers Q01/Q02/Q04/Q05 before their dependent phases.
+Phase 1 is ready for visual/GitHub review; preview instructions are in [README.md](README.md) and completed scope is in [PHASE1_REVIEW.md](PHASE1_REVIEW.md). After that review, resolve Q01–Q03 and explicitly authorize Phase 2. Q04/Q05 remain needed before their dependent delivery/scheduling phases. Do not start later phases automatically.

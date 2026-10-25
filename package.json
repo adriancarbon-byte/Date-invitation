@@ -1,0 +1,19 @@
+{
+  "name": "date-invitation",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Local-only Phase 1 invitation foundation with mock data",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "tailwindcss -i ./src/styles.css -o ./assets/css/app.css --minify",
+    "dev": "node scripts/preview.mjs",
+    "preview:export": "node scripts/export-preview.mjs",
+    "test": "node --test tests/*.test.js",
+    "test:browser": "python3 tests/browser_test.py"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.3.3",
+    "tailwindcss": "4.3.3"
+  }
+}

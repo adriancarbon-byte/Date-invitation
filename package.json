@@ -13,7 +13,8 @@
     "preview:export": "node scripts/export-preview.mjs",
     "test": "node --test tests/*.test.js",
     "test:browser": "python3 tests/browser_test.py",
-    "preview:download": "python3 scripts/package-preview.py"
+    "preview:download": "python3 scripts/package-preview.py",
+    "build:netlify": "npm run build && npm run preview:export && node scripts/package-netlify.mjs"
   },
   "devDependencies": {
     "@tailwindcss/cli": "4.3.3",

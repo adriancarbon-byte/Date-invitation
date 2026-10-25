@@ -1,5 +1,9 @@
 # Decisions and open questions
 
+## Latest live delivery and hosting migration
+
+The latest user request authorizes publishing and email delivery, confirms the existing food choices, allows any hour/minute through AM/PM wheels, and then requests a replacement host with no ChatGPT domain. This supersedes older mock-only, fixed-slot and release restrictions below. The existing live version and 35 Node/29 browser checks are recorded in [LIVE_DELIVERY.md](LIVE_DELIVERY.md). Netlify migration code and the account-owner deployment step are in [NETLIFY_DEPLOY.md](NETLIFY_DEPLOY.md). The replacement is prepared but is not yet verified live; no connected Netlify publishing account is available. Main remains unmerged.
+
 ## Current automatic-animation and visible-heart revision
 
 The latest user explicitly removes the motion selector and all alternate animation options. Full effects now start automatically on opening the page, including when the device reports reduced motion. This supersedes the previous mode-selection/default-device-preference instructions. No device setting is changed and no preference is stored.

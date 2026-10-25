@@ -2,6 +2,8 @@
 
 **Live invitation update.** A centered, off-white invitation with original pastel SVG artwork, a coordinated serif/sans/handwritten font palette, floating hearts, a sealed-letter entrance, a playful dodging No, a heart-shaped Yes celebration, a sticker-decorated calendar, illustrated preference cards, and a personal keepsake ending. The hosted version includes an explicit email submission through a private server relay. See [LIVE_DELIVERY.md](LIVE_DELIVERY.md) for the current deployment and delivery behavior; earlier phase documents are historical.
 
+For the requested replacement address without ChatGPT, use the prepared [Netlify deployment](NETLIFY_DEPLOY.md). It retains server-side email delivery and needs a one-time Netlify sign-in. The replacement is not yet deployed.
+
 ## Open the preview — no installation
 
 Download [invitation-preview.zip](docs/invitation-preview.zip), extract it, and double-click **preview.html**. This avoids viewing HTML source in the browser. The [standalone HTML](docs/preview.html) is also available from the `codex/romantic-redesign` branch or its draft pull request. It is one offline file with all artwork, fonts, CSS, and JavaScript embedded. No server, account, key, or installation is needed. GitHub's source viewer does not run HTML; use **Download raw file**.
@@ -10,13 +12,13 @@ Open the floating letter, then choose **Yes** to continue. **No** is a playful j
 
 Continue through the celebration, date, scrolling hour/minute/AM–PM wheels, optional foods and one activity. Review the final plan, then choose **Send our plan** to email the choices to the inviter. Nothing is sent before that button is selected. The downloaded HTML works offline for review and asks you to use the live link to send.
 
-Dates are exactly October 28–31 and November 1–30, 2026, using Asia/Manila. Past dates and elapsed sample times are unavailable. After November 30, new availability must be confirmed; the app never extends the year. Refresh or **Start again** clears the in-memory draft and returns to the closed letter. Browser Back/Forward and app Back preserve selections during the session. No choices are stored in the URL, cookies, or browser storage.
+Dates are exactly October 28–31 and November 1–30, 2026, using Asia/Manila. Past dates and elapsed times are unavailable. After November 30, new availability must be confirmed; the app never extends the year. Refreshing clears the in-memory draft and returns to the closed letter. Browser Back/Forward and app Back preserve selections during the session. No choices are stored in the URL, cookies, or browser storage.
 
 **The complete animation experience starts automatically. There is no animation menu or mode to choose.** The latest user explicitly requests this default even when a device reports reduced motion. Device settings are not changed.
 
 A fixed field of **240 clearly visible hearts** surrounds the screen: 160 drift/glow across it and 80 flow upward continuously. Eight flower/star charms remain. Effects keep their positions across scrolling, stop background work when the tab is hidden, and use bounded element pools. Choices gently float after 4.5 seconds of inactivity until interaction resumes.
 
-Food and time slots are provisional development fixtures in [assets/js/config.js](assets/js/config.js). Disable `dinner.enabled` to omit the food step; `multiple` and `required` configure its behavior. Final food options, actual available hours, and answer delivery still need decisions.
+The six food choices are confirmed and time selection accepts every minute. Settings remain centralized in [assets/js/config.js](assets/js/config.js). Disable `dinner.enabled` to omit the food step; `multiple` and `required` configure its behavior.
 
 ## Review evidence
 

@@ -1,5 +1,21 @@
 # Project verification record
 
+## Latest live delivery and hosting migration
+
+The latest user request authorizes publishing and email delivery, confirms the existing food choices, allows any hour/minute through AM/PM wheels, and then requests a replacement host with no ChatGPT domain. This supersedes older mock-only, fixed-slot and release restrictions below. The existing live version and 35 Node/29 browser checks are recorded in [LIVE_DELIVERY.md](LIVE_DELIVERY.md). Netlify migration code and the account-owner deployment step are in [NETLIFY_DEPLOY.md](NETLIFY_DEPLOY.md). The replacement is prepared but is not yet verified live; no connected Netlify publishing account is available. Main remains unmerged.
+
+Latest revision: [AUTOMATIC_HEARTS_REVIEW.md](AUTOMATIC_HEARTS_REVIEW.md). It removes the menu and supersedes the earlier selectable modes and heart density described below.
+
+Latest motion-control/nearby-dodge refinement: [FULL_ANIMATION_REVIEW.md](FULL_ANIMATION_REVIEW.md). It supersedes older motion-lock, heart-count and cross-screen No behavior described below.
+
+Latest revision: [CLIENT_REVISION.md](CLIENT_REVISION.md) supersedes the earlier dates, two-Yes buttons and initial screen described below.
+
+Current follow-up revision: [HEART_REFRESH.md](HEART_REFRESH.md). It supersedes the opening exit/branding and motion/type details described at the historical Phase 2A checkpoint below.
+
+## Current Phase 2A evidence
+
+The romantic redesign starts directly at verified Phase 1 commit `df96a2bdcaef6f863dd656989d788fc5c0a78caa`. Current tests, screenshot locations, build/export results, offline checks, design refinements and limitations are recorded in [PHASE2A_REVIEW.md](PHASE2A_REVIEW.md). Historical evidence below is retained as historical, including earlier statements that implementation had not begun. No live integration, email, merge, Pages enablement or deployment is part of Phase 2A.
+
 Inspection date: **2026-10-25**, reported using Asia/Singapore (UTC+08:00). Invitation scheduling remains Asia/Manila. Sections 1–7 record the initial Phase 0 checkpoint; section 8 records its preservation review. Those are historical results. Section 9 links the subsequent Phase 1 build/browser verification. No website has been publicly deployed.
 
 ## 1. Repository baseline
@@ -106,3 +122,93 @@ The preservation commit and pull request do not establish website functionality,
 ## 9. Phase 1 foundation verification
 
 Phase 1 starts at latest merged main commit `dc4b1ebfc1c53b72d2420186acb5a680644b8286` on `codex/phase1-foundation`. The approved working foundation has now been built with compiled Tailwind and rendered locally. Detailed checks, actual screenshots, preview instructions, scope, and limitations are recorded in [PHASE1_REVIEW.md](PHASE1_REVIEW.md). Historical “not implemented” statements above describe the earlier checkpoint, not the current Phase 1 files. No live submissions, notifications, public Site, Pages deployment, or automatic merge is part of Phase 1.
+
+## Netlify sending investigation — 2026-10-26
+
+User reported a live sending failure and confirmed GitHub-connected Netlify
+hosting. Inspected the application on `codex/romantic-redesign` in a local
+`fix/plan-delivery` branch. Added safe deployment/provider/validation/rate-limit
+messages, preserving unknown-delivery wording, choices, retries and the success
+receipt gate. `npm test`: 37 passed. Regenerated the embedded preview and Netlify
+public files; `git diff --check` passed. No real email submitted.
+
+Live Netlify access was denied by the environment proxy; no Netlify management
+connection or runtime secret binding is available. The live root cause and account
+configuration remain unverified. Changes are saved locally, not pushed or deployed.
+
+
+## Netlify provider integration repair — 2026-10-26
+
+Further user evidence confirms the runtime variable in All scopes/Production and
+an HTTP 502 from the live API. Official Web3Forms troubleshooting states that
+standard API submissions must run in the browser and server-side proxy calls can
+be blocked. Replaced the Netlify relay with validated, no-store preparation and
+browser-side submission. The public form key is read from runtime settings,
+returned only on explicit valid preparation, and never embedded in Git/builds.
+The existing Sites Worker path is retained without a new deployment.
+
+Checks: 40 Node tests passed; `npm run build:netlify` passed; three focused Chromium
+checks passed, including the exact packaged Netlify HTML/CSP, provider rejection,
+manual retry, affirmative acceptance and pending/sent click locking. All provider
+requests were intercepted with fixtures; no real email was sent. An initial browser
+check exposed that the test had not navigated to the packaged HTML after installing
+its route; corrected the harness and reran successfully. No visual change required
+new screenshots. `git diff --check` passed.
+
+Found accessible template copy `adriancarbon-byte/Date-invitation-c8933` with main at
+migration SHA `3ad28f1`, identical to the original source branch. Both inspected
+source trees have no `.github` workflows. GitHub CLI API reads and live Netlify
+access are denied by the runtime proxy; GitHub plugin reads work. The repository
+copy has no commit statuses exposing a deployment URL. Production branch updates
+are intended to trigger the user's existing Netlify GitHub deployment under the
+urgent live-repair request. Deployment success and inbox receipt remain unverified.
+
+## Preventive reliability and security audit — 2026-10-26
+
+The user authorized preventive fixes, security hardening and preserving the release
+outside the café session. The user separately confirmed that a real email arrived
+following the previous Netlify delivery repair. That is user-reported inbox receipt
+for the prior release, not an automated live email test of this hardened revision.
+
+Findings and code repairs: [HARDENING_REVIEW.md](HARDENING_REVIEW.md). Account/recovery
+and access limits: [OPERATIONS.md](OPERATIONS.md). Full-motion presentation, approved
+calendar dates and exact personal messages are retained. No runtime credentials or
+actual submitted answers were added to Git. No private login is claimed.
+
+Executed evidence:
+
+- `npm test`: **48 passed** on the workspace's Node 24 runtime.
+- `npx --yes node@22 --test tests/*.test.js`: **48 passed** on Netlify's major runtime.
+- `npm run build:netlify`: PASS, including the new release integrity/security checks.
+- `npm audit --json`: **0 known vulnerabilities** reported for the locked dependencies;
+  this is an advisory snapshot, not proof that dependencies can never have flaws.
+- Full Chromium suite: **32 scenarios executed in 425.661 seconds**. Initial run had
+  31 passes and one stale no-JavaScript copy assertion after improving the fallback
+  wording. Updated that expectation; the affected scenario then passed in a focused
+  rerun. No application failure remained from the full run.
+- Additional Chromium security scenario: PASS with the generated response headers;
+  legitimate hash-authorized script initialized, an injected inline script was
+  blocked, and framing was refused. The fallback rerun plus this scenario passed
+  together (2 tests, 6.367 seconds), yielding **33 distinct verified browser scenarios**.
+- New targeted pending-send expiry, restricted-history/older-API and packaged Netlify
+  delivery checks also passed in a focused run before the full suite (3 tests,
+  31.610 seconds). These scenarios are included in the full suite's count.
+- Browser scope: Chromium desktop, touch-phone/tablet and zoom/device-timezone
+  emulation, offline export and JavaScript-disabled fallback. Not a real-device
+  Safari/Firefox certification. Provider calls were mocked; no automated real email.
+- `npm run preview:download`: regenerated the offline HTML/ZIP with current code.
+- `git diff --check`: PASS. Generated screenshot evidence is in ignored test-results/.
+
+Netlify now runs unit tests before building and checks its generated script digest,
+CSP, provider connection, security headers, output file allowlist and embedded assets
+before release. `npm run test:browser` builds the packaged site before discovering
+browser and response-header tests, avoiding a stale/missing dist artifact.
+
+Public-link access is preserved. Framing/indexing directives are not authentication.
+Answers remain ephemeral in the tab and are sent only on the explicit Send action.
+There is no persistent dashboard, cross-session deduplication or hidden password.
+External outages/quotas, spam filtering and account-security configuration remain
+outside this code audit. Deployment/account management is unavailable in this
+workspace. Both GitHub source copies are the intended release destinations;
+Git commit/remote refs record the actual saved revision. Live production publication
+of this hardened revision must be confirmed in Netlify; no success is invented.

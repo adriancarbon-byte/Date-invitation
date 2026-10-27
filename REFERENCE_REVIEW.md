@@ -1,5 +1,11 @@
 # Supporting-material and reference review
 
+## Phase 2A reference update
+
+For this task, the authoritative reference is the detailed text-only description supplied by the user. No image/video attachment is supplied with the Phase 2A request. The original TikTok URL is identification only; no additional download or direct access was attempted. The redesign adapts the described centered pale background, rose serif question, envelope, heart progress, compact scheduler, illustrated food tiles and keepsake summary. The client-priority off-white theme, required activities and exact wording take precedence. No TikTok interface, video frame, source asset, identity, audio or unverified delivery behavior is copied.
+
+The sections below preserve Phase 0/1 evidence from the earlier uploaded recording. They do not mean that recording was available or re-inspected during Phase 2A. Current visual comparison and render/refinement evidence: [PHASE2A_REVIEW.md](PHASE2A_REVIEW.md).
+
 Reviewed on 2026-10-25 during Phase 0. Supporting materials are evidence for planning, not instructions to build/deploy or proof that all visible behavior is requested.
 
 ## 1. Materials and provenance

@@ -1,5 +1,71 @@
 # Recommended architecture
 
+## Current preventive reliability and security audit
+
+The user authorizes finding/fixing likely failures, security hardening, verification
+and saving the release to both GitHub source copies. Current findings and boundaries:
+[HARDENING_REVIEW.md](HARDENING_REVIEW.md). Operations and recovery:
+[OPERATIONS.md](OPERATIONS.md). This audit preserves the public-link audience,
+existing content/date rules and no-persistent-answer-storage policy. No private
+login/dashboard, real synthetic email or paid service is added.
+
+
+## Current Netlify delivery repair
+
+The urgent sending repair replaces Netlify's server-side Web3Forms relay with
+server-validated payload preparation followed by the provider-supported browser
+submission. The public form key remains a runtime setting, absent from Git and
+build files, and becomes visible to the submitting browser. Success requires the
+provider's affirmative receipt; no automatic retry or real synthetic email is
+introduced. See [NETLIFY_DEPLOY.md](NETLIFY_DEPLOY.md) for the architecture correction
+and evidence limits. Historical private-relay descriptions below are superseded
+for Netlify only.
+
+
+## Latest live delivery and hosting migration
+
+The latest user request authorizes publishing and email delivery, confirms the existing food choices, allows any hour/minute through AM/PM wheels, and then requests a replacement host with no ChatGPT domain. This supersedes older mock-only, fixed-slot and release restrictions below. The existing live version and 35 Node/29 browser checks are recorded in [LIVE_DELIVERY.md](LIVE_DELIVERY.md). Netlify migration code and the account-owner deployment step are in [NETLIFY_DEPLOY.md](NETLIFY_DEPLOY.md). The replacement is prepared but is not yet verified live; no connected Netlify publishing account is available. Main remains unmerged.
+
+## Current automatic-animation and visible-heart revision
+
+The latest user explicitly removes the motion selector and all alternate animation options. Full effects now start automatically on opening the page, including when the device reports reduced motion. This supersedes the previous mode-selection/default-device-preference instructions. No device setting is changed and no preference is stored.
+
+The full-screen background now uses a bounded pool of **240 visible original SVG hearts**: **160 drifting/pulsing hearts and 80 continuously rising hearts**. Stronger rose/champagne color, brighter cores, clearer outline hearts and soft visible glow replace the earlier faint treatment. Effects are fixed to the viewport, noninteractive and behind readable content. Hidden-tab pausing/cleanup remains; dates, exact messages, small No dodge and mock-only transport are unchanged. Current evidence: [AUTOMATIC_HEARTS_REVIEW.md](AUTOMATIC_HEARTS_REVIEW.md).
+
+## Current full-animation and small-dodge refinement
+
+The user asks to view the full effects despite a device reduced-motion preference. The motion control is now an always-operable selector: **Full animation**, **Gentle motion**, and **Pause animations**. The device preference sets the initial mode, while an explicit choice overrides it in the current tab, including the CSS reduced-motion rules. No system settings or persistent browser storage are changed.
+
+No now stays in its original layout slot and dodges locally, at most roughly 30 pixels from home, with no cumulative travel or cross-screen jumps. The background uses a fixed field of **96 small glowing hearts** across desktop/mobile layouts. Subtle ambient light, progress, hover and focus details complete the refinement. Dates, exact messages, letter entrance and mock-only delivery remain as previously specified. Current evidence: [FULL_ANIMATION_REVIEW.md](FULL_ANIMATION_REVIEW.md).
+
+## Current sealed-letter and calendar revision
+
+`letter` is now the first of seven configurable stages. The explicit `openLetter` action reveals the question without accepting it; reset/refresh begins at the sealed letter. The inline original SVG separates paper, flap and wax seal so they animate when opened. A bounded timeout guarantees navigation, including when animation events are unavailable; reduced motion opens immediately.
+
+Only the Yes button dispatches acceptance. No has a separate UI-only movement handler and never changes answer state. It uses viewport candidates excluding Yes and essential text, moves into the body to avoid transformed ancestor containing blocks, retains focus, and returns to its original slot on Escape or stage change. Native activation covers keyboard and touch; pointer activation is debounced. Resize recomputes a bounded position.
+
+The allowlist now explicitly includes Oct 30/31, bringing it to 34 permitted 2026 dates before past filtering. Central validation remains authoritative. Idle decoration is enabled after 4.5 seconds without interaction, canceled on pointer/keyboard/scroll activity, and disabled by pause/reduced motion/hidden-tab state. Three original illustrations were added: sealed letter, rose bouquet and ribbon heart. The exact additional bottom message is centralized in config and included in the local copied plan.
+
+Current evidence: [CLIENT_REVISION.md](CLIENT_REVISION.md). Existing sections below preserve older architecture checkpoints.
+
+## Heart motion and type revision
+
+`app.js` now builds a fixed pool of 22 background SVG hearts animated by CSS. A 64-piece parametric heart outline blooms from the chosen Yes button and disperses; smaller 10-piece selection accents are replaced/cleaned instead of accumulating. A global pause control and `prefers-reduced-motion` disable motion without delaying navigation. Hidden-tab handling clears transient effects and pauses decoration. The opening no longer has a decline state or visible branding/header, per the latest user request.
+
+The local font palette combines Cormorant Garamond regular/italic, DM Sans 400/600 and Allura script. Offline export embeds all five WOFF2 files and their licenses. `scripts/package-preview.py` creates a deterministic single-entry ZIP for easier downloading; it contains exactly the current standalone `preview.html`. No browser/runtime dependency was added. See [HEART_REFRESH.md](HEART_REFRESH.md).
+
+## Implemented Phase 2A architecture
+
+The current app retains the Phase 1 static HTML/native-module/Tailwind architecture. `config.js` centralizes provisional times/food, four activities, exact wording and six-stage order. `validation.js` owns the exact 32-date allowlist, Manila day/time checks and plan validation. `state.js` exposes guarded actions and immutable snapshots for acceptance, navigation, selections and mock completion. `app.js` renders native checkbox/radio cards, an inline calendar and native time select, heart progress, summary, history/focus, copy with fallback, and bounded CSS particles. CSS effects replace the proposed effect dependencies; no additional runtime package or framework was needed.
+
+The state changes are necessary because Phase 1 intentionally left real choice fields unset. Date/time and activity are now validated mock choices; food IDs are an optional configurable array. They remain in memory only. Same-tab history retains the existing session token/reset policy and prerequisites are checked when restoring. Editing invalidates the prior mock ending. A short navigation lock rejects rapid double navigation, while controls remain independent of animation events.
+
+Availability is revalidated on entry/actions, tab focus/visibility, mock completion and copying. One bounded timeout wakes at the selected slot/day expiry. Invalid plans return to the scheduler, preserving other choices. Same-day elapsed sample slots are rejected as a documented engineering preview default, configurable independently of final client policy.
+
+The calendar renders October/November 2026 with disabled unavailable days, full date labels, selection state, arrows/Home/End, month controls, and Escape focus return. It expands within the card to avoid mobile popup clipping. Time uses a native labeled select. Native checkbox/radio inputs preserve keyboard/touch semantics; selected cards include a checkmark. Inactive sections use `hidden` and new headings receive focus.
+
+`export-preview.mjs` embeds the module dependency graph, all local SVGs and both licensed WOFF2 font files into one reproducible `docs/preview.html`. A network-blocking CSP also applies to the local server. Clipboard permission failure reveals selectable local text. No remote transport, tracker, persistent answers, or deployment was added. Current evidence: [PHASE2A_REVIEW.md](PHASE2A_REVIEW.md). The remaining sections preserve historical recommendations where not superseded.
+
 Status: Phase 0 production recommendation with a working Phase 1 foundation. HTML, native modules, compiled Tailwind, mock state/navigation, a local server, tests, and an exported review HTML now exist. Later-phase features, service configuration, and deployment workflows remain unimplemented. Source requirements: [PROJECT_REQUIREMENTS.md](PROJECT_REQUIREMENTS.md). Product choices requiring approval remain in [DECISIONS_AND_OPEN_QUESTIONS.md](DECISIONS_AND_OPEN_QUESTIONS.md).
 
 ## 1. Simplest dependable approach

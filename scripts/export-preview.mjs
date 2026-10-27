@@ -1,29 +1,41 @@
-// Review artifact only: a deterministic, offline, single-file copy of this exact
-// foundation. It is not a public deployment or a separate application.
-import { readFile, writeFile, mkdir } from 'node:fs/promises';
-
+// Deterministic single-file review copy of the current source, with no network dependency.
+import { readFile, writeFile, mkdir, readdir } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { posix } from 'node:path';
 const root = new URL('../', import.meta.url);
 const read = path => readFile(new URL(path, root), 'utf8');
 const data = (mime, source) => `data:${mime};base64,${Buffer.from(source).toString('base64')}`;
-
-const config = data('text/javascript', await read('assets/js/config.js'));
-const state = data('text/javascript', (await read('assets/js/state.js')).replace("'./config.js'", `'${config}'`));
-const submission = data('text/javascript', await read('assets/js/submission.js'));
-const app = (await read('assets/js/app.js'))
-  .replace("'./config.js'", `'${config}'`)
-  .replace("'./state.js'", `'${state}'`)
-  .replace("'./submission.js'", `'${submission}'`);
-let html = await read('index.html');
-html = html.replace('<link rel="stylesheet" href="./assets/css/app.css">',
-  `<style>${(await read('assets/css/app.css')).replace(/<\/style/gi, '<\\/style')}</style>`);
-html = html.replace('<script type="module" src="./assets/js/app.js"></script>',
-  `<script type="module">${app.replace(/<\/script/gi, '<\\/script')}</script>`);
-for (const name of ['flower', 'envelope']) {
-  html = html.replaceAll(`./assets/art/${name}.svg`, data('image/svg+xml', await read(`assets/art/${name}.svg`)));
+const art = {};
+for (const file of (await readdir(new URL('assets/art/', root))).sort()) {
+  if (file.endsWith('.svg')) art[file.slice(0,-4)] = data('image/svg+xml', await read(`assets/art/${file}`));
 }
-html = html.replace('<meta charset="UTF-8">', `<meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' data:; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">`);
-if (/\b(?:src|href)="\.\/assets\//.test(html)) throw new Error('Offline preview still references external assets');
-await mkdir(new URL('docs/', root), { recursive: true });
-await writeFile(new URL('docs/preview.html', root), html);
-console.log('Offline review preview saved: docs/preview.html (no server or installation required)');
+const cache = new Map();
+async function moduleSource(path) {
+  if (cache.has(path)) return cache.get(path);
+  let source = await read(path);
+  for (const match of [...source.matchAll(/from '(\.\/[^']+)'/g)]) {
+    const target = posix.join(posix.dirname(path), match[1]);
+    const uri = data('text/javascript', await moduleSource(target));
+    source = source.replaceAll(`from '${match[1]}'`, `from '${uri}'`);
+  }
+  if (path.endsWith('/app.js')) source = source.replace('const artPath = name => `./assets/art/${name}.svg`;', `const offlineArt = ${JSON.stringify(art)};\nconst artPath = name => offlineArt[name];`);
+  cache.set(path, source);
+  return source;
+}
+let css = await read('assets/css/app.css');
+for (const file of (await readdir(new URL('assets/art/', root))).filter(name => name.endsWith('.woff2')).sort()) {
+  const uri = data('font/woff2', await readFile(new URL(`assets/art/${file}`, root)));
+  css = css.replaceAll(`../art/${file}`, uri);
+}
+let html = await read('index.html');
+const licenses = await Promise.all(['CORMORANT-LICENSE.txt','DM-SANS-LICENSE.txt','ALLURA-LICENSE.txt'].map(name => read(`assets/art/${name}`)));
+html = html.replace('</head>', `<!-- Bundled font licenses: Cormorant Garamond, DM Sans, Allura\n${licenses.join('\n\n')}\n-->\n</head>`);
+html = html.replace('<link rel="stylesheet" href="./assets/css/app.css">', `<style>${css.replace(/<\/style/gi,'<\\/style')}</style>`);
+html = html.replace('<script type="module" src="./assets/js/app.js"></script>', `<script type="module">${(await moduleSource('assets/js/app.js')).replace(/<\/script/gi,'<\\/script')}</script>`);
+for (const [name, uri] of Object.entries(art)) html = html.replaceAll(`./assets/art/${name}.svg`, uri);
+const scriptHash = createHash('sha256').update(html.match(/<script type="module">([\s\S]*?)<\/script>/)[1]).digest('base64');
+html = html.replace('<meta charset="UTF-8">', `<meta charset="UTF-8">\n<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-${scriptHash}' data:; style-src 'unsafe-inline'; img-src data:; font-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">`);
+if (/\b(?:src|href)="\.\/assets\//.test(html) || /url\(["']?\.\.\/art\//.test(html)) throw new Error('Offline preview still references external assets');
+await mkdir(new URL('docs/',root),{recursive:true});
+await writeFile(new URL('docs/preview.html',root),html);
+console.log(`Offline review saved: docs/preview.html (${Buffer.byteLength(html)} bytes)`);

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" fill="none" role="img" aria-labelledby="title"><title id="title">A tiny ivory keepsake letter with a rose heart and golden paper clip</title><defs>
+<linearGradient id="cream" x2="0.3" y2="1"><stop stop-color="#FFFDF7"/><stop offset="1" stop-color="#EEDAC3"/></linearGradient>
+<linearGradient id="rose" x2="0.2" y2="1"><stop stop-color="#EDB5BC"/><stop offset="1" stop-color="#C16D86"/></linearGradient>
+<linearGradient id="gold" x2="0.2" y2="1"><stop stop-color="#F7D998"/><stop offset="1" stop-color="#DEAF73"/></linearGradient>
+<linearGradient id="sage" x2="0.3" y2="1"><stop stop-color="#C7D9B6"/><stop offset="1" stop-color="#95B199"/></linearGradient>
+<linearGradient id="night" x2="0.3" y2="1"><stop stop-color="#9CA9B6"/><stop offset="1" stop-color="#6D778E"/></linearGradient>
+<filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#9D7E68" flood-opacity=".15"/></filter>
+</defs><g stroke="#A38170" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+<ellipse cx="100" cy="140" rx="53" ry="6" fill="#DDCAB7" opacity=".24" stroke="none"/>
+<path transform="translate(152 45) scale(0.6)" d="M0-7 2-2 7 0 2 2 0 7-2 2-7 0-2-2Z" fill="#D4B58D" stroke="none"/><path transform="translate(45 72) scale(0.4)" d="M0 4C-9-4-12 5-8 10L0 17 8 10C12 5 9-4 0 4Z" fill="#CC8094" stroke="none"/>
+<g filter="url(#shadow)" transform="rotate(-6 100 80)"><path d="M65 25H136Q142 25 142 32V129Q142 135 135 135H65Q58 135 58 128V32Q58 25 65 25Z" fill="url(#cream)"/><path d="M66 34H134V126H66Z" fill="#FFFCF6" stroke="#DCC3AE" stroke-width="1.5"/>
+<path transform="translate(100 48) scale(1.15)" d="M0 4C-9-4-12 5-8 10L0 17 8 10C12 5 9-4 0 4Z" fill="#CC8094" stroke="none"/>
+<path d="M80 89H120M76 100H124M85 111H115" stroke="#D5B8AB" stroke-width="2.5"/>
+<path d="M120 25V18Q119 11 112 13Q107 14 109 22L116 42Q118 49 124 47Q130 45 128 38L123 21" stroke="#C6A482" stroke-width="2.5"/>
+</g></g></svg>

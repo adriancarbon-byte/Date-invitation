@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" fill="none" role="img" aria-labelledby="title"><title id="title">A little golden pizza slice with rose tomato toppings</title><defs>
+<linearGradient id="cream" x2="0.3" y2="1"><stop stop-color="#FFFDF7"/><stop offset="1" stop-color="#EEDAC3"/></linearGradient>
+<linearGradient id="rose" x2="0.2" y2="1"><stop stop-color="#EDB5BC"/><stop offset="1" stop-color="#C16D86"/></linearGradient>
+<linearGradient id="gold" x2="0.2" y2="1"><stop stop-color="#F7D998"/><stop offset="1" stop-color="#DEAF73"/></linearGradient>
+<linearGradient id="sage" x2="0.3" y2="1"><stop stop-color="#C7D9B6"/><stop offset="1" stop-color="#95B199"/></linearGradient>
+<linearGradient id="night" x2="0.3" y2="1"><stop stop-color="#9CA9B6"/><stop offset="1" stop-color="#6D778E"/></linearGradient>
+<filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#9D7E68" flood-opacity=".15"/></filter>
+</defs><g stroke="#A38170" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+<ellipse cx="101" cy="136" rx="56" ry="7" fill="#DDCAB7" opacity=".24" stroke="none"/>
+<path transform="translate(151 35) scale(0.7)" d="M0-7 2-2 7 0 2 2 0 7-2 2-7 0-2-2Z" fill="#D4B58D" stroke="none"/><path transform="translate(48 56) scale(0.4)" d="M0 4C-9-4-12 5-8 10L0 17 8 10C12 5 9-4 0 4Z" fill="#CC8094" stroke="none"/>
+<g filter="url(#shadow)" transform="rotate(-10 100 80)">
+<path d="M58 44Q99 26 142 45L108 126Q105 133 99 126Z" fill="#E9B77D"/>
+<path d="M65 50Q101 35 135 51L105 119Q103 123 100 119Z" fill="#F6D891" stroke="#DEB477"/>
+<path d="M59 46Q100 28 141 46" stroke="#D39D69" stroke-width="15"/>
+<path d="M60 41Q100 25 140 41" stroke="#F3CB96" stroke-width="10"/>
+<path d="m70 66 6 10 7-1m30 15 6 8m-17-42-4 7" stroke="#EEDFA0" stroke-width="5"/>
+<circle cx="94" cy="63" r="9" fill="#D98879" stroke="#C57F6E"/><circle cx="118" cy="74" r="8" fill="#D98879" stroke="#C57F6E"/><circle cx="99" cy="99" r="7" fill="#D98879" stroke="#C57F6E"/>
+<path d="m112 49 5 4m-37 32 5-2m24 21 3 3" stroke="#8EAA83" stroke-width="4"/>
+<path d="M101 116v11q0 6 4 4l4-11" fill="#F6D891" stroke="#DEB477"/>
+</g></g></svg>

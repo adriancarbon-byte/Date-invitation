@@ -1,5 +1,65 @@
 # Project requirements
 
+## Current preventive reliability and security audit
+
+The user authorizes finding/fixing likely failures, security hardening, verification
+and saving the release to both GitHub source copies. Current findings and boundaries:
+[HARDENING_REVIEW.md](HARDENING_REVIEW.md). Operations and recovery:
+[OPERATIONS.md](OPERATIONS.md). This audit preserves the public-link audience,
+existing content/date rules and no-persistent-answer-storage policy. No private
+login/dashboard, real synthetic email or paid service is added.
+
+
+## Current Netlify delivery repair
+
+The urgent sending repair replaces Netlify's server-side Web3Forms relay with
+server-validated payload preparation followed by the provider-supported browser
+submission. The public form key remains a runtime setting, absent from Git and
+build files, and becomes visible to the submitting browser. Success requires the
+provider's affirmative receipt; no automatic retry or real synthetic email is
+introduced. See [NETLIFY_DEPLOY.md](NETLIFY_DEPLOY.md) for the architecture correction
+and evidence limits. Historical private-relay descriptions below are superseded
+for Netlify only.
+
+
+## Latest live delivery and hosting migration
+
+The latest user request authorizes publishing and email delivery, confirms the existing food choices, allows any hour/minute through AM/PM wheels, and then requests a replacement host with no ChatGPT domain. This supersedes older mock-only, fixed-slot and release restrictions below. The existing live version and 35 Node/29 browser checks are recorded in [LIVE_DELIVERY.md](LIVE_DELIVERY.md). Netlify migration code and the account-owner deployment step are in [NETLIFY_DEPLOY.md](NETLIFY_DEPLOY.md). The replacement is prepared but is not yet verified live; no connected Netlify publishing account is available. Main remains unmerged.
+
+## Current automatic-animation and visible-heart revision
+
+The latest user explicitly removes the motion selector and all alternate animation options. Full effects now start automatically on opening the page, including when the device reports reduced motion. This supersedes the previous mode-selection/default-device-preference instructions. No device setting is changed and no preference is stored.
+
+The full-screen background now uses a bounded pool of **240 visible original SVG hearts**: **160 drifting/pulsing hearts and 80 continuously rising hearts**. Stronger rose/champagne color, brighter cores, clearer outline hearts and soft visible glow replace the earlier faint treatment. Effects are fixed to the viewport, noninteractive and behind readable content. Hidden-tab pausing/cleanup remains; dates, exact messages, small No dodge and mock-only transport are unchanged. Current evidence: [AUTOMATIC_HEARTS_REVIEW.md](AUTOMATIC_HEARTS_REVIEW.md).
+
+## Current full-animation and small-dodge refinement
+
+The user asks to view the full effects despite a device reduced-motion preference. The motion control is now an always-operable selector: **Full animation**, **Gentle motion**, and **Pause animations**. The device preference sets the initial mode, while an explicit choice overrides it in the current tab, including the CSS reduced-motion rules. No system settings or persistent browser storage are changed.
+
+No now stays in its original layout slot and dodges locally, at most roughly 30 pixels from home, with no cumulative travel or cross-screen jumps. The background uses a fixed field of **96 small glowing hearts** across desktop/mobile layouts. Subtle ambient light, progress, hover and focus details complete the refinement. Dates, exact messages, letter entrance and mock-only delivery remain as previously specified. Current evidence: [FULL_ANIMATION_REVIEW.md](FULL_ANIMATION_REVIEW.md).
+
+## Current client revision: sealed letter, calendar and playful No
+
+The latest user instruction supersedes earlier date/button restrictions: start with a floating closed letter and the exact caption **“Hey, I want you to open this for me.”** Opening it reveals **Yes** and **No**. No is an explicitly requested joke: activating it moves it to another bounded viewport position with a cute caption; only Yes records acceptance and advances. Preserve keyboard focus, Escape reset, normal browser exit and reduced-motion handling.
+
+**October 30 and 31, 2026 are now approved**, alongside October 28/29 and all November dates: **34 dates before Manila past filtering**. The calendar legend is removed and original romantic sticker artwork surrounds the scheduling card. The original exact final note remains, followed at the bottom by **“One thing is for sure, i like you so much my christine.”** Floating idle choices and small background flowers/stars are also requested. These remain nonessential, pausable decorations with cleanup. Delivery stays mock-only; no deployment or live submission is authorized.
+
+See [CLIENT_REVISION.md](CLIENT_REVISION.md) for implementation, current screenshots, tests and download instructions. Earlier checkpoints below are historical where they conflict with this revision.
+
+## Latest heart and typography revision
+
+The user's follow-up explicitly removes the opening's **Not now** action, the visible “a little invitation.” brand, the top divider, and the “Just a preview. Your choices stay in this tab.” footer notice. These changes supersede earlier requests for that exit/branding. Only **Yes!** and **Yes, of course!** remain on the opening. The six-stage flow and exact question/message/date/activity requirements are retained.
+
+The user also authorizes animated floating/glowing theme-matched hearts, a heart made of smaller hearts spreading after Yes, additional selection feedback, improved typography and UI polish. A fixed decorative pool, pause control, reduced-motion handling and hidden-tab cleanup keep these additions nonessential. Mock-only transport and the explicit ending notice remain intact. Current evidence and download instructions: [HEART_REFRESH.md](HEART_REFRESH.md).
+
+## Current Phase 2A scope (supersedes historical phase restrictions below)
+
+The user's supplied Phase 2A execution request authorizes a full frontend redesign, original SVGs, interactive calendar/cards, bounded motion, mock ending, standalone export, rendered screenshots, tests, commit/push and draft PR against `codex/phase1-foundation`. It explicitly forbids deployment, Pages enablement, merging, live Web3Forms integration, emails, paid services, and private client data. Source is verified Phase 1 commit `df96a2bdcaef6f863dd656989d788fc5c0a78caa`; review branch is `codex/romantic-redesign`.
+
+R02/R09 are resolved for this phase: exact question “Will you go out on a date with me?”, **Yes!**, **Yes, of course!**, and stable **Not now**. R11/R12 use optional, configurable provisional food with explicit Continue, skip, and configurable multi-selection. R14/R20 use six focused stages: invitation → celebration → scheduler → optional food → activity → confirmation preview. R04/R05 retain the exact 32 dates in Asia/Manila; R06 uses clearly labeled sample slots only. R20 now includes the exact supplied romantic message, preserved in config and final view. R25/R26 use original SVGs and locally bundled licensed Cormorant fonts. R21/R27 use brief bounded decorative hearts with reduced-motion handling; no continuous background effects or audio are required. R19 remains strictly a mock preview; real delivery and retrieval remain unresolved.
+
+The historic requirement details below remain the baseline where not superseded here. Historical restrictions to Phase 0/1 and the former five-stage order do not block the authorized redesign. Current behavior and verification are in [PHASE2A_REVIEW.md](PHASE2A_REVIEW.md).
+
 Baseline: Master Project Handoff V2.0, supplied 2026-10-25. This is the full planning baseline, not evidence of implementation or approval of every proposal.
 
 ## 1. Authority and sources

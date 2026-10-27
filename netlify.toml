@@ -1,0 +1,13 @@
+[build]
+  command = "npm test && npm run build:netlify"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  node_bundler = "esbuild"
+
+[template.environment]
+  WEB3FORMS_ACCESS_KEY = "Paste your verified Web3Forms public form access key. Read by the function for browser-side submission."

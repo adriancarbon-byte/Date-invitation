@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" fill="none" role="img" aria-labelledby="title"><title id="title">A little ivory party cone releasing rose hearts and soft confetti</title><defs>
+<linearGradient id="cream" x2="0.3" y2="1"><stop stop-color="#FFFDF7"/><stop offset="1" stop-color="#EEDAC3"/></linearGradient>
+<linearGradient id="rose" x2="0.2" y2="1"><stop stop-color="#EDB5BC"/><stop offset="1" stop-color="#C16D86"/></linearGradient>
+<linearGradient id="gold" x2="0.2" y2="1"><stop stop-color="#F7D998"/><stop offset="1" stop-color="#DEAF73"/></linearGradient>
+<linearGradient id="sage" x2="0.3" y2="1"><stop stop-color="#C7D9B6"/><stop offset="1" stop-color="#95B199"/></linearGradient>
+<linearGradient id="night" x2="0.3" y2="1"><stop stop-color="#9CA9B6"/><stop offset="1" stop-color="#6D778E"/></linearGradient>
+<filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#9D7E68" flood-opacity=".15"/></filter>
+</defs><g stroke="#A38170" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+<ellipse cx="100" cy="139" rx="55" ry="7" fill="#DDCAB7" opacity=".24" stroke="none"/>
+<path transform="translate(48 58) scale(0.8)" d="M0-7 2-2 7 0 2 2 0 7-2 2-7 0-2-2Z" fill="#D4B58D" stroke="none"/><path transform="translate(149 79) scale(0.65)" d="M0-7 2-2 7 0 2 2 0 7-2 2-7 0-2-2Z" fill="#D4B58D" stroke="none"/><path transform="translate(153 33) scale(0.5)" d="M0 4C-9-4-12 5-8 10L0 17 8 10C12 5 9-4 0 4Z" fill="#CC8094" stroke="none"/><path transform="translate(50 22) scale(0.4)" d="M0 4C-9-4-12 5-8 10L0 17 8 10C12 5 9-4 0 4Z" fill="#CC8094" stroke="none"/>
+<path d="m63 33 4 9m67 6 8-6m-52-24 1 8m-48 65 7 1m109 20-6 4" stroke="#C5AA89" stroke-width="3"/>
+<g filter="url(#shadow)"><path d="M57 126 77 66Q80 62 84 66L121 110Q124 114 119 116L62 133Q54 135 57 126Z" fill="url(#cream)"/>
+<path d="m63 110 21 17m-14-35 29 31m-21-48 35 42" stroke="#DCA7AF" stroke-width="8"/>
+<ellipse cx="100" cy="89" rx="11" ry="33" transform="rotate(-39 100 89)" fill="#E6C6B4"/>
+<path d="M86 75Q76 50 99 45m12 44q29 3 22-19m-33 8q-2-20 14-24" stroke="#B5BEA1" stroke-width="3"/>
+<path transform="translate(109 27) scale(1.55)" d="M0 4C-9-4-12 5-8 10L0 17 8 10C12 5 9-4 0 4Z" fill="#CC8094" stroke="none"/><path transform="translate(137 53) scale(0.7)" d="M0 4C-9-4-12 5-8 10L0 17 8 10C12 5 9-4 0 4Z" fill="#E4BE97" stroke="none"/>
+</g></g></svg>

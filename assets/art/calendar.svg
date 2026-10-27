@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" fill="none" role="img" aria-labelledby="title"><title id="title">An ivory calendar with a little heart marking a special day</title><defs>
+<linearGradient id="cream" x2="0.3" y2="1"><stop stop-color="#FFFDF7"/><stop offset="1" stop-color="#EEDAC3"/></linearGradient>
+<linearGradient id="rose" x2="0.2" y2="1"><stop stop-color="#EDB5BC"/><stop offset="1" stop-color="#C16D86"/></linearGradient>
+<linearGradient id="gold" x2="0.2" y2="1"><stop stop-color="#F7D998"/><stop offset="1" stop-color="#DEAF73"/></linearGradient>
+<linearGradient id="sage" x2="0.3" y2="1"><stop stop-color="#C7D9B6"/><stop offset="1" stop-color="#95B199"/></linearGradient>
+<linearGradient id="night" x2="0.3" y2="1"><stop stop-color="#9CA9B6"/><stop offset="1" stop-color="#6D778E"/></linearGradient>
+<filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#9D7E68" flood-opacity=".15"/></filter>
+</defs><g stroke="#A38170" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+<ellipse cx="100" cy="137" rx="51" ry="7" fill="#DDCAB7" opacity=".24" stroke="none"/>
+<path transform="translate(148 43) scale(0.6)" d="M0-7 2-2 7 0 2 2 0 7-2 2-7 0-2-2Z" fill="#D4B58D" stroke="none"/><path transform="translate(43 77) scale(0.4)" d="M0 4C-9-4-12 5-8 10L0 17 8 10C12 5 9-4 0 4Z" fill="#CC8094" stroke="none"/>
+<g filter="url(#shadow)" transform="rotate(-7 100 85)"><rect x="54" y="40" width="92" height="91" rx="12" fill="url(#cream)"/><path d="M54 54Q54 40 66 40H134Q146 40 146 54V67H54Z" fill="url(#rose)"/>
+<path d="M77 32V49m46-17v17" stroke="#BFA68C" stroke-width="6"/>
+<path d="M64 75H136" stroke="#E6D5C1"/>
+<g fill="#C7B29D" stroke="none"><circle cx="73" cy="87" r="3"/><circle cx="93" cy="87" r="3"/><circle cx="113" cy="87" r="3"/><circle cx="73" cy="106" r="3"/><circle cx="113" cy="106" r="3"/><circle cx="133" cy="106" r="3"/></g>
+<path transform="translate(94 98) scale(0.75)" d="M0 4C-9-4-12 5-8 10L0 17 8 10C12 5 9-4 0 4Z" fill="#CC8094" stroke="none"/><path d="M61 78v40" stroke="#FFFDF6" stroke-width="3"/>
+</g></g></svg>

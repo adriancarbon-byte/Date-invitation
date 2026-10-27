@@ -1,22 +1,43 @@
-// Public prototype settings. Unconfirmed client decisions stay unset.
+// Public invitation settings. Delivery credentials live only in the hosting secret store.
+const choices = values => Object.freeze(values.map(([id, label, art = id]) => Object.freeze({ id, label, art })));
+
 export const config = Object.freeze({
   timezone: 'Asia/Manila',
-  submissionMode: 'mock',
-  invitationVariant: null,
-  dinner: Object.freeze({ enabled: true, required: false, options: Object.freeze([]) }),
-  allowedTimes: null,
+  submissionMode: 'email',
+  invitationVariant: 'playful-yes-no',
+  invitationQuestion: 'Will you go out on a date with me?',
+  finalMessage: 'See you cutie, wear whatever makes you feel comfortable, okay? You don’t have to dress up or try to impress me, because honestly, I already think you’re beautiful just the way you are.',
+  letterCaption: 'Hey, I want you to open this for me.',
+  closingMessage: 'One thing is for sure, i like you so much my christine.',
+  dinner: Object.freeze({
+    enabled: true,
+    required: false,
+    multiple: true,
+    provisional: false,
+    options: choices([
+      ['pizza', 'Pizza'], ['sushi', 'Sushi'], ['burgers', 'Burgers'],
+      ['pasta', 'Pasta'], ['tacos', 'Tacos'], ['ramen', 'Ramen'],
+    ]),
+  }),
+  activities: choices([
+    ['city-lights', 'City Lights'], ['around-city', 'Around the City'],
+    ['movie-date', 'Movie Date'], ['arcade', 'Arcade'],
+  ]),
+  timesProvisional: false,
+  // Engineering preview policy only: elapsed same-day sample slots are unavailable.
+  rejectElapsedSampleTimes: true,
+  freeTime: true,
+  allowedTimes: Object.freeze([]),
   audioEnabled: false,
   stages: Object.freeze([
+    { id: 'letter', label: 'A letter for you' },
     { id: 'invitation', label: 'Invitation' },
+    { id: 'celebration', label: 'A happy little yes' },
+    { id: 'scheduler', label: 'A little time' },
     { id: 'dinner', label: 'A little taste' },
     { id: 'activity', label: 'An adventure' },
-    { id: 'scheduler', label: 'A little time' },
-    { id: 'ending', label: 'The beginning' },
+    { id: 'ending', label: 'Our little plan' },
   ].map(Object.freeze)),
-  previewOptions: Object.freeze([
-    Object.freeze({ id: 'sample-a', label: 'A shared table' }),
-    Object.freeze({ id: 'sample-b', label: 'A sweet little stop' }),
-  ]),
 });
 
 export function enabledStages(settings = config) {

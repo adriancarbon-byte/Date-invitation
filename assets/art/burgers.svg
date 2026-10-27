@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" fill="none" role="img" aria-labelledby="title"><title id="title">A round golden burger with lettuce, cheese, and a tiny smile</title><defs>
+<linearGradient id="cream" x2="0.3" y2="1"><stop stop-color="#FFFDF7"/><stop offset="1" stop-color="#EEDAC3"/></linearGradient>
+<linearGradient id="rose" x2="0.2" y2="1"><stop stop-color="#EDB5BC"/><stop offset="1" stop-color="#C16D86"/></linearGradient>
+<linearGradient id="gold" x2="0.2" y2="1"><stop stop-color="#F7D998"/><stop offset="1" stop-color="#DEAF73"/></linearGradient>
+<linearGradient id="sage" x2="0.3" y2="1"><stop stop-color="#C7D9B6"/><stop offset="1" stop-color="#95B199"/></linearGradient>
+<linearGradient id="night" x2="0.3" y2="1"><stop stop-color="#9CA9B6"/><stop offset="1" stop-color="#6D778E"/></linearGradient>
+<filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#9D7E68" flood-opacity=".15"/></filter>
+</defs><g stroke="#A38170" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+<ellipse cx="100" cy="136" rx="54" ry="7" fill="#DDCAB7" opacity=".24" stroke="none"/>
+<path transform="translate(151 50) scale(0.45)" d="M0 4C-9-4-12 5-8 10L0 17 8 10C12 5 9-4 0 4Z" fill="#CC8094" stroke="none"/><path transform="translate(49 44) scale(0.7)" d="M0-7 2-2 7 0 2 2 0 7-2 2-7 0-2-2Z" fill="#D4B58D" stroke="none"/>
+<g filter="url(#shadow)"><path d="M52 112H148Q146 133 128 133H72Q55 133 52 112Z" fill="url(#gold)"/>
+<path d="M49 104Q50 98 59 98H141Q151 98 151 104V110Q151 116 142 116H58Q49 116 49 110Z" fill="#A97E67"/>
+<path d="m49 95 19-7 16 7 19-6 17 6 25-6 8 8-15 6-20-4-15 5-19-4-17 4-17-3Z" fill="url(#sage)"/>
+<path d="m55 83 31 1 17 18 17-18 26-1" fill="#F5D58D" stroke="#DAB678"/>
+<path d="M52 78Q54 41 100 41T148 78Q148 85 140 85H60Q52 85 52 78Z" fill="url(#gold)"/>
+<path d="M64 66Q73 47 101 49" stroke="#FFF0CB" stroke-width="4"/>
+<path d="m82 59 3-2m17 4 3 1m16-2 2 2m-53 13 3-1m49 0 3-2" stroke="#FFF3D2" stroke-width="3"/>
+<g transform="translate(100 72)" fill="#806052" stroke="none"><circle cx="-8" r="1.8"/><circle cx="8" r="1.8"/><ellipse cx="-13" cy="5" rx="4" ry="2.5" fill="#EDB4AF"/><ellipse cx="13" cy="5" rx="4" ry="2.5" fill="#EDB4AF"/><path d="M-3 5Q0 9 3 5" fill="none" stroke="#806052" stroke-width="1.6"/></g>
+</g></g></svg>
